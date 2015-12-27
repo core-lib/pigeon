@@ -130,6 +130,7 @@
 		运行 testRegister 方法。。。
 		
 5.客户端使用API；到这里我们就会明白为什么我说项目要分模块。因为我们需要把这个模块打包给Android使用，或者生成对应的模型和接口给iOS使用。所以我们打包的时候不可能把实现类也打包给客户端吧？因为实现类我们放在了demo-web，所以客户端也就只知道接口而且，面向接口编程也是pigeon框架所提倡的。
+	
 	a.假设你已经打好包了，把demo-core的jar包放到Android中，并且将我们之前打包好的pigeon-core、pigeon-introspection和pigeon-client三个jar包放入Android项目中。
 	
 	b.构造客户端，记得改IP地址和端口，指向到你后台的IP地址和端口。
@@ -148,52 +149,52 @@
 转换功能都是无需编写代码，只需要在开放接口或方法上标注对应注解即可轻松拥有。
 
 网络协议
-HTTP=payne.framework.pigeon.core.protocol.HTTPChannel
-HTTP/1.0=payne.framework.pigeon.core.protocol.HTTPChannel
-HTTP/1.1=payne.framework.pigeon.core.protocol.HTTPChannel
+HTTP
+HTTP/1.0
+HTTP/1.1
 
 加密
-RSA=payne.framework.pigeon.core.encryption.RSAInvocationEncryptor
-AES=payne.framework.pigeon.core.encryption.AESInvocationEncryptor
-DES=payne.framework.pigeon.core.encryption.DESInvocationEncryptor
-DESede=payne.framework.pigeon.core.encryption.DESedeInvocationEncryptor
+RSA
+AES
+DES
+DESede
 
 签名
-MD2WithRSA=payne.framework.pigeon.core.signature.MD2WithRSAInvocationSigner
-MD5WithRSA=payne.framework.pigeon.core.signature.MD5WithRSAInvocationSigner
-SHA1WithRSA=payne.framework.pigeon.core.signature.SHA1WithRSAInvocationSigner
-SHA256WithRSA=payne.framework.pigeon.core.signature.SHA256WithRSAInvocationSigner
+MD2WithRSA
+MD5WithRSA
+SHA1WithRSA
+SHA256WithRSA
 
 编码
-base64=payne.framework.pigeon.core.encoding.Base64InvocationEncoder
-base32=payne.framework.pigeon.core.encoding.Base32InvocationEncoder
-hex=payne.framework.pigeon.core.encoding.HexInvocationEncoder
+base64
+base32
+hex
 
 压缩
-flat=payne.framework.pigeon.core.compression.FlatInvocationCompressor
-GZIP=payne.framework.pigeon.core.compression.GZIPInvocationCompressor
-LZ4=payne.framework.pigeon.core.compression.LZ4InvocationCompressor
-snappy=payne.framework.pigeon.core.compression.SnappyInvocationCompressor
+flat
+GZIP
+LZ4
+snappy
 
 序列化
-application/url=payne.framework.pigeon.core.formatting.URLInvocationFormatter
-application/json=payne.framework.pigeon.core.formatting.JSONInvocationFormatter
-application/xml=payne.framework.pigeon.core.formatting.XMLInvocationFormatter
-application/yaml=payne.framework.pigeon.core.formatting.YAMLInvocationFormatter
-application/smile=payne.framework.pigeon.core.formatting.SmileInvocationFormatter
-application/cbor=payne.framework.pigeon.core.formatting.CBORInvocationFormatter
-application/avro=payne.framework.pigeon.core.formatting.AVROInvocationFormatter
-application/x-www-form-urlencoded=payne.framework.pigeon.core.formatting.FormInvocationFormatter
-application/x-java-serialized-object=payne.framework.pigeon.core.formatting.ObjectInvocationFormatter
-application/hessian=payne.framework.pigeon.core.formatting.HessianInvocationFormatter
-application/hessian2=payne.framework.pigeon.core.formatting.Hessian2InvocationFormatter
-application/burlap=payne.framework.pigeon.core.formatting.BurlapInvocationFormatter
+application/url
+application/json
+application/xml
+application/yaml
+application/smile
+application/cbor
+application/avro
+application/x-www-form-urlencoded
+application/x-java-serialized-object
+application/hessian
+application/hessian2
+application/burlap
 
 校验
-MD2=payne.framework.pigeon.core.digestion.MD2InvocationDigester
-MD5=payne.framework.pigeon.core.digestion.MD5InvocationDigester
-SHA-1=payne.framework.pigeon.core.digestion.SHA1InvocationDigester
-SHA-256=payne.framework.pigeon.core.digestion.SHA256InvocationDigester
+MD2
+MD5
+SHA-1
+SHA-256
 
 
 7.框架轻松跟市面上流行的技术进行集成，例如Spring，Hibernate，web服务器（tomcat。。。）更好的整合在你已有的项目和拓展你的项目。在保证不修改你现有的开放服务的实现类代码前提下，可以通过抽象出一个接口就能通过pigeon框架的形式去开放远程接口方式的调用。
