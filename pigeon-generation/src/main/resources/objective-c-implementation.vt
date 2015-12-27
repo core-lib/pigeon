@@ -1,0 +1,133 @@
+#import "$properties.getProperty("objective-c-prefix")$interface.name$properties.getProperty("objective-c-interface-suffix")"
+
+#import "PFPInvocationProcedure.h"
+#import "PFPInvocationEncodeProcedure.h"
+#import "PFPInvocationCompressProcedure.h"
+#import "PFPInvocationEncryptProcedure.h"
+#import "PFPInvocationValidateProcedure.h"
+#import "PFPInvocationSignProcedure.h"
+#import "PFPInvocationWorkProcedure.h"
+#import "PFPClient.h"
+#import "PFPDocument.h"
+#import "MJExtension.h"
+#import "NSObject+MJDictionary.h"
+
+#foreach($import in $imports)
+#import "$converter.getName($import)$properties.get("objective-c-interface-suffix")"
+#end
+
+@implementation $properties.get("objective-c-prefix")$interface.name
+
+@synthesize client;
+
+-(instancetype) init
+{
+	self = [super init];
+	if(self){
+		client = [[PFPClient alloc] init];
+	}
+	return self;
+}
+
+-(instancetype) initWithHost:(NSString *)host port:(NSInteger)port timeout:(NSTimeInterval)timeout protocol:(NSString *)protocol formatter:(NSObject<PFPInvocationFormatter> *)formatter beanFactory:(NSObject<PFPBeanFactory> *)beanFactory interceptors:(NSArray *)interceptors
+{
+	self = [super init];
+	if(self){
+		client = [[PFPClient alloc] initWithHost:host port:port timeout:timeout protocol:protocol formatter:formatter beanFactory:beanFactory interceptors:interceptors];
+	}
+	return self;
+}
+
+@end
+
+@implementation $properties.get("objective-c-prefix")$interface.name (Synchronous)
+
+#foreach($function in $functions)
+#if($function.parameters.empty)
+-($converter.convert($function.method.genericReturnType)) ${function.name}
+#else
+-($converter.convert($function.method.genericReturnType)) ${function.name}_#foreach($parameter in $function.parameters)$parameter.name:($converter.convert($parameter.type))$parameter.name #end
+#end
+{
+	NSMutableArray * __arguments__ = [[NSMutableArray alloc] init];
+#foreach($parameter in $function.parameters)
+	[__arguments__ addObject:$converter.convert($parameter.type,$parameter.name)];
+#end
+	
+	NSMutableArray * __resolvers__ = [[NSMutableArray alloc] init];
+#foreach($entry in $function.resolvers.entrySet())
+	{
+		NSDictionary * resolve = $converter.convert($entry.key);
+		PFPInvocationProcedure * resolver = [[PFPInvocationProcedure alloc] initWithIndex:$entry.value.step() resolve:resolve resolver:[[PFP$entry.value.procedure().simpleName alloc] init]];
+		[__resolvers__ addObject:resolver];
+	}
+#end
+
+#if($converter.convert($function.method.genericReturnType).equals("void"))
+	[client call:@"$function.path" arguments:__arguments__ resolvers:__resolvers__];
+#else
+	id __result__ = [client call:@"$function.path" arguments:__arguments__ resolvers:__resolvers__];
+#if($function.result.array)
+#if($converter.generable($function.result.component))
+	__result__ = [$converter.getName($function.result.component) objectArrayWithKeyValuesArray:__result__];
+#end
+#elseif($function.result.mapping)
+#if($converter.generable($function.result.component))
+	__result__ = [$converter.getName($function.result.component) objectDictionaryWithKeyValuesDictionary:__result__];
+#end
+#else
+	__result__ = [$converter.getName($function.result.type) objectWithKeyValues:__result__];
+#end
+	return __result__;
+#end
+}
+
+#end
+@end
+
+@implementation $properties.get("objective-c-prefix")$interface.name (Asynchronous)
+
+#foreach($function in $functions)
+#set($return = $converter.convert($function.method.genericReturnType))
+#if($function.parameters.empty)
+-(void) ${function.name}_callback:(void(^)(BOOL,#if(!$return.equals("void")) $return,#end NSError *))callback
+#else
+-(void) ${function.name}_#foreach($parameter in $function.parameters)$parameter.name:($converter.convert($parameter.type))$parameter.name #end callback:(void(^)(BOOL,#if(!$return.equals("void")) $return,#end NSError *))callback
+#end
+{
+	NSMutableArray * __arguments__ = [[NSMutableArray alloc] init];
+#foreach($parameter in $function.parameters)
+	[__arguments__ addObject:$converter.convert($parameter.type,$parameter.name)];
+#end
+	
+	NSMutableArray * __resolvers__ = [[NSMutableArray alloc] init];
+#foreach($entry in $function.resolvers.entrySet())
+	{
+		NSDictionary * resolve = $converter.convert($entry.key);
+		PFPInvocationProcedure * resolver = [[PFPInvocationProcedure alloc] initWithIndex:$entry.value.step() resolve:resolve resolver:[[PFP$entry.value.procedure().simpleName alloc] init]];
+		[__resolvers__ addObject:resolver];
+	}
+#end
+
+	[client call:@"$function.path" arguments:__arguments__ resolvers:__resolvers__ callback:^(BOOL __success__, id __result__, NSError * __error__){
+#if($return.equals("void"))
+		callback(__success__,__error__);
+#else
+#if($function.result.array)
+#if($converter.generable($function.result.component))
+		__result__ = [$converter.getName($function.result.component) objectArrayWithKeyValuesArray:__result__];
+#end
+#elseif($function.result.mapping)
+#if($converter.generable($function.result.component))
+	__result__ = [$converter.getName($function.result.component) objectDictionaryWithKeyValuesDictionary:__result__];
+#end
+#else
+		__result__ = [$converter.getName($function.result.type) objectWithKeyValues:__result__];
+#end
+		callback(__success__,__result__,__error__);
+#end
+	}];
+}
+
+#end
+@end

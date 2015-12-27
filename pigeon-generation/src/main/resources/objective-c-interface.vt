@@ -1,0 +1,69 @@
+#import <Foundation/Foundation.h>
+#import "PFPHeaders.h"
+
+@class PFPClient;
+@class PFPDocument;
+
+#foreach($import in $imports)
+#if($import.isEnum())
+#import "$converter.getName($import)$properties.get("objective-c-interface-suffix")"
+#else
+@class $converter.getName($import);
+#end
+#end
+
+#if($interface.notes && $interface.notes.size() > 0)
+/**
+#foreach($note in $interface.notes)
+ * $note
+#end
+ */
+#end
+@interface $properties.get("objective-c-prefix")$interface.name : NSObject
+
+@property (nonatomic,readonly) PFPClient * client;
+
+-(instancetype) init;
+
+-(instancetype) initWithHost:(NSString *)host port:(NSInteger)port timeout:(NSTimeInterval)timeout protocol:(NSString *)protocol formatter:(NSObject<PFPInvocationFormatter> *)formatter beanFactory:(NSObject<PFPBeanFactory> *)beanFactory interceptors:(NSArray *)interceptors;
+
+@end
+
+@interface $properties.get("objective-c-prefix")$interface.name (Synchronous)
+
+#foreach($function in $functions)
+#if($function.notes && $function.notes.size() > 0)
+/**
+#foreach($note in $function.notes)
+ * $note
+#end
+ */
+#end
+#if($function.parameters.empty)
+-($converter.convert($function.method.genericReturnType)) ${function.name};
+#else
+-($converter.convert($function.method.genericReturnType)) ${function.name}_#foreach($parameter in $function.parameters)$parameter.name:($converter.convert($parameter.type))$parameter.name #end;
+#end
+
+#end
+@end
+
+@interface $properties.get("objective-c-prefix")$interface.name (Asynchronous)
+
+#foreach($function in $functions)
+#if($function.notes && $function.notes.size() > 0)
+/**
+#foreach($note in $function.notes)
+ * $note
+#end
+ */
+#end
+#set($return = $converter.convert($function.method.genericReturnType))
+#if($function.parameters.empty)
+-(void) ${function.name}_callback:(void(^)(BOOL success,#if(!$return.equals("void")) $return result,#end NSError * error))callback;
+#else
+-(void) ${function.name}_#foreach($parameter in $function.parameters)$parameter.name:($converter.convert($parameter.type))$parameter.name #end callback:(void(^)(BOOL success,#if(!$return.equals("void")) $return result,#end NSError * error))callback;
+#end
+
+#end
+@end
