@@ -73,7 +73,10 @@ public abstract class JacksonInvocationFormatter implements InvocationFormatter 
 				return result;
 			case ARRAY:
 				Object[] arguments = new Object[structure.types.length];
-				for (int i = 0; i < structure.types.length; i++) {
+				if (node.isArray() == false && structure.types.length > 0) {
+					arguments[0] = this.mapper.readValue(node.traverse(), this.mapper.constructType(structure.types[0]));
+				}
+				for (int i = 0; node.isArray() && i < structure.types.length; i++) {
 					arguments[i] = this.mapper.readValue(node.get(i).traverse(), this.mapper.constructType(structure.types[i]));
 				}
 				return arguments;
