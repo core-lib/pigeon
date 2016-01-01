@@ -12,7 +12,8 @@
 		<module>pigeon-integration</module>
 		<module>pigeon-introspection</module>
 		<module>pigeon-server</module>
-	</modules>
+    <module>pigeon-reactive</module>
+  </modules>
 
 	<distributionManagement>
 		<repository>
