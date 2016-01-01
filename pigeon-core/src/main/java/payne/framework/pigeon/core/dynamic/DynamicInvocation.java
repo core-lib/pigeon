@@ -22,7 +22,6 @@ public abstract class DynamicInvocation implements Serializable {
 	}
 
 	protected DynamicInvocation(Invocation invocation) throws Exception {
-		this.properties = invocation.getProperties();
 		this.path = invocation.getPath();
 		for (int i = 0; invocation.getArguments() != null && i < invocation.getArguments().length; i++) {
 			if (invocation.getArguments()[i] == null) {
@@ -39,7 +38,6 @@ public abstract class DynamicInvocation implements Serializable {
 
 	public Invocation toInvocation() throws Exception {
 		Invocation invocation = new Invocation();
-		invocation.setProperties(properties);
 		invocation.setPath(path);
 		List<Object> arguments = new ArrayList<Object>();
 		Object result = null;

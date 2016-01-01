@@ -2,9 +2,8 @@ package payne.framework.pigeon.core;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -25,8 +24,6 @@ public class Invocation implements Serializable {
 
 	private transient Header clientHeader;
 	private transient Header serverHeader;
-
-	private Map<String, String> properties = new TreeMap<String, String>();
 	private String host;
 	private int port;
 	private String path;
@@ -69,14 +66,6 @@ public class Invocation implements Serializable {
 
 	public void setServerHeader(Header serverHeader) {
 		this.serverHeader = serverHeader;
-	}
-
-	public Map<String, String> getProperties() {
-		return properties;
-	}
-
-	public void setProperties(Map<String, String> properties) {
-		this.properties = properties;
 	}
 
 	public String getHost() {
@@ -157,7 +146,7 @@ public class Invocation implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Invocation [properties=" + properties + ", path=" + path + "]";
+		return "Invocation [host=" + host + ", port=" + port + ", path=" + path + ", arguments=" + Arrays.toString(arguments) + ", result=" + result + "]";
 	}
 
 }

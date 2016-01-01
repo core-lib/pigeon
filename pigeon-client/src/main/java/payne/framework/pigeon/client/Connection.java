@@ -98,7 +98,6 @@ public class Connection<T> implements InvocationHandler, Interceptor, Filter<Cha
 			Method method = correspondences.get(request.getMethod());
 			Invocation response = channel.receive(method, beanFactory, streamFactory, new ArrayList<Step>(steps));
 			request.setServerHeader(response.getServerHeader());
-			request.setProperties(response.getProperties());
 			request.setResult(response.getResult());
 			break;
 		}

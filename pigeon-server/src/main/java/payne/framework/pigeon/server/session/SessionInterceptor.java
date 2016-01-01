@@ -13,12 +13,12 @@ public class SessionInterceptor implements Interceptor, Constants {
 
 	public Object intercept(Invocation invocation) throws Exception {
 		try {
-			Cookie cookie = Cookie.getRequestCookie(invocation.getProperties(), name);
+			Cookie cookie = Cookie.getRequestCookie(invocation.getClientHeader(), name);
 			if (cookie == null) {
 				cookie = new Cookie(name, UUID.randomUUID().toString());
 				cookie.setMaxage(7 * 24 * 60 * 60);
 				cookie.setPath("/");
-				Cookie.addResponseCookie(invocation.getProperties(), cookie);
+				Cookie.addResponseCookie(invocation.getServerHeader(), cookie);
 			}
 			String id = cookie.getValue();
 			sessionManager.bind(id);
