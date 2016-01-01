@@ -61,7 +61,9 @@ public class FixedLengthInvocationReader implements HTTPInvocationReader {
 			}
 
 			FormatInvocationInputStream fiis = (FormatInvocationInputStream) wrap;
-			Invocation invocation = fiis.deserialize();
+			Invocation invocation = new Invocation();
+			Object data = fiis.deserialize();
+			invocation.setArguments(data == null ? new Object[method.getParameterTypes().length] : (Object[]) data);
 			invocation.setClientHeader(clientHeader);
 			return invocation;
 		} finally {

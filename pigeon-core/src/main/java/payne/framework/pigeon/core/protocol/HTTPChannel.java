@@ -124,7 +124,7 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 			}
 
 			FormatInvocationOutputStream fios = (FormatInvocationOutputStream) wrap;
-			fios.serialize(invocation);
+			fios.serialize(invocation.getArguments());
 			fios.flush();
 
 			this.inputStream = connection.getResponseCode() == HttpURLConnection.HTTP_OK ? connection.getInputStream() : connection.getErrorStream();
@@ -158,7 +158,9 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 			}
 
 			FormatInvocationInputStream fiis = (FormatInvocationInputStream) wrap;
-			Invocation invocation = fiis.deserialize();
+			Invocation invocation = new Invocation();
+			Object data = fiis.deserialize();
+			invocation.setResult(data);
 			invocation.setServerHeader(serverHeader);
 			return invocation;
 		} finally {

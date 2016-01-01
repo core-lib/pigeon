@@ -1,6 +1,12 @@
 package payne.framework.pigeon.core.formatting;
 
-import payne.framework.pigeon.core.Invocation;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Method;
+
+import payne.framework.pigeon.core.Conversion;
+import payne.framework.pigeon.core.Header;
+import payne.framework.pigeon.core.exception.FormatterException;
 
 /**
  * 调用数据格式化器
@@ -8,6 +14,37 @@ import payne.framework.pigeon.core.Invocation;
  * @author yangchangpei
  *
  */
-public interface InvocationFormatter extends DataFormatter<Invocation> {
+public interface InvocationFormatter extends Conversion {
+	/**
+	 * 数据格式,如json:application/json xml:application/xml
+	 * 等,此值应该与其他的DataFormatter的不相同,也就是子类需要保证各自唯一
+	 * 
+	 * @return 数据格式
+	 */
+	String algorithm();
 
+	/**
+	 * 序列化,实现该方法不应该关闭输入流参数,让框架自行关闭
+	 * 
+	 * @param data
+	 *            需要序列化到输出流里面去的java对象
+	 * @param out
+	 *            输出流
+	 * @throws FormatterException
+	 *             数据格式化异常
+	 */
+	void serialize(Header header, Object data, OutputStream out, String charset) throws FormatterException;
+
+	/**
+	 * 反序列化,实现该方法不应该关闭输入流参数,让框架自行关闭
+	 * 
+	 * @param in
+	 *            输入流
+	 * @param method
+	 *            对应的方法
+	 * @return 将数据反序列化成T类型的对象
+	 * @throws FormatterException
+	 *             数据格式化异常
+	 */
+	Object deserialize(Header header, InputStream in, String charset, Method method) throws FormatterException;
 }

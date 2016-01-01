@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import payne.framework.pigeon.core.Header;
-import payne.framework.pigeon.core.Invocation;
 
 public class FormatInvocationOutputStream extends OutputStream {
 	private final InvocationFormatter formatter;
@@ -25,8 +24,8 @@ public class FormatInvocationOutputStream extends OutputStream {
 		throw new UnsupportedOperationException();
 	}
 
-	public void serialize(Invocation invocation) throws IOException {
-		formatter.serialize(header, invocation, out, charset);
+	public void serialize(Object data) throws IOException {
+		formatter.serialize(header, data, out, charset);
 	}
 
 	@Override

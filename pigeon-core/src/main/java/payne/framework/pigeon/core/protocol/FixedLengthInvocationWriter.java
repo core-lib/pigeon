@@ -60,7 +60,7 @@ public class FixedLengthInvocationWriter implements HTTPInvocationWriter {
 			}
 
 			FormatInvocationOutputStream fios = (FormatInvocationOutputStream) wrap;
-			fios.serialize(invocation);
+			fios.serialize(invocation.getResult());
 			fios.flush();
 
 			in = streamFactory.produce(out);

@@ -64,7 +64,7 @@ public class ChunkedInvocationWriter implements HTTPInvocationWriter {
 			IOToolkit.writeLine("", channel);
 
 			FormatInvocationOutputStream fios = (FormatInvocationOutputStream) wrap;
-			fios.serialize(invocation);
+			fios.serialize(invocation.getResult());
 			fios.flush();
 		} finally {
 			IOToolkit.close(wrap);

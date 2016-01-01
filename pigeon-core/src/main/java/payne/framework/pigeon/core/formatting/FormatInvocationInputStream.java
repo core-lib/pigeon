@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 
 import payne.framework.pigeon.core.Header;
-import payne.framework.pigeon.core.Invocation;
 
 public class FormatInvocationInputStream extends InputStream {
 	private final InvocationFormatter formatter;
@@ -28,7 +27,7 @@ public class FormatInvocationInputStream extends InputStream {
 		throw new UnsupportedOperationException();
 	}
 
-	public Invocation deserialize() throws IOException {
+	public Object deserialize() throws IOException {
 		return formatter.deserialize(header, in, charset, method);
 	}
 

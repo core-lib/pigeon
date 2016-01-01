@@ -5,7 +5,6 @@ import java.io.OutputStream;
 import java.lang.reflect.Method;
 
 import payne.framework.pigeon.core.Header;
-import payne.framework.pigeon.core.Invocation;
 import payne.framework.pigeon.core.exception.FormatterException;
 
 import com.caucho.burlap.io.BurlapInput;
@@ -17,7 +16,7 @@ public class BurlapInvocationFormatter implements InvocationFormatter {
 		return "application/burlap";
 	}
 
-	public void serialize(Header header, Invocation data, OutputStream out, String charset) throws FormatterException {
+	public void serialize(Header header, Object data, OutputStream out, String charset) throws FormatterException {
 		BurlapOutput oos = null;
 		try {
 			oos = new BurlapOutput(out);
@@ -33,11 +32,11 @@ public class BurlapInvocationFormatter implements InvocationFormatter {
 		}
 	}
 
-	public Invocation deserialize(Header header, InputStream in, String charset, Method method) throws FormatterException {
+	public Object deserialize(Header header, InputStream in, String charset, Method method) throws FormatterException {
 		BurlapInput ois = null;
 		try {
 			ois = new BurlapInput(in);
-			return (Invocation) ois.readObject();
+			return ois.readObject();
 		} catch (Exception e) {
 			throw new FormatterException(e, this, in, method);
 		} finally {

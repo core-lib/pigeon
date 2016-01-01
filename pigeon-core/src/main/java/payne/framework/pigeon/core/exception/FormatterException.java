@@ -3,7 +3,7 @@ package payne.framework.pigeon.core.exception;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
-import payne.framework.pigeon.core.formatting.DataFormatter;
+import payne.framework.pigeon.core.formatting.InvocationFormatter;
 
 /**
  * 数据格式化异常
@@ -16,7 +16,7 @@ public class FormatterException extends IOException {
 	/**
 	 * 格式化器
 	 */
-	private final DataFormatter<?> formatter;
+	private final InvocationFormatter formatter;
 	/**
 	 * 数据
 	 */
@@ -26,14 +26,14 @@ public class FormatterException extends IOException {
 	 */
 	private final Method method;
 
-	public FormatterException(Throwable cause, DataFormatter<?> formatter, Object data, Method method) {
+	public FormatterException(Throwable cause, InvocationFormatter formatter, Object data, Method method) {
 		super(cause);
 		this.formatter = formatter;
 		Data = data;
 		this.method = method;
 	}
 
-	public DataFormatter<?> getFormatter() {
+	public InvocationFormatter getFormatter() {
 		return formatter;
 	}
 

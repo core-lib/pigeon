@@ -16,8 +16,6 @@ import java.util.Map;
 
 import payne.framework.pigeon.core.FileWrapper;
 import payne.framework.pigeon.core.Header;
-import payne.framework.pigeon.core.Invocation;
-import payne.framework.pigeon.core.Pigeons;
 import payne.framework.pigeon.core.annotation.rest.Param;
 import payne.framework.pigeon.core.conversion.ConversionProvider;
 import payne.framework.pigeon.core.exception.FormatterException;
@@ -46,13 +44,12 @@ public class URLInvocationFormatter extends JacksonInvocationFormatter implement
 	}
 
 	@Override
-	public void serialize(Header header, Invocation data, OutputStream out, String charset) throws FormatterException {
+	public void serialize(Header header, Object data, OutputStream out, String charset) throws FormatterException {
 		OutputStreamWriter osw = null;
 		FileInputStream fis = null;
 		try {
-			Object result = data.getResult();
-			if (result instanceof FileWrapper) {
-				File file = ((FileWrapper) result).getFile();
+			if (data instanceof FileWrapper) {
+				File file = ((FileWrapper) data).getFile();
 				Collection<?> types = MimeUtil.getMimeTypes(file);
 				String contentType = types == null || types.isEmpty() ? "file" : types.toArray()[0].toString();
 				header.put("Content-Type", contentType);
@@ -60,8 +57,8 @@ public class URLInvocationFormatter extends JacksonInvocationFormatter implement
 					header.put("Content-Disposition", "attachment; filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
 				}
 				IOToolkit.transmit(fis = new FileInputStream(file), out);
-			} else if (result instanceof File) {
-				File file = (File) result;
+			} else if (data instanceof File) {
+				File file = (File) data;
 				Collection<?> types = MimeUtil.getMimeTypes(file);
 				String contentType = types == null || types.isEmpty() ? "file" : types.toArray()[0].toString();
 				header.put("Content-Type", contentType);
@@ -72,10 +69,10 @@ public class URLInvocationFormatter extends JacksonInvocationFormatter implement
 			} else if (transcoding) {
 				header.setContentType("application/json");
 				osw = new OutputStreamWriter(out, charset);
-				this.mapper.writeValue(osw, result);
+				this.mapper.writeValue(osw, data);
 			} else {
 				header.setContentType("application/json");
-				this.mapper.writeValue(out, result);
+				this.mapper.writeValue(out, data);
 			}
 		} catch (Exception e) {
 			throw new FormatterException(e, this, data, null);
@@ -85,7 +82,7 @@ public class URLInvocationFormatter extends JacksonInvocationFormatter implement
 		}
 	}
 
-	public Invocation deserialize(Header header, InputStream in, String charset, Method method) throws FormatterException {
+	public Object deserialize(Header header, InputStream in, String charset, Method method) throws FormatterException {
 		InputStreamReader isr = null;
 		try {
 			isr = new InputStreamReader(in, charset);
@@ -117,10 +114,7 @@ public class URLInvocationFormatter extends JacksonInvocationFormatter implement
 				String prefix = param == null || param.value().trim().equals("") ? "argument" + i : param.value().trim();
 				arguments[i] = provider.convert(prefix, method.getGenericParameterTypes()[i], parameters);
 			}
-			Invocation invocation = new Invocation();
-			invocation.setPath(Pigeons.getOpenPath(method));
-			invocation.setArguments(arguments);
-			return invocation;
+			return arguments;
 		} catch (Exception e) {
 			throw new FormatterException(e, this, in, method);
 		} finally {

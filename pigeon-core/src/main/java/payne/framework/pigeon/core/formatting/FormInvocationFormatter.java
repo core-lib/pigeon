@@ -8,7 +8,6 @@ import java.net.URLDecoder;
 import java.nio.charset.Charset;
 
 import payne.framework.pigeon.core.Header;
-import payne.framework.pigeon.core.Invocation;
 import payne.framework.pigeon.core.exception.FormatterException;
 import payne.framework.pigeon.core.toolkit.IOToolkit;
 
@@ -18,7 +17,7 @@ public class FormInvocationFormatter extends URLInvocationFormatter implements I
 		return "application/x-www-form-urlencoded";
 	}
 
-	public Invocation deserialize(Header header, InputStream in, String charset, Method method) throws FormatterException {
+	public Object deserialize(Header header, InputStream in, String charset, Method method) throws FormatterException {
 		try {
 			String parameters = IOToolkit.toString(in);
 			parameters = URLDecoder.decode(parameters, Charset.defaultCharset().name());

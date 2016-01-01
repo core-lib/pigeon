@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,7 +17,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import payne.framework.pigeon.core.Header;
-import payne.framework.pigeon.core.Invocation;
 import payne.framework.pigeon.core.exception.FormatterException;
 import payne.framework.pigeon.core.toolkit.IOToolkit;
 
@@ -29,7 +29,8 @@ public class XMLInvocationFormatter implements InvocationFormatter {
 
 	public XMLInvocationFormatter(String path) throws IOException, ClassNotFoundException, JAXBException {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		InputStream index = classLoader.getResourceAsStream(path);
+		URL url = classLoader.getResource(path);
+		InputStream index = url != null ? url.openStream() : null;
 		if (index == null) {
 			throw new FileNotFoundException("file " + path + " not found in classpath");
 		}
@@ -37,7 +38,6 @@ public class XMLInvocationFormatter implements InvocationFormatter {
 		BufferedReader br = null;
 		try {
 			Set<Class<?>> classes = new HashSet<Class<?>>();
-			classes.add(Invocation.class);
 			isr = new InputStreamReader(index);
 			br = new BufferedReader(isr);
 			String line = null;
@@ -65,7 +65,7 @@ public class XMLInvocationFormatter implements InvocationFormatter {
 		return "application/xml";
 	}
 
-	public void serialize(Header header, Invocation data, OutputStream out, String charset) throws FormatterException {
+	public void serialize(Header header, Object data, OutputStream out, String charset) throws FormatterException {
 		try {
 			Marshaller marshaller = context.createMarshaller();
 			marshaller.marshal(data, out);
@@ -74,10 +74,10 @@ public class XMLInvocationFormatter implements InvocationFormatter {
 		}
 	}
 
-	public Invocation deserialize(Header header, InputStream in, String charset, Method method) throws FormatterException {
+	public Object deserialize(Header header, InputStream in, String charset, Method method) throws FormatterException {
 		try {
 			Unmarshaller unmarshaller = context.createUnmarshaller();
-			return (Invocation) unmarshaller.unmarshal(in);
+			return unmarshaller.unmarshal(in);
 		} catch (Exception e) {
 			throw new FormatterException(e, this, in, method);
 		}

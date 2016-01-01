@@ -5,7 +5,6 @@ import java.io.OutputStream;
 import java.lang.reflect.Method;
 
 import payne.framework.pigeon.core.Header;
-import payne.framework.pigeon.core.Invocation;
 import payne.framework.pigeon.core.exception.FormatterException;
 
 import com.caucho.hessian.io.HessianInput;
@@ -17,7 +16,7 @@ public class HessianInvocationFormatter implements InvocationFormatter {
 		return "application/hessian";
 	}
 
-	public void serialize(Header header, Invocation data, OutputStream out, String charset) throws FormatterException {
+	public void serialize(Header header, Object data, OutputStream out, String charset) throws FormatterException {
 		HessianOutput oos = null;
 		try {
 			oos = new HessianOutput(out);
@@ -33,11 +32,11 @@ public class HessianInvocationFormatter implements InvocationFormatter {
 		}
 	}
 
-	public Invocation deserialize(Header header, InputStream in, String charset, Method method) throws FormatterException {
+	public Object deserialize(Header header, InputStream in, String charset, Method method) throws FormatterException {
 		HessianInput ois = null;
 		try {
 			ois = new HessianInput(in);
-			return (Invocation) ois.readObject();
+			return ois.readObject();
 		} catch (Exception e) {
 			throw new FormatterException(e, this, in, method);
 		} finally {
