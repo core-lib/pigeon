@@ -1,12 +1,8 @@
 package payne.framework.pigeon.core;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Iterator;
-
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 import payne.framework.pigeon.core.exception.IllogicalInvokeException;
 
@@ -18,21 +14,18 @@ import payne.framework.pigeon.core.exception.IllogicalInvokeException;
  * @author Payne
  * 
  */
-@XmlRootElement
-public class Invocation implements Serializable {
-	private static final long serialVersionUID = 3185492035134672608L;
-
-	private transient Header clientHeader;
-	private transient Header serverHeader;
+public class Invocation {
+	private Header clientHeader;
+	private Header serverHeader;
 	private String host;
 	private int port;
 	private String path;
 	private Object[] arguments;
 	private Object result;
-	private transient Class<?> interfase;
-	private transient Method method;
-	private transient Object implementation;
-	private transient Iterator<Interceptor> interceptors;
+	private Class<?> interfase;
+	private Method method;
+	private Object implementation;
+	private Iterator<Interceptor> interceptors;
 
 	/**
 	 * 真正处理该远程调用,此方法调用会经过一系列包括框架和用户设定的拦截器,最终到达开放的接口方法并原路返回<br/>
@@ -50,7 +43,6 @@ public class Invocation implements Serializable {
 		}
 	}
 
-	@XmlTransient
 	public Header getClientHeader() {
 		return clientHeader;
 	}
@@ -59,7 +51,6 @@ public class Invocation implements Serializable {
 		this.clientHeader = clientHeader;
 	}
 
-	@XmlTransient
 	public Header getServerHeader() {
 		return serverHeader;
 	}
@@ -108,7 +99,6 @@ public class Invocation implements Serializable {
 		this.result = result;
 	}
 
-	@XmlTransient
 	public Class<?> getInterfase() {
 		return interfase;
 	}
@@ -117,7 +107,6 @@ public class Invocation implements Serializable {
 		this.interfase = interfase;
 	}
 
-	@XmlTransient
 	public Method getMethod() {
 		return method;
 	}
@@ -126,7 +115,6 @@ public class Invocation implements Serializable {
 		this.method = method;
 	}
 
-	@XmlTransient
 	public Object getImplementation() {
 		return implementation;
 	}
@@ -135,7 +123,6 @@ public class Invocation implements Serializable {
 		this.implementation = implementation;
 	}
 
-	@XmlTransient
 	public Iterator<Interceptor> getInterceptors() {
 		return interceptors;
 	}
