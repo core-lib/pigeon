@@ -12,6 +12,7 @@ import payne.framework.pigeon.core.factory.bean.BeanFactory;
 import payne.framework.pigeon.core.factory.stream.StreamFactory;
 import payne.framework.pigeon.core.formatting.FormatInvocationInputStream;
 import payne.framework.pigeon.core.formatting.InvocationFormatter;
+import payne.framework.pigeon.core.formatting.Structure;
 import payne.framework.pigeon.core.processing.InvocationFormatProcedure;
 import payne.framework.pigeon.core.processing.Step;
 import payne.framework.pigeon.core.toolkit.IOToolkit;
@@ -47,7 +48,7 @@ public class ChunkedInvocationReader implements HTTPInvocationReader {
 		try {
 			wrap = new ChunkedInputStream(new ReadableInputStream(channel));
 			InvocationFormatter formatter = beanFactory.get(clientHeader.getContentType(), InvocationFormatter.class);
-			InvocationFormatProcedure procedure = new InvocationFormatProcedure(formatter, method);
+			InvocationFormatProcedure procedure = new InvocationFormatProcedure(formatter, Structure.forArray(method.getGenericParameterTypes(), method.getParameterAnnotations()));
 			Step step = new Step(null, null, procedure);
 			steps.add(0, step);
 

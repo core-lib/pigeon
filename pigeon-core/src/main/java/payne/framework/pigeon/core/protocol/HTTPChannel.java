@@ -19,6 +19,7 @@ import payne.framework.pigeon.core.factory.stream.StreamFactory;
 import payne.framework.pigeon.core.formatting.FormatInvocationInputStream;
 import payne.framework.pigeon.core.formatting.FormatInvocationOutputStream;
 import payne.framework.pigeon.core.formatting.InvocationFormatter;
+import payne.framework.pigeon.core.formatting.Structure;
 import payne.framework.pigeon.core.processing.InvocationFormatProcedure;
 import payne.framework.pigeon.core.processing.Step;
 import payne.framework.pigeon.core.toolkit.IOToolkit;
@@ -99,7 +100,7 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 			wrap = new WritableOutputStream(this);
 
 			InvocationFormatter formatter = beanFactory.get(clientHeader.getContentType(), InvocationFormatter.class);
-			InvocationFormatProcedure procedure = new InvocationFormatProcedure(formatter, invocation);
+			InvocationFormatProcedure procedure = new InvocationFormatProcedure(formatter);
 			Step step = new Step(null, null, procedure);
 			steps.add(0, step);
 
@@ -148,7 +149,7 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 			wrap = new ReadableInputStream(this);
 
 			InvocationFormatter formatter = beanFactory.get(serverHeader.getContentType(), InvocationFormatter.class);
-			InvocationFormatProcedure procedure = new InvocationFormatProcedure(formatter, method);
+			InvocationFormatProcedure procedure = new InvocationFormatProcedure(formatter, Structure.forValue(method.getGenericReturnType(), method.getAnnotations()));
 			Step step = new Step(null, null, procedure);
 			steps.add(0, step);
 

@@ -2,9 +2,7 @@ package payne.framework.pigeon.core.formatting;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Method;
 
-import payne.framework.pigeon.core.Header;
 import payne.framework.pigeon.core.exception.FormatterException;
 
 import com.caucho.burlap.io.BurlapInput;
@@ -16,34 +14,34 @@ public class BurlapInvocationFormatter implements InvocationFormatter {
 		return "application/burlap";
 	}
 
-	public void serialize(Header header, Object data, OutputStream out, String charset) throws FormatterException {
+	public void serialize(Object data, OutputStream out, String charset) throws FormatterException {
 		BurlapOutput oos = null;
 		try {
 			oos = new BurlapOutput(out);
 			oos.writeObject(data);
 		} catch (Exception e) {
-			throw new FormatterException(e, this, data, null);
+			throw new FormatterException(e, this, data);
 		} finally {
 			try {
 				oos.close();
 			} catch (Exception e) {
-				throw new FormatterException(e, this, data, null);
+				throw new FormatterException(e, this, data);
 			}
 		}
 	}
 
-	public Object deserialize(Header header, InputStream in, String charset, Method method) throws FormatterException {
+	public Object deserialize(Structure structure, InputStream in, String charset) throws FormatterException {
 		BurlapInput ois = null;
 		try {
 			ois = new BurlapInput(in);
 			return ois.readObject();
 		} catch (Exception e) {
-			throw new FormatterException(e, this, in, method);
+			throw new FormatterException(e, this, in, structure);
 		} finally {
 			try {
 				ois.close();
 			} catch (Exception e) {
-				throw new FormatterException(e, this, in, method);
+				throw new FormatterException(e, this, in, structure);
 			}
 		}
 	}

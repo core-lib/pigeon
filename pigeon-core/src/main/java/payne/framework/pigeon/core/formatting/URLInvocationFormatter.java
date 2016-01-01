@@ -7,15 +7,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.net.URLEncoder;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import payne.framework.pigeon.core.FileWrapper;
-import payne.framework.pigeon.core.Header;
 import payne.framework.pigeon.core.annotation.rest.Param;
 import payne.framework.pigeon.core.conversion.ConversionProvider;
 import payne.framework.pigeon.core.exception.FormatterException;
@@ -24,19 +20,15 @@ import payne.framework.pigeon.core.toolkit.IOToolkit;
 import com.fasterxml.jackson.databind.MappingJsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import eu.medsea.mimeutil.MimeUtil;
-
 public class URLInvocationFormatter extends JacksonInvocationFormatter implements InvocationFormatter {
 	private ConversionProvider provider = new ConversionProvider();
 
 	public URLInvocationFormatter() {
 		super(new MappingJsonFactory(), true);
-		MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
 	}
 
 	public URLInvocationFormatter(ObjectMapper mapper) {
 		super(mapper, true);
-		MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
 	}
 
 	public String algorithm() {
@@ -44,34 +36,20 @@ public class URLInvocationFormatter extends JacksonInvocationFormatter implement
 	}
 
 	@Override
-	public void serialize(Header header, Object data, OutputStream out, String charset) throws FormatterException {
+	public void serialize(Object data, OutputStream out, String charset) throws FormatterException {
 		OutputStreamWriter osw = null;
 		FileInputStream fis = null;
 		try {
 			if (data instanceof FileWrapper) {
 				File file = ((FileWrapper) data).getFile();
-				Collection<?> types = MimeUtil.getMimeTypes(file);
-				String contentType = types == null || types.isEmpty() ? "file" : types.toArray()[0].toString();
-				header.put("Content-Type", contentType);
-				if (!contentType.startsWith("image/")) {
-					header.put("Content-Disposition", "attachment; filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
-				}
 				IOToolkit.transmit(fis = new FileInputStream(file), out);
 			} else if (data instanceof File) {
 				File file = (File) data;
-				Collection<?> types = MimeUtil.getMimeTypes(file);
-				String contentType = types == null || types.isEmpty() ? "file" : types.toArray()[0].toString();
-				header.put("Content-Type", contentType);
-				if (!contentType.startsWith("image/")) {
-					header.put("Content-Disposition", "attachment; filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
-				}
 				IOToolkit.transmit(fis = new FileInputStream(file), out);
 			} else if (transcoding) {
-				header.setContentType("application/json");
 				osw = new OutputStreamWriter(out, charset);
 				this.mapper.writeValue(osw, data);
 			} else {
-				header.setContentType("application/json");
 				this.mapper.writeValue(out, data);
 			}
 		} catch (Exception e) {
@@ -82,7 +60,7 @@ public class URLInvocationFormatter extends JacksonInvocationFormatter implement
 		}
 	}
 
-	public Object deserialize(Header header, InputStream in, String charset, Method method) throws FormatterException {
+	public Object deserialize(Structure structure, InputStream in, String charset) throws FormatterException {
 		InputStreamReader isr = null;
 		try {
 			isr = new InputStreamReader(in, charset);
@@ -101,9 +79,9 @@ public class URLInvocationFormatter extends JacksonInvocationFormatter implement
 				values[values.length - 1] = value;
 				parameters.put(key, values);
 			}
-			Object[] arguments = new Object[method.getParameterTypes().length];
-			for (int i = 0; i < method.getParameterTypes().length; i++) {
-				Annotation[] annotations = method.getParameterAnnotations()[i];
+			Object[] arguments = new Object[structure.types.length];
+			for (int i = 0; i < structure.types.length; i++) {
+				Annotation[] annotations = structure.annotations[i];
 				Param param = null;
 				for (Annotation annotation : annotations) {
 					if (annotation.annotationType() == Param.class) {
@@ -112,14 +90,13 @@ public class URLInvocationFormatter extends JacksonInvocationFormatter implement
 					}
 				}
 				String prefix = param == null || param.value().trim().equals("") ? "argument" + i : param.value().trim();
-				arguments[i] = provider.convert(prefix, method.getGenericParameterTypes()[i], parameters);
+				arguments[i] = provider.convert(prefix, structure.types[i], parameters);
 			}
 			return arguments;
 		} catch (Exception e) {
-			throw new FormatterException(e, this, in, method);
+			throw new FormatterException(e, this, in, structure);
 		} finally {
 			IOToolkit.close(isr);
 		}
 	}
-
 }

@@ -1,9 +1,9 @@
 package payne.framework.pigeon.core.exception;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 
 import payne.framework.pigeon.core.formatting.InvocationFormatter;
+import payne.framework.pigeon.core.formatting.Structure;
 
 /**
  * 数据格式化异常
@@ -24,13 +24,17 @@ public class FormatterException extends IOException {
 	/**
 	 * 数据类型对应类型
 	 */
-	private final Method method;
+	private final Structure structure;
 
-	public FormatterException(Throwable cause, InvocationFormatter formatter, Object data, Method method) {
+	public FormatterException(Throwable cause, InvocationFormatter formatter, Object data) {
+		this(cause, formatter, data, null);
+	}
+
+	public FormatterException(Throwable cause, InvocationFormatter formatter, Object data, Structure structure) {
 		super(cause);
 		this.formatter = formatter;
 		Data = data;
-		this.method = method;
+		this.structure = structure;
 	}
 
 	public InvocationFormatter getFormatter() {
@@ -41,8 +45,8 @@ public class FormatterException extends IOException {
 		return Data;
 	}
 
-	public Method getMethod() {
-		return method;
+	public Structure getStructure() {
+		return structure;
 	}
 
 }

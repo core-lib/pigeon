@@ -10,6 +10,7 @@ import payne.framework.pigeon.core.factory.bean.BeanFactory;
 import payne.framework.pigeon.core.factory.stream.StreamFactory;
 import payne.framework.pigeon.core.formatting.FormatInvocationInputStream;
 import payne.framework.pigeon.core.formatting.InvocationFormatter;
+import payne.framework.pigeon.core.formatting.Structure;
 import payne.framework.pigeon.core.processing.InvocationFormatProcedure;
 import payne.framework.pigeon.core.processing.Step;
 import payne.framework.pigeon.core.toolkit.FixedLengthInputStream;
@@ -46,7 +47,7 @@ public class FixedLengthInvocationReader implements HTTPInvocationReader {
 		try {
 			wrap = new FixedLengthInputStream(new ReadableInputStream(channel), clientHeader.getContentLength());
 			InvocationFormatter formatter = beanFactory.get(clientHeader.getContentType(), InvocationFormatter.class);
-			InvocationFormatProcedure procedure = new InvocationFormatProcedure(formatter, method);
+			InvocationFormatProcedure procedure = new InvocationFormatProcedure(formatter, Structure.forArray(method.getGenericParameterTypes(), method.getParameterAnnotations()));
 			Step step = new Step(null, null, procedure);
 			steps.add(0, step);
 

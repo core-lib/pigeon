@@ -2,10 +2,8 @@ package payne.framework.pigeon.core.formatting;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Method;
 
 import payne.framework.pigeon.core.Conversion;
-import payne.framework.pigeon.core.Header;
 import payne.framework.pigeon.core.exception.FormatterException;
 
 /**
@@ -30,21 +28,25 @@ public interface InvocationFormatter extends Conversion {
 	 *            需要序列化到输出流里面去的java对象
 	 * @param out
 	 *            输出流
+	 * @param charset
+	 *            字符集
 	 * @throws FormatterException
 	 *             数据格式化异常
 	 */
-	void serialize(Header header, Object data, OutputStream out, String charset) throws FormatterException;
+	void serialize(Object data, OutputStream out, String charset) throws FormatterException;
 
 	/**
 	 * 反序列化,实现该方法不应该关闭输入流参数,让框架自行关闭
 	 * 
+	 * @param structure
+	 *            数据结构
 	 * @param in
 	 *            输入流
-	 * @param method
-	 *            对应的方法
+	 * @param charset
+	 *            字符集
 	 * @return 将数据反序列化成T类型的对象
 	 * @throws FormatterException
 	 *             数据格式化异常
 	 */
-	Object deserialize(Header header, InputStream in, String charset, Method method) throws FormatterException;
+	Object deserialize(Structure structure, InputStream in, String charset) throws FormatterException;
 }

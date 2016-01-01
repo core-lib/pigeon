@@ -2,24 +2,19 @@ package payne.framework.pigeon.core.formatting;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
-
-import payne.framework.pigeon.core.Header;
 
 public class FormatInvocationInputStream extends InputStream {
 	private final InvocationFormatter formatter;
-	private final Header header;
+	private final Structure structure;
 	private final InputStream in;
 	private final String charset;
-	private final Method method;
 
-	public FormatInvocationInputStream(InvocationFormatter formatter, Header header, InputStream in, String charset, Method method) {
+	public FormatInvocationInputStream(InvocationFormatter formatter, Structure structure, InputStream in, String charset) {
 		super();
 		this.formatter = formatter;
-		this.header = header;
+		this.structure = structure;
 		this.in = in;
 		this.charset = charset;
-		this.method = method;
 	}
 
 	@Override
@@ -28,7 +23,7 @@ public class FormatInvocationInputStream extends InputStream {
 	}
 
 	public Object deserialize() throws IOException {
-		return formatter.deserialize(header, in, charset, method);
+		return formatter.deserialize(structure, in, charset);
 	}
 
 	@Override

@@ -3,18 +3,14 @@ package payne.framework.pigeon.core.formatting;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import payne.framework.pigeon.core.Header;
-
 public class FormatInvocationOutputStream extends OutputStream {
 	private final InvocationFormatter formatter;
-	private final Header header;
 	private final OutputStream out;
 	private final String charset;
 
-	public FormatInvocationOutputStream(InvocationFormatter formatter, Header header, OutputStream out, String charset) {
+	public FormatInvocationOutputStream(InvocationFormatter formatter, OutputStream out, String charset) {
 		super();
 		this.formatter = formatter;
-		this.header = header;
 		this.out = out;
 		this.charset = charset;
 	}
@@ -25,7 +21,7 @@ public class FormatInvocationOutputStream extends OutputStream {
 	}
 
 	public void serialize(Object data) throws IOException {
-		formatter.serialize(header, data, out, charset);
+		formatter.serialize(data, out, charset);
 	}
 
 	@Override

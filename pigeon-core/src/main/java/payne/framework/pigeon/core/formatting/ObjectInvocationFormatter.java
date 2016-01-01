@@ -4,9 +4,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Method;
 
-import payne.framework.pigeon.core.Header;
 import payne.framework.pigeon.core.exception.FormatterException;
 import payne.framework.pigeon.core.toolkit.IOToolkit;
 
@@ -22,25 +20,25 @@ public class ObjectInvocationFormatter implements InvocationFormatter {
 		return "application/x-java-serialized-object";
 	}
 
-	public void serialize(Header header, Object data, OutputStream out, String charset) throws FormatterException {
+	public void serialize(Object data, OutputStream out, String charset) throws FormatterException {
 		ObjectOutputStream oos = null;
 		try {
 			oos = new ObjectOutputStream(out);
 			oos.writeObject(data);
 		} catch (Exception e) {
-			throw new FormatterException(e, this, data, null);
+			throw new FormatterException(e, this, data);
 		} finally {
 			IOToolkit.close(oos);
 		}
 	}
 
-	public Object deserialize(Header header, InputStream in, String charset, Method method) throws FormatterException {
+	public Object deserialize(Structure structure, InputStream in, String charset) throws FormatterException {
 		ObjectInputStream ois = null;
 		try {
 			ois = new ObjectInputStream(in);
 			return ois.readObject();
 		} catch (Exception e) {
-			throw new FormatterException(e, this, in, method);
+			throw new FormatterException(e, this, in, structure);
 		} finally {
 			IOToolkit.close(ois);
 		}

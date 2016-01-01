@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,7 +15,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import payne.framework.pigeon.core.Header;
 import payne.framework.pigeon.core.exception.FormatterException;
 import payne.framework.pigeon.core.toolkit.IOToolkit;
 
@@ -65,7 +63,7 @@ public class XMLInvocationFormatter implements InvocationFormatter {
 		return "application/xml";
 	}
 
-	public void serialize(Header header, Object data, OutputStream out, String charset) throws FormatterException {
+	public void serialize(Object data, OutputStream out, String charset) throws FormatterException {
 		try {
 			Marshaller marshaller = context.createMarshaller();
 			marshaller.marshal(data, out);
@@ -74,12 +72,12 @@ public class XMLInvocationFormatter implements InvocationFormatter {
 		}
 	}
 
-	public Object deserialize(Header header, InputStream in, String charset, Method method) throws FormatterException {
+	public Object deserialize(Structure structure, InputStream in, String charset) throws FormatterException {
 		try {
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			return unmarshaller.unmarshal(in);
 		} catch (Exception e) {
-			throw new FormatterException(e, this, in, method);
+			throw new FormatterException(e, this, in, structure);
 		}
 	}
 

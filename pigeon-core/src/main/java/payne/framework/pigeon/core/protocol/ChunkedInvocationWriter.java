@@ -46,7 +46,7 @@ public class ChunkedInvocationWriter implements HTTPInvocationWriter {
 		OutputStream wrap = null;
 		try {
 			InvocationFormatter formatter = beanFactory.get(serverHeader.getContentType(), InvocationFormatter.class);
-			InvocationFormatProcedure procedure = new InvocationFormatProcedure(formatter, invocation);
+			InvocationFormatProcedure procedure = new InvocationFormatProcedure(formatter);
 			Step step = new Step(null, null, procedure);
 			steps.add(0, step);
 

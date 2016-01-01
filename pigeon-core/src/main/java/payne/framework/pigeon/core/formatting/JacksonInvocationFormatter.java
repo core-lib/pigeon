@@ -4,10 +4,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 
-import payne.framework.pigeon.core.Header;
 import payne.framework.pigeon.core.exception.FormatterException;
 import payne.framework.pigeon.core.toolkit.IOToolkit;
 
@@ -36,7 +33,7 @@ public abstract class JacksonInvocationFormatter implements InvocationFormatter 
 		this.transcoding = transcoding;
 	}
 
-	public void serialize(Header header, Object data, OutputStream out, String charset) throws FormatterException {
+	public void serialize(Object data, OutputStream out, String charset) throws FormatterException {
 		OutputStreamWriter osw = null;
 		try {
 			if (transcoding) {
@@ -46,13 +43,13 @@ public abstract class JacksonInvocationFormatter implements InvocationFormatter 
 				this.mapper.writeValue(out, data);
 			}
 		} catch (Exception e) {
-			throw new FormatterException(e, this, data, null);
+			throw new FormatterException(e, this, data);
 		} finally {
 			IOToolkit.close(osw);
 		}
 	}
 
-	public Object deserialize(Header header, InputStream in, String charset, Method method) throws FormatterException {
+	public Object deserialize(Structure structure, InputStream in, String charset) throws FormatterException {
 		InputStreamReader isr = null;
 		try {
 			JsonNode node = null;
@@ -65,23 +62,26 @@ public abstract class JacksonInvocationFormatter implements InvocationFormatter 
 
 			if (node == null || node.isNull()) {
 				return null;
-			} else if (node.isArray()) {
-				Type[] argumentTypes = method.getGenericParameterTypes();
-				Object[] arguments = new Object[argumentTypes.length];
-				for (int i = 0; i < argumentTypes.length; i++) {
-					arguments[i] = this.mapper.readValue(node.get(i).traverse(), this.mapper.constructType(argumentTypes[i]));
-				}
-				return arguments;
-			} else {
+			}
+
+			switch (structure.form) {
+			case VALUE:
 				Object result = null;
-				Type returnType = method.getGenericReturnType();
-				if (returnType != Void.TYPE) {
-					result = this.mapper.readValue(node.traverse(), this.mapper.constructType(returnType));
+				if (structure.types[0] != Void.TYPE) {
+					result = this.mapper.readValue(node.traverse(), this.mapper.constructType(structure.types[0]));
 				}
 				return result;
+			case ARRAY:
+				Object[] arguments = new Object[structure.types.length];
+				for (int i = 0; i < structure.types.length; i++) {
+					arguments[i] = this.mapper.readValue(node.get(i).traverse(), this.mapper.constructType(structure.types[i]));
+				}
+				return arguments;
+			default:
+				return null;
 			}
 		} catch (Exception e) {
-			throw new FormatterException(e, this, in, method);
+			throw new FormatterException(e, this, in, structure);
 		} finally {
 			IOToolkit.close(isr);
 		}
