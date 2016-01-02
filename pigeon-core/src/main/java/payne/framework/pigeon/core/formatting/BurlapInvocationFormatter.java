@@ -14,7 +14,7 @@ public class BurlapInvocationFormatter implements InvocationFormatter {
 		return "application/burlap";
 	}
 
-	public void serialize(Object data, OutputStream out, String charset) throws FormatterException {
+	public void serialize(Object data, Structure structure, OutputStream out, String charset) throws FormatterException {
 		BurlapOutput oos = null;
 		try {
 			oos = new BurlapOutput(out);

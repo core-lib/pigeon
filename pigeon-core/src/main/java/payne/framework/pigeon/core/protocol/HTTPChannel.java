@@ -100,7 +100,8 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 			wrap = new WritableOutputStream(this);
 
 			InvocationFormatter formatter = beanFactory.get(clientHeader.getContentType(), InvocationFormatter.class);
-			InvocationFormatProcedure procedure = new InvocationFormatProcedure(formatter);
+			Method method = invocation.getMethod();
+			InvocationFormatProcedure procedure = new InvocationFormatProcedure(formatter, Structure.forArray(method.getGenericParameterTypes(), method.getParameterAnnotations()));
 			Step step = new Step(null, null, procedure);
 			steps.add(0, step);
 

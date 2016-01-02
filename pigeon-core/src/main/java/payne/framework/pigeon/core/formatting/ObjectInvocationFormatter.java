@@ -20,7 +20,7 @@ public class ObjectInvocationFormatter implements InvocationFormatter {
 		return "application/x-java-serialized-object";
 	}
 
-	public void serialize(Object data, OutputStream out, String charset) throws FormatterException {
+	public void serialize(Object data, Structure structure, OutputStream out, String charset) throws FormatterException {
 		ObjectOutputStream oos = null;
 		try {
 			oos = new ObjectOutputStream(out);

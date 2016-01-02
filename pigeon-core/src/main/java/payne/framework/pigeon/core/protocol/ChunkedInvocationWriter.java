@@ -1,6 +1,7 @@
 package payne.framework.pigeon.core.protocol;
 
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -12,6 +13,7 @@ import payne.framework.pigeon.core.factory.bean.BeanFactory;
 import payne.framework.pigeon.core.factory.stream.StreamFactory;
 import payne.framework.pigeon.core.formatting.FormatInvocationOutputStream;
 import payne.framework.pigeon.core.formatting.InvocationFormatter;
+import payne.framework.pigeon.core.formatting.Structure;
 import payne.framework.pigeon.core.processing.InvocationFormatProcedure;
 import payne.framework.pigeon.core.processing.Step;
 import payne.framework.pigeon.core.toolkit.IOToolkit;
@@ -46,7 +48,8 @@ public class ChunkedInvocationWriter implements HTTPInvocationWriter {
 		OutputStream wrap = null;
 		try {
 			InvocationFormatter formatter = beanFactory.get(serverHeader.getContentType(), InvocationFormatter.class);
-			InvocationFormatProcedure procedure = new InvocationFormatProcedure(formatter);
+			Method method = invocation.getMethod();
+			InvocationFormatProcedure procedure = new InvocationFormatProcedure(formatter, Structure.forValue(method.getGenericReturnType(), method.getAnnotations()));
 			Step step = new Step(null, null, procedure);
 			steps.add(0, step);
 

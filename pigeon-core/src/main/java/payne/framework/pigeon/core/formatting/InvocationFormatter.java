@@ -26,6 +26,8 @@ public interface InvocationFormatter extends Conversion {
 	 * 
 	 * @param data
 	 *            需要序列化到输出流里面去的java对象
+	 * @param structure
+	 *            数据结构
 	 * @param out
 	 *            输出流
 	 * @param charset
@@ -33,7 +35,7 @@ public interface InvocationFormatter extends Conversion {
 	 * @throws FormatterException
 	 *             数据格式化异常
 	 */
-	void serialize(Object data, OutputStream out, String charset) throws FormatterException;
+	void serialize(Object data, Structure structure, OutputStream out, String charset) throws FormatterException;
 
 	/**
 	 * 反序列化,实现该方法不应该关闭输入流参数,让框架自行关闭

@@ -18,11 +18,6 @@ public class InvocationFormatProcedure implements Procedure<Annotation> {
 	private InvocationFormatter formatter;
 	private Structure structure;
 
-	public InvocationFormatProcedure(InvocationFormatter formatter) {
-		super();
-		this.formatter = formatter;
-	}
-
 	public InvocationFormatProcedure(InvocationFormatter formatter, Structure structure) {
 		super();
 		this.formatter = formatter;
@@ -34,7 +29,7 @@ public class InvocationFormatProcedure implements Procedure<Annotation> {
 	}
 
 	public FormatInvocationOutputStream wrap(int side, Process process, Annotation annotation, BeanFactory beanFactory, StreamFactory streamFactory, Channel channel, Header header, OutputStream outputStream) throws Exception {
-		return new FormatInvocationOutputStream(formatter, outputStream, header.getCharset());
+		return new FormatInvocationOutputStream(formatter, structure, outputStream, header.getCharset());
 	}
 
 	public FormatInvocationInputStream wrap(int side, Process process, Annotation annotation, BeanFactory beanFactory, StreamFactory streamFactory, Channel channel, Header header, InputStream inputStream) throws Exception {

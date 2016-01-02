@@ -63,7 +63,7 @@ public class XMLInvocationFormatter implements InvocationFormatter {
 		return "application/xml";
 	}
 
-	public void serialize(Object data, OutputStream out, String charset) throws FormatterException {
+	public void serialize(Object data, Structure structure, OutputStream out, String charset) throws FormatterException {
 		try {
 			Marshaller marshaller = context.createMarshaller();
 			marshaller.marshal(data, out);

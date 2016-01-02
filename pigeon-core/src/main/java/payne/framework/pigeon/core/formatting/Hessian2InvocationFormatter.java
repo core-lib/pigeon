@@ -14,7 +14,7 @@ public class Hessian2InvocationFormatter implements InvocationFormatter {
 		return "application/hessian2";
 	}
 
-	public void serialize(Object data, OutputStream out, String charset) throws FormatterException {
+	public void serialize(Object data, Structure structure, OutputStream out, String charset) throws FormatterException {
 		Hessian2Output oos = null;
 		try {
 			oos = new Hessian2Output(out);

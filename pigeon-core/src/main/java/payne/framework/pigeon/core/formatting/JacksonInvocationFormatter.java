@@ -4,8 +4,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
 
 import payne.framework.pigeon.core.exception.FormatterException;
+import payne.framework.pigeon.core.formatting.Structure.Form;
 import payne.framework.pigeon.core.toolkit.IOToolkit;
 
 import com.fasterxml.jackson.core.JsonFactory;
@@ -33,9 +35,19 @@ public abstract class JacksonInvocationFormatter implements InvocationFormatter 
 		this.transcoding = transcoding;
 	}
 
-	public void serialize(Object data, OutputStream out, String charset) throws FormatterException {
+	public void serialize(Object data, Structure structure, OutputStream out, String charset) throws FormatterException {
 		OutputStreamWriter osw = null;
 		try {
+			if (structure.form == Form.ARRAY) {
+				switch (structure.types.length) {
+				case 0:
+					data = null;
+					break;
+				case 1:
+					data = data != null && data.getClass().isArray() && Array.getLength(data) == 1 ? Array.get(data, 0) : data;
+					break;
+				}
+			}
 			if (transcoding) {
 				osw = new OutputStreamWriter(out, charset);
 				this.mapper.writeValue(osw, data);

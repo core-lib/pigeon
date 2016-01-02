@@ -5,12 +5,14 @@ import java.io.OutputStream;
 
 public class FormatInvocationOutputStream extends OutputStream {
 	private final InvocationFormatter formatter;
+	private final Structure structure;
 	private final OutputStream out;
 	private final String charset;
 
-	public FormatInvocationOutputStream(InvocationFormatter formatter, OutputStream out, String charset) {
+	public FormatInvocationOutputStream(InvocationFormatter formatter, Structure structure, OutputStream out, String charset) {
 		super();
 		this.formatter = formatter;
+		this.structure = structure;
 		this.out = out;
 		this.charset = charset;
 	}
@@ -21,7 +23,7 @@ public class FormatInvocationOutputStream extends OutputStream {
 	}
 
 	public void serialize(Object data) throws IOException {
-		formatter.serialize(data, out, charset);
+		formatter.serialize(data, structure, out, charset);
 	}
 
 	@Override

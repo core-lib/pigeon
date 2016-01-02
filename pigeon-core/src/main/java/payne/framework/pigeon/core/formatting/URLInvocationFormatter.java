@@ -36,7 +36,7 @@ public class URLInvocationFormatter extends JacksonInvocationFormatter implement
 	}
 
 	@Override
-	public void serialize(Object data, OutputStream out, String charset) throws FormatterException {
+	public void serialize(Object data, Structure structure, OutputStream out, String charset) throws FormatterException {
 		OutputStreamWriter osw = null;
 		FileInputStream fis = null;
 		try {
