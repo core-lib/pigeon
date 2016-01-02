@@ -16,6 +16,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import payne.framework.pigeon.core.exception.FormatterException;
+import payne.framework.pigeon.core.formatting.Structure.Form;
 import payne.framework.pigeon.core.toolkit.IOToolkit;
 
 public class XMLInvocationFormatter implements InvocationFormatter {
@@ -65,17 +66,24 @@ public class XMLInvocationFormatter implements InvocationFormatter {
 
 	public void serialize(Object data, Structure structure, OutputStream out, String charset) throws FormatterException {
 		try {
+			if (structure.form == Form.ARRAY) {
+				data = new Argument((Object[]) data);
+			}
 			Marshaller marshaller = context.createMarshaller();
 			marshaller.marshal(data, out);
 		} catch (Exception e) {
-			throw new FormatterException(e, this, data, null);
+			throw new FormatterException(e, this, data);
 		}
 	}
 
 	public Object deserialize(Structure structure, InputStream in, String charset) throws FormatterException {
 		try {
 			Unmarshaller unmarshaller = context.createUnmarshaller();
-			return unmarshaller.unmarshal(in);
+			Object data = unmarshaller.unmarshal(in);
+			if (structure.form == Form.ARRAY) {
+				data = ((Argument) data).getArguments();
+			}
+			return data;
 		} catch (Exception e) {
 			throw new FormatterException(e, this, in, structure);
 		}
