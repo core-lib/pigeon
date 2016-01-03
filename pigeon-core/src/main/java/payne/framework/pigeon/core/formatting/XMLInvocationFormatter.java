@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
@@ -67,7 +68,16 @@ public class XMLInvocationFormatter implements InvocationFormatter {
 	public void serialize(Object data, Structure structure, OutputStream out, String charset) throws FormatterException {
 		try {
 			if (structure.form == Form.ARRAY) {
-				data = new Argument((Object[]) data);
+				switch (structure.types.length) {
+				case 0:
+					data = null;
+					break;
+				case 1:
+					data = data == null ? data : Array.get(data, 0);
+					break;
+				default:
+					throw new IllegalArgumentException("can not marshall an array object");
+				}
 			}
 			Marshaller marshaller = context.createMarshaller();
 			marshaller.marshal(data, out);
@@ -81,7 +91,7 @@ public class XMLInvocationFormatter implements InvocationFormatter {
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			Object data = unmarshaller.unmarshal(in);
 			if (structure.form == Form.ARRAY) {
-				data = ((Argument) data).getArguments();
+				data = new Object[] { data };
 			}
 			return data;
 		} catch (Exception e) {
