@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import payne.framework.pigeon.core.toolkit.CaseIgnoredMap;
+
 public class Cookie {
 	private String name;
 	private String value;
@@ -108,7 +110,7 @@ public class Cookie {
 	}
 
 	public static Cookie[] getRequestCookies(Map<String, String> properties) {
-		String value = properties.get("Cookie");
+		String value = new CaseIgnoredMap<String>(properties).get("Cookie");
 		String[] values = value == null ? new String[0] : value.split(" ");
 		List<Cookie> cookies = new ArrayList<Cookie>();
 		for (String v : values) {
@@ -122,7 +124,7 @@ public class Cookie {
 	}
 
 	public static Cookie[] getResponseCookies(Map<String, String> properties) {
-		String value = properties.get("Set-Cookie");
+		String value = new CaseIgnoredMap<String>(properties).get("Set-Cookie");
 		String[] values = value == null ? new String[0] : value.split(" ");
 		List<Cookie> cookies = new ArrayList<Cookie>();
 		for (String v : values) {
