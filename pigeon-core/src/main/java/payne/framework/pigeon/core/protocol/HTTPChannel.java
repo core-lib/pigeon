@@ -189,11 +189,14 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 			inputStream = new ByteArrayInputStream(parameter.getBytes());
 			clientHeader.setContentLength(inputStream.available());
 		}
+		Invocation invocation = null;
 		if ("chunked".equalsIgnoreCase(clientHeader.getTransferEncoding())) {
-			return new ChunkedInvocationReader(this, clientHeader).read(method, beanFactory, streamFactory, steps);
+			invocation = new ChunkedInvocationReader(this, clientHeader).read(method, beanFactory, streamFactory, steps);
 		} else {
-			return new FixedLengthInvocationReader(this, clientHeader).read(method, beanFactory, streamFactory, steps);
+			invocation = new FixedLengthInvocationReader(this, clientHeader).read(method, beanFactory, streamFactory, steps);
 		}
+		invocation.setPath(path);
+		return invocation;
 	}
 
 	public State getStatus() throws IOException {
