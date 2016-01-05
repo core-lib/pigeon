@@ -41,6 +41,7 @@ import payne.framework.pigeon.core.observation.SharedNotificationCenter;
 import payne.framework.pigeon.core.protocol.Channel;
 import payne.framework.pigeon.core.toolkit.IOToolkit;
 import payne.framework.pigeon.server.exception.ContextStartupException;
+import payne.framework.pigeon.server.exception.UnacceptableMediumException;
 import payne.framework.pigeon.server.exception.UnacceptableModeException;
 import payne.framework.pigeon.server.exception.UnregulatedInterfaceException;
 
@@ -67,9 +68,15 @@ public abstract class HTTPInvocationContext implements InvocationContext, Runnab
 	public void filtrate(Channel channel, FilterChain<Channel> chain) throws Exception {
 		InvocationProcessor processor = lookup(channel.getPath());
 
-		// 检查请求方法是否被支持支持
+		// 检查请求方法是否被接受
 		if (processor.accept(channel.getMode()) == false) {
 			throw new UnacceptableModeException(processor.getMethod(), channel.getMode());
+		}
+
+		// 检查数据格式是否被接受
+		String medium = channel.getClientHeader().getContentType();
+		if (medium != null && processor.accept(medium) == false) {
+			throw new UnacceptableMediumException(processor.getMethod(), medium);
 		}
 
 		processor.process(this, channel);

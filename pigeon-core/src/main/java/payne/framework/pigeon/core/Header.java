@@ -152,7 +152,7 @@ public final class Header implements Map<String, String>, Constants {
 
 	public String getContentType() {
 		String contentType = getIgnoreCase("Content-Type");
-		return contentType != null ? contentType.split(";")[0] : "application/url";
+		return contentType != null ? contentType.split(";")[0] : null;
 	}
 
 	public void setContentType(String contentType) {

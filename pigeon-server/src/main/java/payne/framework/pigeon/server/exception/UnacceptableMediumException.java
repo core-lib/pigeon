@@ -2,7 +2,6 @@ package payne.framework.pigeon.server.exception;
 
 import java.lang.reflect.Method;
 
-import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.core.exception.CodedException;
 
 /**
@@ -16,38 +15,38 @@ import payne.framework.pigeon.core.exception.CodedException;
  * 
  * @author yangchangpei 646742615@qq.com
  *
- * @date 2016年1月5日 下午12:18:09
+ * @date 2016年1月5日 下午2:38:54
  *
  * @version 1.0.0
  */
-public class UnacceptableModeException extends CodedException {
-	private static final long serialVersionUID = -8193340490630294413L;
+public class UnacceptableMediumException extends CodedException {
+	private static final long serialVersionUID = 2903200601600560585L;
 
 	private final Method method;
-	private final Mode mode;
+	private final String medium;
 
-	public UnacceptableModeException(Method method, Mode mode) {
-		super("method " + method + " is not allowed request by " + mode);
+	public UnacceptableMediumException(Method method, String medium) {
+		super("method " + method + " unsupported media type " + medium);
 		this.method = method;
-		this.mode = mode;
+		this.medium = medium;
 	}
 
 	@Override
 	public int getCode() {
-		return 405;
+		return 415;
 	}
 
 	@Override
 	public String getReason() {
-		return "Method Not Allowed";
+		return "Unsupported Media Type";
 	}
 
 	public Method getMethod() {
 		return method;
 	}
 
-	public Mode getMode() {
-		return mode;
+	public String getMedium() {
+		return medium;
 	}
 
 }
