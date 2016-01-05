@@ -26,7 +26,6 @@ import payne.framework.pigeon.core.factory.bean.BeanFactory;
 import payne.framework.pigeon.core.factory.stream.StreamFactory;
 import payne.framework.pigeon.core.toolkit.Collections;
 import payne.framework.pigeon.server.exception.DuplicatePathException;
-import payne.framework.pigeon.server.exception.InvalidPathException;
 import payne.framework.pigeon.server.exception.UnregulatedInterfaceException;
 
 public class DefaultInvocationProcessorRegistry implements InvocationProcessorRegistry {
@@ -132,10 +131,6 @@ public class DefaultInvocationProcessorRegistry implements InvocationProcessorRe
 				String path = Pigeons.getOpenPath(x + y + z);
 
 				logger.info("opening method [{}] to path [{}]", method, path);
-
-				if (!Pigeons.isPathValidate(path)) {
-					throw new InvalidPathException(path, interfase, method);
-				}
 
 				// 分析路径将自定义的路径表达式转换成真正的正则表达式
 				Pattern pattern = Pattern.compile("\\{(?:(\\w+)\\:)?(.*?)\\}");

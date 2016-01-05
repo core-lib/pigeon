@@ -279,15 +279,4 @@ public abstract class Pigeons {
 
 	public static final Pattern PATTERN = Pattern.compile("\\{(?:(\\w+)\\:)?(.*?)\\}");
 
-	/**
-	 * 验证路径是否符合规则,即匹配表达式"(/\\w+)+"
-	 * 
-	 * @param path
-	 *            路径
-	 * @return 如果符合规则:true 否则:false
-	 */
-	public static boolean isPathValidate(String path) {
-		return path.matches(".*");
-	}
-
 }

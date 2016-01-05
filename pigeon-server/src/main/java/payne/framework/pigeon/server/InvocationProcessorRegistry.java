@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 
 import payne.framework.pigeon.core.exception.UnmappedPathException;
 import payne.framework.pigeon.server.InvocationProcessorRegistry.Registration;
-import payne.framework.pigeon.server.exception.InvalidPathException;
 import payne.framework.pigeon.server.exception.UnregulatedInterfaceException;
 
 /**
@@ -67,7 +66,6 @@ public interface InvocationProcessorRegistry extends Iterable<Registration> {
 	 *            开放接口实现类对象
 	 * @throws UnregulatedInterfaceException
 	 *             不规范的开放接口异常
-	 * @see InvalidPathException
 	 */
 	void register(Object service) throws UnregulatedInterfaceException;
 

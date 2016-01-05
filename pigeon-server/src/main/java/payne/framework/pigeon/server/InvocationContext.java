@@ -9,7 +9,6 @@ import payne.framework.pigeon.core.filtration.FilterManager;
 import payne.framework.pigeon.core.protocol.Channel;
 import payne.framework.pigeon.server.exception.ContextStartupException;
 import payne.framework.pigeon.server.exception.DuplicatePathException;
-import payne.framework.pigeon.server.exception.InvalidPathException;
 import payne.framework.pigeon.server.exception.UnregulatedInterfaceException;
 
 /**
@@ -83,7 +82,6 @@ public interface InvocationContext extends ConfigurableInvocationContext, Attrib
 	 *            开放接口对象
 	 * @throws UnregulatedInterfaceException
 	 *             不规范的开放接口异常
-	 * @see InvalidPathException
 	 * @see DuplicatePathException
 	 */
 	void register(Object openable) throws UnregulatedInterfaceException;
