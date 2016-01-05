@@ -173,10 +173,8 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 
 	public void write(Invocation invocation, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception {
 		serverHeader = invocation.getServerHeader();
-		serverHeader.setContentType(invocation.getClientHeader().getContentType());
-		if (this.mode == Mode.GET) {
-			serverHeader.setContentType("application/json");
-		}
+		String contentType = invocation.getClientHeader().getContentType();
+		serverHeader.setContentType(contentType != null && contentType.trim().length() > 0 ? contentType : "application/json");
 		if ("chunked".equalsIgnoreCase(clientHeader.getTransferEncoding())) {
 			serverHeader.setTransferEncoding("chunked");
 			new ChunkedInvocationWriter(this, serverHeader).write(invocation, beanFactory, streamFactory, steps);

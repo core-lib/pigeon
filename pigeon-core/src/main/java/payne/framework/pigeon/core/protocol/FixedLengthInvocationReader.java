@@ -47,7 +47,8 @@ public class FixedLengthInvocationReader implements HTTPInvocationReader {
 		InputStream wrap = null;
 		try {
 			wrap = new FixedLengthInputStream(new ReadableInputStream(channel), clientHeader.getContentLength());
-			InvocationFormatter formatter = clientHeader.getContentType() != null ? beanFactory.get(clientHeader.getContentType(), InvocationFormatter.class) : new URLInvocationFormatter();
+			String contentType = clientHeader.getContentType();
+			InvocationFormatter formatter = contentType != null && contentType.trim().length() > 0 ? beanFactory.get(clientHeader.getContentType(), InvocationFormatter.class) : new URLInvocationFormatter();
 			InvocationFormatProcedure procedure = new InvocationFormatProcedure(formatter, Structure.forArray(method.getGenericParameterTypes(), method.getParameterAnnotations()));
 			Step step = new Step(null, null, procedure);
 			steps.add(0, step);

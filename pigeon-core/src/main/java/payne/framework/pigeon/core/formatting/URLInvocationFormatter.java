@@ -32,7 +32,7 @@ public class URLInvocationFormatter extends JacksonInvocationFormatter implement
 	}
 
 	public String algorithm() {
-		return "application/url";
+		return "application/json";
 	}
 
 	@Override

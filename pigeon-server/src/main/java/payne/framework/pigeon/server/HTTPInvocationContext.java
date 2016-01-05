@@ -75,7 +75,7 @@ public abstract class HTTPInvocationContext implements InvocationContext, Runnab
 
 		// 检查数据格式是否被接受
 		String medium = channel.getClientHeader().getContentType();
-		if (medium != null && processor.accept(medium) == false) {
+		if (medium != null && medium.trim().length() > 0 && processor.accept(medium) == false) {
 			throw new UnacceptableMediumException(processor.getMethod(), medium);
 		}
 
