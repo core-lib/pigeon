@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
@@ -18,6 +19,7 @@ import java.util.regex.Pattern;
 import payne.framework.pigeon.core.Header;
 import payne.framework.pigeon.core.Invocation;
 import payne.framework.pigeon.core.annotation.Accept.Mode;
+import payne.framework.pigeon.core.annotation.Param;
 import payne.framework.pigeon.core.factory.bean.BeanFactory;
 import payne.framework.pigeon.core.factory.stream.StreamFactory;
 import payne.framework.pigeon.core.formatting.FormatInvocationInputStream;
@@ -215,11 +217,32 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 					}
 					name = name.trim();
 					value = value.trim();
-					query = query + (query.trim().length() > 0 ? "&" : "") + name + "=" + value;
+					// 如果是数字的话可能是下标也可能是名称
 					if (name.matches("\\d+")) {
-						// 下标从1开始
-						query = query + "&argument" + (Integer.valueOf(name) - 1) + "=" + value;
+						// 先寻找一遍有没有这个名称
+						boolean found = false;
+						flag: for (Annotation[] annotations : method.getParameterAnnotations()) {
+							for (Annotation annotation : annotations) {
+								if (annotation instanceof Param && ((Param) annotation).value().trim().equals(name)) {
+									found = true;
+									break flag;
+								}
+							}
+						}
+						// 如果没有找到则看下该下标的参数是否有指定名称
+						if (found == false) {
+							int index = Integer.valueOf(name) - 1;
+							name = "argument" + index;
+							for (Annotation annotation : method.getParameterAnnotations().length > index ? method.getParameterAnnotations()[index] : new Annotation[0]) {
+								// 如果有而且指定名称不是默认值
+								if (annotation instanceof Param && ((Param) annotation).value().trim().length() > 0) {
+									name = ((Param) annotation).value().trim();
+									break;
+								}
+							}
+						}
 					}
+					query = query + (query.trim().length() > 0 ? "&" : "") + name + "=" + value;
 				}
 			}
 
