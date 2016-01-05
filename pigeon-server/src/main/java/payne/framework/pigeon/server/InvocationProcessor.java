@@ -9,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 import payne.framework.pigeon.core.Constants;
 import payne.framework.pigeon.core.Header;
@@ -26,6 +27,7 @@ import payne.framework.pigeon.core.toolkit.CaseIgnoredList;
 
 public class InvocationProcessor implements Interceptor, Constants {
 	private final String expression;
+	private final Pattern pattern;
 	private final List<Accept.Mode> modes;
 	private final List<String> media;
 	private final Class<?> interfase;
@@ -36,10 +38,11 @@ public class InvocationProcessor implements Interceptor, Constants {
 	private final BeanFactory beanFactory;
 	private final StreamFactory streamFactory;
 
-	public InvocationProcessor(String expression, List<Mode> modes, List<String> media, Class<?> interfase, Method method, Object implementation, Set<Interceptor> interceptors, BeanFactory beanFactory, StreamFactory streamFactory)
-			throws Exception {
+	public InvocationProcessor(String expression, Pattern pattern, List<Mode> modes, List<String> media, Class<?> interfase, Method method, Object implementation, Set<Interceptor> interceptors, BeanFactory beanFactory,
+			StreamFactory streamFactory) throws Exception {
 		super();
 		this.expression = expression;
+		this.pattern = pattern;
 		this.modes = new ArrayList<Accept.Mode>(modes != null ? modes : new ArrayList<Accept.Mode>());
 		this.media = new CaseIgnoredList(media != null ? media : new ArrayList<String>());
 		this.interfase = interfase;
@@ -87,6 +90,10 @@ public class InvocationProcessor implements Interceptor, Constants {
 
 	public String getExpression() {
 		return expression;
+	}
+
+	public Pattern getPattern() {
+		return pattern;
 	}
 
 	public List<Accept.Mode> getModes() {

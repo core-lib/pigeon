@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import payne.framework.pigeon.core.Constants;
 import payne.framework.pigeon.core.Header;
 import payne.framework.pigeon.core.Version;
+import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.core.exception.CodedException;
 import payne.framework.pigeon.core.exception.UnmappedPathException;
 import payne.framework.pigeon.core.factory.bean.BeanFactory;
@@ -66,7 +67,7 @@ public abstract class HTTPInvocationContext implements InvocationContext, Runnab
 	protected NotificationCenter notificationCenter = SharedNotificationCenter.getInstance();
 
 	public void filtrate(Channel channel, FilterChain<Channel> chain) throws Exception {
-		InvocationProcessor processor = lookup(channel.getPath());
+		InvocationProcessor processor = lookup(channel.getMode(), channel.getPath());
 
 		// 检查请求方法是否被接受
 		if (processor.accept(channel.getMode()) == false) {
@@ -134,12 +135,12 @@ public abstract class HTTPInvocationContext implements InvocationContext, Runnab
 		thread.start();
 	}
 
-	public boolean exists(String path) {
-		return invocationProcessorRegistry.exists(path);
+	public boolean exists(Mode mode, String path) {
+		return invocationProcessorRegistry.exists(mode, path);
 	}
 
-	public InvocationProcessor lookup(String path) throws UnmappedPathException {
-		return invocationProcessorRegistry.lookup(path);
+	public InvocationProcessor lookup(Mode mode, String path) throws UnmappedPathException {
+		return invocationProcessorRegistry.lookup(mode, path);
 	}
 
 	public void register(Object openable) throws UnregulatedInterfaceException {

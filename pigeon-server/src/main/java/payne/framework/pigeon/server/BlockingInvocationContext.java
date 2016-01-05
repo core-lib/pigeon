@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import payne.framework.pigeon.core.Constants;
-import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.core.exception.UnmappedPathException;
 import payne.framework.pigeon.core.exception.UnsupportedChannelException;
 import payne.framework.pigeon.core.filtration.Filter;
@@ -97,13 +96,13 @@ public class BlockingInvocationContext extends HTTPInvocationContext implements 
 				}
 
 				channel = beanFactory.establish(head.getProtocol(), Channel.class);
-				channel.initialize(Mode.likeOf(head.getMethod()), head.getPath(), head.getParameter(), head.getProtocol(), client.getRemoteSocketAddress(), inputStream, outputStream);
+				channel.initialize(head.getMode(), head.getPath(), head.getParameter(), head.getProtocol(), client.getRemoteSocketAddress(), inputStream, outputStream);
 				channel.setCharset(charset);
 				channel.getAttributes().putAll(attributes);
 
 				notificationCenter.notify(new Event(CONNECTION_ACCEPT_EVENT_NAME, channel, null));
 
-				if (!exists(head.getPath())) {
+				if (!exists(head.getMode(), head.getPath())) {
 					throw new UnmappedPathException(head.getPath());
 				}
 

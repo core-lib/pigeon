@@ -1,9 +1,9 @@
 package payne.framework.pigeon.server;
 
-import java.util.Collection;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.core.exception.UnmappedPathException;
 import payne.framework.pigeon.server.InvocationProcessorRegistry.Registration;
 import payne.framework.pigeon.server.exception.UnregulatedInterfaceException;
@@ -21,14 +21,14 @@ public interface InvocationProcessorRegistry extends Iterable<Registration> {
 	 * 
 	 * @return 路径集合
 	 */
-	Set<Pattern> paths();
+	Set<Path> paths();
 
 	/**
 	 * 获取处理器集合
 	 * 
 	 * @return 处理器集合
 	 */
-	Collection<InvocationProcessor> processors();
+	Set<InvocationProcessor> processors();
 
 	/**
 	 * 查询路径匹配指定正则表达式的路径-处理器对
@@ -42,22 +42,26 @@ public interface InvocationProcessorRegistry extends Iterable<Registration> {
 	/**
 	 * 测试路径是否存在
 	 * 
+	 * @param mode
+	 *            请求方法
 	 * @param path
 	 *            路径
 	 * @return 如果存在:true 否则:false
 	 */
-	boolean exists(String path);
+	boolean exists(Mode mode, String path);
 
 	/**
 	 * 通过指定的路径寻找对应的处理器
 	 * 
+	 * @param mode
+	 *            请求方法
 	 * @param path
 	 *            路径
 	 * @return 对应处理器
 	 * @throws UnmappedPathException
 	 *             路径不存在时抛出的异常
 	 */
-	InvocationProcessor lookup(String path) throws UnmappedPathException;
+	InvocationProcessor lookup(Mode mode, String path) throws UnmappedPathException;
 
 	/**
 	 * 注册开放接口实现类
@@ -98,15 +102,25 @@ public interface InvocationProcessorRegistry extends Iterable<Registration> {
 	 * 
 	 */
 	public static class Registration {
-		private final String expression;
+		private final Mode mode;
 		private final Pattern pattern;
+		private final String expression;
 		private final InvocationProcessor processor;
 
-		public Registration(Pattern pattern, InvocationProcessor processor) {
+		public Registration(Mode mode, Pattern pattern, InvocationProcessor processor) {
 			super();
-			this.expression = pattern.pattern();
+			this.mode = mode;
 			this.pattern = pattern;
+			this.expression = pattern.pattern();
 			this.processor = processor;
+		}
+
+		public Mode getMode() {
+			return mode;
+		}
+
+		public String getExpression() {
+			return expression;
 		}
 
 		public Pattern getPattern() {
@@ -144,7 +158,7 @@ public interface InvocationProcessorRegistry extends Iterable<Registration> {
 
 		@Override
 		public String toString() {
-			return "{" + expression + " : " + processor + "}";
+			return "{" + mode + " " + expression + " : " + processor + "}";
 		}
 	}
 

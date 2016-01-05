@@ -15,6 +15,7 @@ import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.ApplicationContext;
 
 import payne.framework.pigeon.core.Constants;
+import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.core.annotation.Open;
 import payne.framework.pigeon.core.exception.UnmappedPathException;
 import payne.framework.pigeon.core.factory.bean.BeanFactory;
@@ -58,12 +59,12 @@ public class SpringDelegateInvocationContext implements SpringInvocationContext,
 		return delegate.status();
 	}
 
-	public boolean exists(String path) {
-		return delegate.exists(path);
+	public boolean exists(Mode mode, String path) {
+		return delegate.exists(mode, path);
 	}
 
-	public InvocationProcessor lookup(String path) throws UnmappedPathException {
-		return delegate.lookup(path);
+	public InvocationProcessor lookup(Mode mode, String path) throws UnmappedPathException {
+		return delegate.lookup(mode, path);
 	}
 
 	public void register(Object openable) throws UnregulatedInterfaceException {

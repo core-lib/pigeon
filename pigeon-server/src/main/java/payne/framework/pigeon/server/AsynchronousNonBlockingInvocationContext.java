@@ -15,7 +15,6 @@ import java.util.Set;
 
 import payne.framework.pigeon.core.Constants;
 import payne.framework.pigeon.core.Header;
-import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.core.exception.UnmappedPathException;
 import payne.framework.pigeon.core.exception.UnsupportedChannelException;
 import payne.framework.pigeon.core.filtration.Filter;
@@ -203,7 +202,7 @@ public class AsynchronousNonBlockingInvocationContext extends HTTPInvocationCont
 					if (line == 2) {
 						ByteArrayInputStream in = new ByteArrayInputStream(head.toByteArray());
 						Head head = new Head(IOToolkit.readLine(in));
-						if (head.getMethod().toUpperCase().equals("GET")) {
+						if (head.getMode().bodied == false) {
 							return true;
 						}
 						Header header = new Header();
@@ -355,13 +354,13 @@ public class AsynchronousNonBlockingInvocationContext extends HTTPInvocationCont
 				}
 
 				channel = beanFactory.establish(head.getProtocol(), Channel.class);
-				channel.initialize(Mode.likeOf(head.getMethod()), head.getPath(), head.getParameter(), head.getProtocol(), asynchronousSocketChannel.getRemoteAddress(), in, out);
+				channel.initialize(head.getMode(), head.getPath(), head.getParameter(), head.getProtocol(), asynchronousSocketChannel.getRemoteAddress(), in, out);
 				channel.setCharset(charset);
 				channel.getAttributes().putAll(attributes);
 
 				notificationCenter.notify(new Event(CONNECTION_ACCEPT_EVENT_NAME, channel, null));
 
-				if (!exists(head.getPath())) {
+				if (!exists(head.getMode(), head.getPath())) {
 					throw new UnmappedPathException(head.getPath());
 				}
 

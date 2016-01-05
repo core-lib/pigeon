@@ -3,7 +3,6 @@ package payne.framework.pigeon.server;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,7 +30,7 @@ import payne.framework.pigeon.server.exception.UnregulatedInterfaceException;
 public class DefaultInvocationProcessorRegistry implements InvocationProcessorRegistry {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private final Map<Pattern, InvocationProcessor> map = new HashMap<Pattern, InvocationProcessor>();
+	private final Map<Mode, Map<Pattern, InvocationProcessor>> map = new HashMap<Mode, Map<Pattern, InvocationProcessor>>();
 	private final BeanFactory beanFactory;
 	private final StreamFactory streamFactory;
 
@@ -42,18 +41,32 @@ public class DefaultInvocationProcessorRegistry implements InvocationProcessorRe
 
 	public Iterator<Registration> iterator() {
 		Set<Registration> registrations = new HashSet<Registration>();
-		for (Entry<Pattern, InvocationProcessor> entry : map.entrySet()) {
-			registrations.add(new Registration(entry.getKey(), entry.getValue()));
+		for (Entry<Mode, Map<Pattern, InvocationProcessor>> entry : map.entrySet()) {
+			for (Entry<Pattern, InvocationProcessor> e : entry.getValue().entrySet()) {
+				registrations.add(new Registration(entry.getKey(), e.getKey(), e.getValue()));
+			}
 		}
 		return registrations.iterator();
 	}
 
-	public Set<Pattern> paths() {
-		return map.keySet();
+	public Set<Path> paths() {
+		Set<Path> paths = new HashSet<Path>();
+		for (Entry<Mode, Map<Pattern, InvocationProcessor>> entry : map.entrySet()) {
+			for (Entry<Pattern, InvocationProcessor> e : entry.getValue().entrySet()) {
+				paths.add(new Path(entry.getKey(), e.getKey()));
+			}
+		}
+		return paths;
 	}
 
-	public Collection<InvocationProcessor> processors() {
-		return map.values();
+	public Set<InvocationProcessor> processors() {
+		Set<InvocationProcessor> processors = new HashSet<InvocationProcessor>();
+		for (Entry<Mode, Map<Pattern, InvocationProcessor>> entry : map.entrySet()) {
+			for (Entry<Pattern, InvocationProcessor> e : entry.getValue().entrySet()) {
+				processors.add(e.getValue());
+			}
+		}
+		return processors;
 	}
 
 	public Set<Registration> matches(String regex) {
@@ -68,7 +81,8 @@ public class DefaultInvocationProcessorRegistry implements InvocationProcessorRe
 		return pairs;
 	}
 
-	public boolean exists(String path) {
+	public boolean exists(Mode mode, String path) {
+		Map<Pattern, InvocationProcessor> map = this.map.containsKey(mode) ? this.map.get(mode) : new HashMap<Pattern, InvocationProcessor>();
 		path = path.trim().replaceAll("/+", "/");
 		boolean contained = map.containsKey(path);
 		if (contained) {
@@ -82,10 +96,11 @@ public class DefaultInvocationProcessorRegistry implements InvocationProcessorRe
 		return false;
 	}
 
-	public InvocationProcessor lookup(String path) throws UnmappedPathException {
+	public InvocationProcessor lookup(Mode mode, String path) throws UnmappedPathException {
 		if (path == null) {
 			throw new UnmappedPathException(path);
 		}
+		Map<Pattern, InvocationProcessor> map = this.map.containsKey(mode) ? this.map.get(mode) : new HashMap<Pattern, InvocationProcessor>();
 		path = path.trim().replaceAll("/+", "/");
 		InvocationProcessor processor = map.get(path);
 		if (processor != null) {
@@ -142,17 +157,27 @@ public class DefaultInvocationProcessorRegistry implements InvocationProcessorRe
 					regex = regex.replace(matcher.group(), name != null ? regular : "[^/]*");
 				}
 
-				if (map.containsKey(regex)) {
-					throw new DuplicatePathException(path, interfase, method);
-				}
-
 				Accept accept = method.isAnnotationPresent(Accept.class) ? method.getAnnotation(Accept.class) : interfase.isAnnotationPresent(Accept.class) ? interfase.getAnnotation(Accept.class) : null;
 				// 默认情况下所有的请求方式都是接受的
 				Mode[] modes = accept != null && accept.modes().length > 0 ? accept.modes() : Mode.values();
 				String[] media = accept != null ? accept.media() : new String[0];
 
 				try {
-					map.put(Pattern.compile(regex), new InvocationProcessor(path, Arrays.asList(modes), Arrays.asList(media), interfase, method, service, interceptors, beanFactory, streamFactory));
+					Pattern p = Pattern.compile(regex);
+					InvocationProcessor processor = new InvocationProcessor(path, p, Arrays.asList(modes), Arrays.asList(media), interfase, method, service, interceptors, beanFactory, streamFactory);
+					for (Mode mode : modes) {
+						Map<Pattern, InvocationProcessor> m = map.get(mode);
+						if (m == null) {
+							map.put(mode, m = new HashMap<Pattern, InvocationProcessor>());
+						}
+						// 检查是否重复
+						for (Pattern key : m.keySet()) {
+							if (key.pattern().equals(p.pattern())) {
+								throw new DuplicatePathException(path, interfase, method);
+							}
+						}
+						m.put(p, processor);
+					}
 				} catch (Exception e) {
 					throw new UnregulatedInterfaceException(e, interfase, method);
 				}

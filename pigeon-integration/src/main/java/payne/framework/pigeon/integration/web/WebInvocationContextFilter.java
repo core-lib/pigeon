@@ -30,8 +30,8 @@ import payne.framework.pigeon.core.filtration.FixedFilterChain;
 import payne.framework.pigeon.core.observation.Event;
 import payne.framework.pigeon.core.protocol.Channel;
 import payne.framework.pigeon.core.toolkit.IOToolkit;
-import payne.framework.pigeon.server.HTTPInvocationContext;
 import payne.framework.pigeon.server.DefaultInvocationProcessorRegistry;
+import payne.framework.pigeon.server.HTTPInvocationContext;
 import payne.framework.pigeon.server.InvocationContext;
 import payne.framework.pigeon.server.InvocationContextAware;
 import payne.framework.pigeon.server.InvocationProcessorRegistry;
@@ -95,14 +95,14 @@ public class WebInvocationContextFilter extends HTTPInvocationContext implements
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-		if (!exists(request.getRequestURI())) {
+		Mode mode = Mode.likeOf(request.getMethod());
+		String path = request.getRequestURI();
+		if (!exists(mode, path)) {
 			chain.doFilter(request, response);
 			return;
 		}
 
 		try {
-			String method = request.getMethod();
-			String path = request.getRequestURI();
 			String parameter = request.getQueryString() == null ? "" : request.getQueryString();
 			String protocol = request.getProtocol();
 			SocketAddress address = new InetSocketAddress(request.getRemoteHost(), request.getRemotePort());
@@ -112,7 +112,7 @@ public class WebInvocationContextFilter extends HTTPInvocationContext implements
 			}
 
 			channel = beanFactory.establish(protocol, Channel.class);
-			channel.initialize(Mode.likeOf(method), path, parameter, protocol, address, new HttpServletRequestInputStream(request), new HttpServletResponseOutputStream(response));
+			channel.initialize(mode, path, parameter, protocol, address, new HttpServletRequestInputStream(request), new HttpServletResponseOutputStream(response));
 			channel.setCharset(charset);
 			channel.getAttributes().putAll(attributes);
 

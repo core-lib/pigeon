@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 
+import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.server.exception.UnrecognizedHeadException;
+import payne.framework.pigeon.server.exception.UnrecognizedModeException;
 
 public class Head {
-	private final String method;
+	private final Mode mode;
 	private final String path;
 	private final String parameter;
 	private final String protocol;
@@ -18,7 +20,10 @@ public class Head {
 		if (segments.length != 3) {
 			throw new UnrecognizedHeadException(head);
 		}
-		this.method = segments[0].trim().toUpperCase();
+		this.mode = Mode.likeOf(segments[0].trim().toUpperCase());
+		if (this.mode == null) {
+			throw new UnrecognizedModeException(segments[0].trim().toUpperCase());
+		}
 
 		int index = segments[1].indexOf('?');
 		if (index == -1) {
@@ -31,8 +36,8 @@ public class Head {
 		this.protocol = segments[2].trim().toUpperCase();
 	}
 
-	public String getMethod() {
-		return method;
+	public Mode getMode() {
+		return mode;
 	}
 
 	public String getPath() {
@@ -51,7 +56,7 @@ public class Head {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((method == null) ? 0 : method.hashCode());
+		result = prime * result + ((mode == null) ? 0 : mode.hashCode());
 		result = prime * result + ((parameter == null) ? 0 : parameter.hashCode());
 		result = prime * result + ((path == null) ? 0 : path.hashCode());
 		result = prime * result + ((protocol == null) ? 0 : protocol.hashCode());
@@ -67,10 +72,7 @@ public class Head {
 		if (getClass() != obj.getClass())
 			return false;
 		Head other = (Head) obj;
-		if (method == null) {
-			if (other.method != null)
-				return false;
-		} else if (!method.equals(other.method))
+		if (mode != other.mode)
 			return false;
 		if (parameter == null) {
 			if (other.parameter != null)
@@ -92,7 +94,7 @@ public class Head {
 
 	@Override
 	public String toString() {
-		return method.toUpperCase() + " " + path + (parameter == null || parameter.trim().equals("") ? "" : "?" + parameter) + " " + protocol;
+		return mode + " " + path + (parameter == null || parameter.trim().equals("") ? "" : "?" + parameter) + " " + protocol;
 	}
 
 }
