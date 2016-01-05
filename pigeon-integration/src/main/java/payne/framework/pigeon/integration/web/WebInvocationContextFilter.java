@@ -31,7 +31,7 @@ import payne.framework.pigeon.core.observation.Event;
 import payne.framework.pigeon.core.protocol.Channel;
 import payne.framework.pigeon.core.toolkit.IOToolkit;
 import payne.framework.pigeon.server.HTTPInvocationContext;
-import payne.framework.pigeon.server.HashInvocationProcessorRegistry;
+import payne.framework.pigeon.server.DefaultInvocationProcessorRegistry;
 import payne.framework.pigeon.server.InvocationContext;
 import payne.framework.pigeon.server.InvocationContextAware;
 import payne.framework.pigeon.server.InvocationProcessorRegistry;
@@ -72,7 +72,7 @@ public class WebInvocationContextFilter extends HTTPInvocationContext implements
 			beanFactory = config.getInitParameter(BEAN_FACTORY) == null ? new SingletonBeanFactory() : (BeanFactory) Class.forName(config.getInitParameter(BEAN_FACTORY)).newInstance();
 			streamFactory = config.getInitParameter(STREAM_FACTORY) == null ? new InternalStreamFactory() : (StreamFactory) Class.forName(config.getInitParameter(STREAM_FACTORY)).newInstance();
 			String registry = config.getInitParameter(REGISTRY);
-			invocationProcessorRegistry = registry == null ? new HashInvocationProcessorRegistry(beanFactory, streamFactory) : (InvocationProcessorRegistry) Class.forName(registry).newInstance();
+			invocationProcessorRegistry = registry == null ? new DefaultInvocationProcessorRegistry(beanFactory, streamFactory) : (InvocationProcessorRegistry) Class.forName(registry).newInstance();
 			detector = new SimpleClassDetector(root, recursive);
 			Set<Class<?>> classes = detector.detect(this);
 			for (Class<?> clazz : classes) {

@@ -2,6 +2,7 @@ package payne.framework.pigeon.server;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import payne.framework.pigeon.core.exception.UnmappedPathException;
 import payne.framework.pigeon.server.InvocationProcessorRegistry.Registration;
@@ -21,7 +22,7 @@ public interface InvocationProcessorRegistry extends Iterable<Registration> {
 	 * 
 	 * @return 路径集合
 	 */
-	Set<String> paths();
+	Set<Pattern> paths();
 
 	/**
 	 * 获取处理器集合
@@ -99,17 +100,19 @@ public interface InvocationProcessorRegistry extends Iterable<Registration> {
 	 * 
 	 */
 	public static class Registration {
-		private final String path;
+		private final String expression;
+		private final Pattern pattern;
 		private final InvocationProcessor processor;
 
-		public Registration(String path, InvocationProcessor processor) {
+		public Registration(Pattern pattern, InvocationProcessor processor) {
 			super();
-			this.path = path;
+			this.expression = pattern.pattern();
+			this.pattern = pattern;
 			this.processor = processor;
 		}
 
-		public String getPath() {
-			return path;
+		public Pattern getPattern() {
+			return pattern;
 		}
 
 		public InvocationProcessor getProcessor() {
@@ -120,7 +123,7 @@ public interface InvocationProcessorRegistry extends Iterable<Registration> {
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + ((path == null) ? 0 : path.hashCode());
+			result = prime * result + ((expression == null) ? 0 : expression.hashCode());
 			return result;
 		}
 
@@ -133,17 +136,17 @@ public interface InvocationProcessorRegistry extends Iterable<Registration> {
 			if (getClass() != obj.getClass())
 				return false;
 			Registration other = (Registration) obj;
-			if (path == null) {
-				if (other.path != null)
+			if (expression == null) {
+				if (other.expression != null)
 					return false;
-			} else if (!path.equals(other.path))
+			} else if (!expression.equals(other.expression))
 				return false;
 			return true;
 		}
 
 		@Override
 		public String toString() {
-			return "{" + path + " : " + processor + "}";
+			return "{" + expression + " : " + processor + "}";
 		}
 	}
 

@@ -35,11 +35,11 @@ public interface Channel extends Attributed, Transcoder, Readable, Writable, Clo
 
 	void send(Invocation invocation, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception;
 
-	Invocation receive(Method method, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception;
+	Invocation receive(String expression, Method method, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception;
 
 	void write(Invocation invocation, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception;
 
-	Invocation read(Method method, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception;
+	Invocation read(String expression, Method method, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception;
 
 	/**
 	 * 获取服务端回应代码

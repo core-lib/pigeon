@@ -14,7 +14,7 @@ import payne.framework.pigeon.core.detector.ClassFilter;
 import payne.framework.pigeon.core.factory.stream.InternalStreamFactory;
 import payne.framework.pigeon.core.factory.stream.StreamFactory;
 import payne.framework.pigeon.integration.spring.SpringBeanFactory;
-import payne.framework.pigeon.server.HashInvocationProcessorRegistry;
+import payne.framework.pigeon.server.DefaultInvocationProcessorRegistry;
 import payne.framework.pigeon.server.InvocationContext;
 import payne.framework.pigeon.server.InvocationContextAware;
 import payne.framework.pigeon.server.InvocationProcessorRegistry;
@@ -47,7 +47,7 @@ public class SpringInvocationContextFilter extends WebInvocationContextFilter im
 			beanFactory = new SpringBeanFactory(applicationContext, beanConfigurationPath);
 			streamFactory = config.getInitParameter(STREAM_FACTORY) == null ? new InternalStreamFactory() : (StreamFactory) Class.forName(config.getInitParameter(STREAM_FACTORY)).newInstance();
 			String registry = config.getInitParameter(REGISTRY);
-			invocationProcessorRegistry = registry == null ? new HashInvocationProcessorRegistry(beanFactory, streamFactory) : (InvocationProcessorRegistry) Class.forName(registry).newInstance();
+			invocationProcessorRegistry = registry == null ? new DefaultInvocationProcessorRegistry(beanFactory, streamFactory) : (InvocationProcessorRegistry) Class.forName(registry).newInstance();
 			Map<String, Object> map = applicationContext.getBeansWithAnnotation(Open.class);
 			for (Object implementation : map.values()) {
 				this.register(implementation);

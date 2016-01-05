@@ -36,8 +36,11 @@ public @interface Accept {
 		GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS, TRACE;
 
 		public static Mode likeOf(String name) {
+			if (name == null) {
+				return null;
+			}
 			for (Mode mode : values()) {
-				if (mode.name().equalsIgnoreCase(name)) {
+				if (mode.name().equalsIgnoreCase(name.trim())) {
 					return mode;
 				}
 			}

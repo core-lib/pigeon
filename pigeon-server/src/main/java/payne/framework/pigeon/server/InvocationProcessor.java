@@ -25,6 +25,7 @@ import payne.framework.pigeon.core.protocol.Channel;
 import payne.framework.pigeon.core.toolkit.CaseIgnoredList;
 
 public class InvocationProcessor implements Interceptor, Constants {
+	private final String expression;
 	private final List<Accept.Mode> modes;
 	private final List<String> media;
 	private final Class<?> interfase;
@@ -35,8 +36,10 @@ public class InvocationProcessor implements Interceptor, Constants {
 	private final BeanFactory beanFactory;
 	private final StreamFactory streamFactory;
 
-	public InvocationProcessor(List<Mode> modes, List<String> media, Class<?> interfase, Method method, Object implementation, Set<Interceptor> interceptors, BeanFactory beanFactory, StreamFactory streamFactory) throws Exception {
+	public InvocationProcessor(String expression, List<Mode> modes, List<String> media, Class<?> interfase, Method method, Object implementation, Set<Interceptor> interceptors, BeanFactory beanFactory, StreamFactory streamFactory)
+			throws Exception {
 		super();
+		this.expression = expression;
 		this.modes = new ArrayList<Accept.Mode>(modes != null ? modes : new ArrayList<Accept.Mode>());
 		this.media = new CaseIgnoredList(media != null ? media : new ArrayList<String>());
 		this.interfase = interfase;
@@ -50,7 +53,7 @@ public class InvocationProcessor implements Interceptor, Constants {
 	}
 
 	public void process(InvocationContext context, Channel channel) throws Exception {
-		Invocation invocation = channel.read(method, beanFactory, streamFactory, new ArrayList<Step>(processings.values()));
+		Invocation invocation = channel.read(expression, method, beanFactory, streamFactory, new ArrayList<Step>(processings.values()));
 		invocation.setInterfase(interfase);
 		invocation.setMethod(method);
 		invocation.setImplementation(implementation);
@@ -80,6 +83,10 @@ public class InvocationProcessor implements Interceptor, Constants {
 
 	public boolean accept(String medium) {
 		return media.isEmpty() || media.contains(medium);
+	}
+
+	public String getExpression() {
+		return expression;
 	}
 
 	public List<Accept.Mode> getModes() {

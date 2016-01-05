@@ -107,7 +107,7 @@ public abstract class HTTPInvocationContext implements InvocationContext, Runnab
 		try {
 			beanFactory = beanFactory != null ? beanFactory : new SingletonBeanFactory(beanConfigurationPaths);
 			streamFactory = streamFactory != null ? streamFactory : new InternalStreamFactory();
-			invocationProcessorRegistry = invocationProcessorRegistry != null ? invocationProcessorRegistry : new HashInvocationProcessorRegistry(beanFactory, streamFactory);
+			invocationProcessorRegistry = invocationProcessorRegistry != null ? invocationProcessorRegistry : new DefaultInvocationProcessorRegistry(beanFactory, streamFactory);
 			invocationProcessorRegistry.register(this);
 			for (Object openable : openables) {
 				invocationProcessorRegistry.register(openable);

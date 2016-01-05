@@ -13,6 +13,7 @@ public class Head {
 	private final String protocol;
 
 	public Head(String head) throws IOException {
+		head = URLDecoder.decode(head, Charset.defaultCharset().name());
 		String[] segments = head.split("\\s+");
 		if (segments.length != 3) {
 			throw new UnrecognizedHeadException(head);
@@ -25,7 +26,7 @@ public class Head {
 			this.parameter = "";
 		} else {
 			this.path = segments[1].substring(0, index).trim();
-			this.parameter = URLDecoder.decode(segments[1].substring(index + 1).trim(), Charset.defaultCharset().name());
+			this.parameter = segments[1].substring(index + 1).trim();
 		}
 		this.protocol = segments[2].trim().toUpperCase();
 	}

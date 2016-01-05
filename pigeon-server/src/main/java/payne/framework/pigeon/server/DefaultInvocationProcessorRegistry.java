@@ -11,6 +11,8 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,27 +29,27 @@ import payne.framework.pigeon.server.exception.DuplicatePathException;
 import payne.framework.pigeon.server.exception.InvalidPathException;
 import payne.framework.pigeon.server.exception.UnregulatedInterfaceException;
 
-public class HashInvocationProcessorRegistry implements InvocationProcessorRegistry {
+public class DefaultInvocationProcessorRegistry implements InvocationProcessorRegistry {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private final Map<String, InvocationProcessor> map = new HashMap<String, InvocationProcessor>();
+	private final Map<Pattern, InvocationProcessor> map = new HashMap<Pattern, InvocationProcessor>();
 	private final BeanFactory beanFactory;
 	private final StreamFactory streamFactory;
 
-	public HashInvocationProcessorRegistry(BeanFactory beanFactory, StreamFactory streamFactory) {
+	public DefaultInvocationProcessorRegistry(BeanFactory beanFactory, StreamFactory streamFactory) {
 		this.beanFactory = beanFactory;
 		this.streamFactory = streamFactory;
 	}
 
 	public Iterator<Registration> iterator() {
 		Set<Registration> registrations = new HashSet<Registration>();
-		for (Entry<String, InvocationProcessor> entry : map.entrySet()) {
+		for (Entry<Pattern, InvocationProcessor> entry : map.entrySet()) {
 			registrations.add(new Registration(entry.getKey(), entry.getValue()));
 		}
 		return registrations.iterator();
 	}
 
-	public Set<String> paths() {
+	public Set<Pattern> paths() {
 		return map.keySet();
 	}
 
@@ -60,7 +62,7 @@ public class HashInvocationProcessorRegistry implements InvocationProcessorRegis
 		Iterator<Registration> iterator = this.iterator();
 		while (iterator.hasNext()) {
 			Registration pair = iterator.next();
-			if (pair.getPath().matches(regex)) {
+			if (pair.getPattern().matcher(regex).matches()) {
 				pairs.add(pair);
 			}
 		}
@@ -68,14 +70,35 @@ public class HashInvocationProcessorRegistry implements InvocationProcessorRegis
 	}
 
 	public boolean exists(String path) {
-		return map.containsKey(path.trim().replaceAll("/+", "/"));
+		path = path.trim().replaceAll("/+", "/");
+		boolean contained = map.containsKey(path);
+		if (contained) {
+			return true;
+		}
+		for (Pattern pattern : map.keySet()) {
+			if (pattern.matcher(path).matches()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public InvocationProcessor lookup(String path) throws UnmappedPathException {
-		if (path == null || !exists(path)) {
+		if (path == null) {
 			throw new UnmappedPathException(path);
 		}
-		return map.get(path.trim().replaceAll("/+", "/"));
+		path = path.trim().replaceAll("/+", "/");
+		InvocationProcessor processor = map.get(path);
+		if (processor != null) {
+			return processor;
+		}
+		for (Entry<Pattern, InvocationProcessor> entry : map.entrySet()) {
+			Pattern pattern = entry.getKey();
+			if (pattern.matcher(path).matches()) {
+				return entry.getValue();
+			}
+		}
+		throw new UnmappedPathException(path);
 	}
 
 	public synchronized void register(Object service) throws UnregulatedInterfaceException {
@@ -113,7 +136,18 @@ public class HashInvocationProcessorRegistry implements InvocationProcessorRegis
 				if (!Pigeons.isPathValidate(path)) {
 					throw new InvalidPathException(path, interfase, method);
 				}
-				if (map.containsKey(path)) {
+
+				// 分析路径将自定义的路径表达式转换成真正的正则表达式
+				Pattern pattern = Pattern.compile("\\{(?:(\\w+)\\:)?(.*?)\\}");
+				Matcher matcher = pattern.matcher(path);
+				String regex = path;
+				while (matcher.find()) {
+					String name = matcher.group(1);
+					String regular = matcher.group(2);
+					regex = regex.replace(matcher.group(), name != null ? regular : "[^/]*");
+				}
+
+				if (map.containsKey(regex)) {
 					throw new DuplicatePathException(path, interfase, method);
 				}
 
@@ -123,7 +157,7 @@ public class HashInvocationProcessorRegistry implements InvocationProcessorRegis
 				String[] media = accept != null ? accept.media() : new String[0];
 
 				try {
-					map.put(path, new InvocationProcessor(Arrays.asList(modes), Arrays.asList(media), interfase, method, service, interceptors, beanFactory, streamFactory));
+					map.put(Pattern.compile(regex), new InvocationProcessor(path, Arrays.asList(modes), Arrays.asList(media), interfase, method, service, interceptors, beanFactory, streamFactory));
 				} catch (Exception e) {
 					throw new UnregulatedInterfaceException(e, interfase, method);
 				}

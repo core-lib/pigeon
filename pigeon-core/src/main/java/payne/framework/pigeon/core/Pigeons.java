@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 import payne.framework.pigeon.core.annotation.Close;
 import payne.framework.pigeon.core.annotation.Intercept;
@@ -276,6 +277,8 @@ public abstract class Pigeons {
 		return processings;
 	}
 
+	public static final Pattern PATTERN = Pattern.compile("\\{(?:(\\w+)\\:)?(.*?)\\}");
+
 	/**
 	 * 验证路径是否符合规则,即匹配表达式"(/\\w+)+"
 	 * 
@@ -284,7 +287,7 @@ public abstract class Pigeons {
 	 * @return 如果符合规则:true 否则:false
 	 */
 	public static boolean isPathValidate(String path) {
-		return path.matches("(/\\w+)+");
+		return path.matches(".*");
 	}
 
 }

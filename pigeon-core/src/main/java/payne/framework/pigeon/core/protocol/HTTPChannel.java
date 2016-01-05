@@ -9,8 +9,11 @@ import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import payne.framework.pigeon.core.Header;
 import payne.framework.pigeon.core.Invocation;
@@ -28,6 +31,8 @@ import payne.framework.pigeon.core.toolkit.ReadableInputStream;
 import payne.framework.pigeon.core.toolkit.WritableOutputStream;
 
 public class HTTPChannel extends TransferableChannel implements Chunkable {
+	protected static Pattern pattern = Pattern.compile("\\{(?:(\\w+)\\:)?(.*?)\\}");
+
 	protected Mode mode;
 	protected String host;
 	protected int port;
@@ -136,7 +141,7 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 		}
 	}
 
-	public Invocation receive(Method method, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception {
+	public Invocation receive(String expression, Method method, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception {
 		InputStream wrap = null;
 		try {
 			serverHeader = new Header();
@@ -183,9 +188,42 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 		}
 	}
 
-	public Invocation read(Method method, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception {
+	public Invocation read(String expression, Method method, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception {
 		if (this.mode == Mode.GET) {
-			inputStream = new ByteArrayInputStream(parameter.getBytes());
+			// 处理路径变量和查询参数问题,将路径变量拿出来作为请求参数的一部分交给解析器解析
+			List<String> variables = new ArrayList<String>();
+			Matcher matcher = pattern.matcher(expression);
+			String regex = expression;
+			while (matcher.find()) {
+				String name = matcher.group(1);
+				String regular = matcher.group(2);
+				// 如果group(1) == null 的话其实整个都是名称 例如 /{page}/{size} 所以应该匹配所有字符
+				regex = regex.replace(matcher.group(), "(" + (name != null ? regular : "[^/]*") + ")");
+				variables.add(name != null ? name : regular);
+			}
+
+			String query = parameter;
+
+			Pattern p = Pattern.compile(regex);
+			Matcher m = p.matcher(path);
+			if (m.find()) {
+				for (int i = 1; i <= m.groupCount(); i++) {
+					String name = variables.get(i - 1);
+					String value = m.group(i);
+					if (name == null || name.trim().length() == 0) {
+						continue;
+					}
+					name = name.trim();
+					value = value.trim();
+					query = query + (query.trim().length() > 0 ? "&" : "") + name + "=" + value;
+					if (name.matches("\\d+")) {
+						// 下标从1开始
+						query = query + "&argument" + (Integer.valueOf(name) - 1) + "=" + value;
+					}
+				}
+			}
+
+			inputStream = new ByteArrayInputStream(query.getBytes());
 			clientHeader.setContentLength(inputStream.available());
 		}
 		Invocation invocation = null;
