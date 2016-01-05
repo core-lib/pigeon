@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 
 import payne.framework.pigeon.core.Header;
 import payne.framework.pigeon.core.Invocation;
+import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.core.factory.bean.BeanFactory;
 import payne.framework.pigeon.core.factory.stream.StreamFactory;
 import payne.framework.pigeon.core.formatting.FormatInvocationInputStream;
@@ -27,7 +28,7 @@ import payne.framework.pigeon.core.toolkit.ReadableInputStream;
 import payne.framework.pigeon.core.toolkit.WritableOutputStream;
 
 public class HTTPChannel extends TransferableChannel implements Chunkable {
-	protected String method;
+	protected Mode mode;
 	protected String host;
 	protected int port;
 	protected String path;
@@ -44,7 +45,7 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 	protected int chunksize = -1;
 
 	public void initialize(String host, int port, String path, int timeout, String format) throws IOException {
-		this.method = "POST";
+		this.mode = Mode.POST;
 		this.host = host;
 		this.port = port;
 		this.path = path;
@@ -61,8 +62,8 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 		this.closed = false;
 	}
 
-	public void initialize(String method, String path, String parameter, String protocol, SocketAddress address, InputStream inputStream, OutputStream outputStream) throws IOException {
-		this.method = method;
+	public void initialize(Mode mode, String path, String parameter, String protocol, SocketAddress address, InputStream inputStream, OutputStream outputStream) throws IOException {
+		this.mode = mode;
 		this.path = path;
 		this.parameter = parameter;
 		this.protocol = protocol;
@@ -173,7 +174,7 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 	public void write(Invocation invocation, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception {
 		serverHeader = invocation.getServerHeader();
 		serverHeader.setContentType(invocation.getClientHeader().getContentType());
-		if ("GET".equalsIgnoreCase(this.method)) {
+		if (this.mode == Mode.GET) {
 			serverHeader.setContentType("application/json");
 		}
 		if ("chunked".equalsIgnoreCase(clientHeader.getTransferEncoding())) {
@@ -185,7 +186,7 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 	}
 
 	public Invocation read(Method method, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception {
-		if ("GET".equalsIgnoreCase(this.method)) {
+		if (this.mode == Mode.GET) {
 			inputStream = new ByteArrayInputStream(parameter.getBytes());
 			clientHeader.setContentLength(inputStream.available());
 		}
@@ -213,8 +214,8 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 		this.state = state;
 	}
 
-	public String getMethod() {
-		return method;
+	public Mode getMode() {
+		return mode;
 	}
 
 	public String getHost() {

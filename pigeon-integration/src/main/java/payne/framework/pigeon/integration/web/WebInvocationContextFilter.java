@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import payne.framework.pigeon.core.Pigeons;
+import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.core.detector.ClassDetector;
 import payne.framework.pigeon.core.detector.ClassFilter;
 import payne.framework.pigeon.core.detector.SimpleClassDetector;
@@ -33,7 +34,6 @@ import payne.framework.pigeon.server.HTTPInvocationContext;
 import payne.framework.pigeon.server.HashInvocationProcessorRegistry;
 import payne.framework.pigeon.server.InvocationContext;
 import payne.framework.pigeon.server.InvocationContextAware;
-import payne.framework.pigeon.server.InvocationProcessor;
 import payne.framework.pigeon.server.InvocationProcessorRegistry;
 
 /**
@@ -112,7 +112,7 @@ public class WebInvocationContextFilter extends HTTPInvocationContext implements
 			}
 
 			channel = beanFactory.establish(protocol, Channel.class);
-			channel.initialize(method, path, parameter, protocol, address, new HttpServletRequestInputStream(request), new HttpServletResponseOutputStream(response));
+			channel.initialize(Mode.likeOf(method), path, parameter, protocol, address, new HttpServletRequestInputStream(request), new HttpServletResponseOutputStream(response));
 			channel.setCharset(charset);
 			channel.getAttributes().putAll(attributes);
 
@@ -140,11 +140,6 @@ public class WebInvocationContextFilter extends HTTPInvocationContext implements
 
 	public void run() {
 		throw new UnsupportedOperationException();
-	}
-
-	public void filtrate(Channel channel, payne.framework.pigeon.core.filtration.FilterChain<Channel> chain) throws Exception {
-		InvocationProcessor processor = lookup(channel.getPath());
-		processor.process(this, channel);
 	}
 
 	public void shutdown() {

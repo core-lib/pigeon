@@ -14,6 +14,7 @@ import payne.framework.pigeon.core.Header;
 import payne.framework.pigeon.core.Invocation;
 import payne.framework.pigeon.core.Timeoutable;
 import payne.framework.pigeon.core.Transcoder;
+import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.core.factory.bean.BeanFactory;
 import payne.framework.pigeon.core.factory.stream.StreamFactory;
 import payne.framework.pigeon.core.processing.Step;
@@ -30,7 +31,7 @@ public interface Channel extends Attributed, Transcoder, Readable, Writable, Clo
 
 	void initialize(String host, int port, String path, int timeout, String format) throws IOException;
 
-	void initialize(String method, String path, String parameter, String protocol, SocketAddress address, InputStream inputStream, OutputStream outputStream) throws IOException;
+	void initialize(Mode mode, String path, String parameter, String protocol, SocketAddress address, InputStream inputStream, OutputStream outputStream) throws IOException;
 
 	void send(Invocation invocation, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception;
 
@@ -56,7 +57,7 @@ public interface Channel extends Attributed, Transcoder, Readable, Writable, Clo
 	 */
 	void setStatus(State status) throws IOException;
 
-	String getMethod();
+	Mode getMode();
 
 	String getHost();
 

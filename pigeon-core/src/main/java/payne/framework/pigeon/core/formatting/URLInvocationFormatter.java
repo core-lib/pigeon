@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import payne.framework.pigeon.core.FileWrapper;
-import payne.framework.pigeon.core.annotation.rest.Param;
+import payne.framework.pigeon.core.annotation.Param;
 import payne.framework.pigeon.core.conversion.ConversionProvider;
 import payne.framework.pigeon.core.exception.FormatterException;
 import payne.framework.pigeon.core.toolkit.IOToolkit;

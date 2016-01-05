@@ -17,6 +17,8 @@ import org.slf4j.LoggerFactory;
 
 import payne.framework.pigeon.core.Interceptor;
 import payne.framework.pigeon.core.Pigeons;
+import payne.framework.pigeon.core.annotation.Accept;
+import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.core.exception.UnmappedPathException;
 import payne.framework.pigeon.core.factory.bean.BeanFactory;
 import payne.framework.pigeon.core.factory.stream.StreamFactory;
@@ -115,7 +117,16 @@ public class HashInvocationProcessorRegistry implements InvocationProcessorRegis
 					throw new DuplicatePathException(path, interfase, method);
 				}
 
-				map.put(path, new InvocationProcessor(interfase, method, service, interceptors, beanFactory, streamFactory));
+				Accept accept = method.isAnnotationPresent(Accept.class) ? method.getAnnotation(Accept.class) : interfase.isAnnotationPresent(Accept.class) ? interfase.getAnnotation(Accept.class) : null;
+				// 默认情况下所有的请求方式都是接受的
+				Mode[] modes = accept != null && accept.modes().length > 0 ? accept.modes() : Mode.values();
+				String[] media = accept != null ? accept.media() : new String[0];
+
+				try {
+					map.put(path, new InvocationProcessor(Arrays.asList(modes), Arrays.asList(media), interfase, method, service, interceptors, beanFactory, streamFactory));
+				} catch (Exception e) {
+					throw new UnregulatedInterfaceException(e, interfase, method);
+				}
 			}
 
 			logger.info("open interface [{}] completed", interfase);

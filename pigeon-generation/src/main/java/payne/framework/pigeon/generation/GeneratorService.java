@@ -2,7 +2,7 @@ package payne.framework.pigeon.generation;
 
 import payne.framework.pigeon.core.Document;
 import payne.framework.pigeon.core.annotation.Open;
-import payne.framework.pigeon.core.annotation.rest.Param;
+import payne.framework.pigeon.core.annotation.Param;
 
 @Open("/generator")
 public interface GeneratorService {

@@ -34,12 +34,14 @@ import payne.framework.pigeon.core.factory.bean.SingletonBeanFactory;
 import payne.framework.pigeon.core.factory.stream.InternalStreamFactory;
 import payne.framework.pigeon.core.factory.stream.StreamFactory;
 import payne.framework.pigeon.core.filtration.Filter;
+import payne.framework.pigeon.core.filtration.FilterChain;
 import payne.framework.pigeon.core.observation.Event;
 import payne.framework.pigeon.core.observation.NotificationCenter;
 import payne.framework.pigeon.core.observation.SharedNotificationCenter;
 import payne.framework.pigeon.core.protocol.Channel;
 import payne.framework.pigeon.core.toolkit.IOToolkit;
 import payne.framework.pigeon.server.exception.ContextStartupException;
+import payne.framework.pigeon.server.exception.UnacceptableModeException;
 import payne.framework.pigeon.server.exception.UnregulatedInterfaceException;
 
 public abstract class HTTPInvocationContext implements InvocationContext, Runnable, Filter<Channel>, Constants {
@@ -61,6 +63,17 @@ public abstract class HTTPInvocationContext implements InvocationContext, Runnab
 	protected Map<String, Object> attributes = new LinkedHashMap<String, Object>();
 	protected Set<Filter<Channel>> filters = new LinkedHashSet<Filter<Channel>>();
 	protected NotificationCenter notificationCenter = SharedNotificationCenter.getInstance();
+
+	public void filtrate(Channel channel, FilterChain<Channel> chain) throws Exception {
+		InvocationProcessor processor = lookup(channel.getPath());
+
+		// 检查请求方法是否被支持支持
+		if (processor.accept(channel.getMode()) == false) {
+			throw new UnacceptableModeException(processor.getMethod(), channel.getMode());
+		}
+
+		processor.process(this, channel);
+	}
 
 	public void bind(int port) {
 		if (status != Status.READY) {

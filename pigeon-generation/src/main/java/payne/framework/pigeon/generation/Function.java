@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.Set;
 
 import payne.framework.pigeon.core.Pigeons;
+import payne.framework.pigeon.core.annotation.Param;
 import payne.framework.pigeon.core.annotation.Process;
-import payne.framework.pigeon.core.annotation.rest.Param;
 import payne.framework.pigeon.core.exception.BeanInitializeException;
 import payne.framework.pigeon.core.processing.Step;
 import payne.framework.pigeon.generation.annotation.Name;

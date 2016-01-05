@@ -6,6 +6,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
 
 import payne.framework.pigeon.core.Constants;
@@ -14,27 +16,33 @@ import payne.framework.pigeon.core.Interceptor;
 import payne.framework.pigeon.core.Invocation;
 import payne.framework.pigeon.core.Pigeons;
 import payne.framework.pigeon.core.Version;
-import payne.framework.pigeon.core.exception.BeanInitializeException;
+import payne.framework.pigeon.core.annotation.Accept;
+import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.core.factory.bean.BeanFactory;
 import payne.framework.pigeon.core.factory.stream.StreamFactory;
 import payne.framework.pigeon.core.processing.Step;
 import payne.framework.pigeon.core.protocol.Channel;
+import payne.framework.pigeon.core.toolkit.CaseIgnoredList;
 
 public class InvocationProcessor implements Interceptor, Constants {
+	private final List<Accept.Mode> modes;
+	private final List<String> media;
 	private final Class<?> interfase;
 	private final Method method;
 	private final Object implementation;
-	private final LinkedHashSet<Interceptor> interceptors;
+	private final Set<Interceptor> interceptors;
 	private final TreeMap<Class<? extends Annotation>, Step> processings;
 	private final BeanFactory beanFactory;
 	private final StreamFactory streamFactory;
 
-	public InvocationProcessor(Class<?> interfase, Method method, Object implementation, LinkedHashSet<Interceptor> interceptors, BeanFactory beanFactory, StreamFactory streamFactory) throws BeanInitializeException {
+	public InvocationProcessor(List<Mode> modes, List<String> media, Class<?> interfase, Method method, Object implementation, Set<Interceptor> interceptors, BeanFactory beanFactory, StreamFactory streamFactory) throws Exception {
 		super();
+		this.modes = new ArrayList<Accept.Mode>(modes != null ? modes : new ArrayList<Accept.Mode>());
+		this.media = new CaseIgnoredList(media != null ? media : new ArrayList<String>());
 		this.interfase = interfase;
 		this.method = method;
 		this.implementation = implementation;
-		this.interceptors = new LinkedHashSet<Interceptor>(interceptors);
+		this.interceptors = new LinkedHashSet<Interceptor>(interceptors != null ? interceptors : new LinkedHashSet<Interceptor>());
 		this.interceptors.add(this);
 		this.beanFactory = beanFactory;
 		this.streamFactory = streamFactory;
@@ -66,6 +74,22 @@ public class InvocationProcessor implements Interceptor, Constants {
 		}
 	}
 
+	public boolean accept(Mode mode) {
+		return modes.contains(mode);
+	}
+
+	public boolean accept(String medium) {
+		return media.isEmpty() || media.contains(medium);
+	}
+
+	public List<Accept.Mode> getModes() {
+		return modes;
+	}
+
+	public List<String> getMedia() {
+		return media;
+	}
+
 	public Class<?> getInterfase() {
 		return interfase;
 	}
@@ -78,7 +102,7 @@ public class InvocationProcessor implements Interceptor, Constants {
 		return implementation;
 	}
 
-	public LinkedHashSet<Interceptor> getInterceptors() {
+	public Set<Interceptor> getInterceptors() {
 		return interceptors;
 	}
 

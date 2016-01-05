@@ -1,4 +1,4 @@
-package payne.framework.pigeon.core.annotation.rest;
+package payne.framework.pigeon.core.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

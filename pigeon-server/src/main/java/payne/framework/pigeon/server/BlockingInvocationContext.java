@@ -14,10 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import payne.framework.pigeon.core.Constants;
+import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.core.exception.UnmappedPathException;
 import payne.framework.pigeon.core.exception.UnsupportedChannelException;
 import payne.framework.pigeon.core.filtration.Filter;
-import payne.framework.pigeon.core.filtration.FilterChain;
 import payne.framework.pigeon.core.filtration.FixedFilterChain;
 import payne.framework.pigeon.core.observation.Event;
 import payne.framework.pigeon.core.protocol.Channel;
@@ -72,11 +72,6 @@ public class BlockingInvocationContext extends HTTPInvocationContext implements 
 		notificationCenter.notify(new Event(CONTEXT_SHUTDOWN_EVENT_NAME, this, null));
 	}
 
-	public void filtrate(Channel channel, FilterChain<Channel> chain) throws Exception {
-		InvocationProcessor processor = lookup(channel.getPath());
-		processor.process(this, channel);
-	}
-
 	private class BlockingHTTPInvocationHandler extends HTTPInvocationHandler implements Constants {
 		private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -102,7 +97,7 @@ public class BlockingInvocationContext extends HTTPInvocationContext implements 
 				}
 
 				channel = beanFactory.establish(head.getProtocol(), Channel.class);
-				channel.initialize(head.getMethod(), head.getPath(), head.getParameter(), head.getProtocol(), client.getRemoteSocketAddress(), inputStream, outputStream);
+				channel.initialize(Mode.likeOf(head.getMethod()), head.getPath(), head.getParameter(), head.getProtocol(), client.getRemoteSocketAddress(), inputStream, outputStream);
 				channel.setCharset(charset);
 				channel.getAttributes().putAll(attributes);
 

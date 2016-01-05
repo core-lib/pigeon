@@ -13,12 +13,12 @@ public class UnsupportedChannelException extends CodedException {
 
 	@Override
 	public int getCode() {
-		return 405;
+		return 400;
 	}
 
 	@Override
 	public String getReason() {
-		return "Method Not Allowed";
+		return "Bad Request";
 	}
 
 	public String getProtocol() {
