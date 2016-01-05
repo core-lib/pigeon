@@ -4,18 +4,24 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import payne.framework.pigeon.core.annotation.Close;
 import payne.framework.pigeon.core.annotation.Intercept;
 import payne.framework.pigeon.core.annotation.Open;
+import payne.framework.pigeon.core.annotation.Param;
 import payne.framework.pigeon.core.annotation.Process;
 import payne.framework.pigeon.core.exception.BeanInitializeException;
 import payne.framework.pigeon.core.processing.Procedure;
@@ -29,6 +35,7 @@ import payne.framework.pigeon.core.toolkit.Collections;
  * 
  */
 public abstract class Pigeons {
+	public static final Pattern pattern = Pattern.compile("\\{(?:(\\w+)\\:)?(.*?)\\}");
 
 	public static Set<String> getTransientProperties(Class<?> clazz) {
 		Set<String> ignores = new HashSet<String>();
@@ -277,6 +284,80 @@ public abstract class Pigeons {
 		return processings;
 	}
 
-	public static final Pattern PATTERN = Pattern.compile("\\{(?:(\\w+)\\:)?(.*?)\\}");
+	public static Map<String, List<String>> getPathArguments(String expression, String path, Method method) {
+		// 处理路径变量和查询参数问题,将路径变量拿出来作为请求参数的一部分交给解析器解析
+		List<String> variables = new ArrayList<String>();
+		Matcher matcher = pattern.matcher(expression);
+		String regex = expression;
+		while (matcher.find()) {
+			String name = matcher.group(1);
+			String regular = matcher.group(2);
+			// 如果group(1) == null 的话其实整个都是名称 例如 /{page}/{size} 所以应该匹配所有字符
+			regex = regex.replace(matcher.group(), "(" + (name != null ? regular : "[^/]*") + ")");
+			variables.add(name != null ? name : regular);
+		}
+
+		Map<String, List<String>> arguments = new LinkedHashMap<String, List<String>>();
+
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(path);
+		if (m.find()) {
+			for (int i = 1; i <= m.groupCount(); i++) {
+				String name = variables.get(i - 1);
+				String value = m.group(i);
+				if (name == null || name.trim().length() == 0) {
+					continue;
+				}
+				name = name.trim();
+				value = value.trim();
+				// 如果是数字的话可能是下标也可能是名称
+				if (name.matches("\\d+")) {
+					// 先寻找一遍有没有这个名称
+					boolean found = false;
+					flag: for (Annotation[] annotations : method.getParameterAnnotations()) {
+						for (Annotation annotation : annotations) {
+							if (annotation instanceof Param && ((Param) annotation).value().trim().equals(name)) {
+								found = true;
+								break flag;
+							}
+						}
+					}
+					// 如果没有找到则看下该下标的参数是否有指定名称
+					if (found == false) {
+						int index = Integer.valueOf(name) - 1;
+						name = "argument" + index;
+						for (Annotation annotation : method.getParameterAnnotations().length > index ? method.getParameterAnnotations()[index] : new Annotation[0]) {
+							// 如果有而且指定名称不是默认值
+							if (annotation instanceof Param && ((Param) annotation).value().trim().length() > 0) {
+								name = ((Param) annotation).value().trim();
+								break;
+							}
+						}
+					}
+				}
+				List<String> values = arguments.get(name);
+				if (values == null) {
+					arguments.put(name, values = new ArrayList<String>());
+				}
+				values.add(value);
+			}
+		}
+		return arguments;
+	}
+
+	public static String getQueryString(Map<String, List<String>> arguments) {
+		StringBuilder query = new StringBuilder();
+		for (Entry<String, List<String>> entry : arguments.entrySet()) {
+			for (String value : entry.getValue()) {
+				if (query.length() > 0) {
+					query.append("&");
+				}
+				query.append(entry.getKey());
+				query.append("=");
+				query.append(value);
+			}
+		}
+		return query.toString();
+	}
 
 }

@@ -4,22 +4,19 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import payne.framework.pigeon.core.Header;
 import payne.framework.pigeon.core.Invocation;
+import payne.framework.pigeon.core.Pigeons;
 import payne.framework.pigeon.core.annotation.Accept.Mode;
-import payne.framework.pigeon.core.annotation.Param;
 import payne.framework.pigeon.core.factory.bean.BeanFactory;
 import payne.framework.pigeon.core.factory.stream.StreamFactory;
 import payne.framework.pigeon.core.formatting.FormatInvocationInputStream;
@@ -33,8 +30,6 @@ import payne.framework.pigeon.core.toolkit.ReadableInputStream;
 import payne.framework.pigeon.core.toolkit.WritableOutputStream;
 
 public class HTTPChannel extends TransferableChannel implements Chunkable {
-	protected static Pattern pattern = Pattern.compile("\\{(?:(\\w+)\\:)?(.*?)\\}");
-
 	protected Mode mode;
 	protected String host;
 	protected int port;
@@ -191,61 +186,11 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 	}
 
 	public Invocation read(String expression, Method method, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception {
-		if (this.mode == Mode.GET) {
-			// 处理路径变量和查询参数问题,将路径变量拿出来作为请求参数的一部分交给解析器解析
-			List<String> variables = new ArrayList<String>();
-			Matcher matcher = pattern.matcher(expression);
-			String regex = expression;
-			while (matcher.find()) {
-				String name = matcher.group(1);
-				String regular = matcher.group(2);
-				// 如果group(1) == null 的话其实整个都是名称 例如 /{page}/{size} 所以应该匹配所有字符
-				regex = regex.replace(matcher.group(), "(" + (name != null ? regular : "[^/]*") + ")");
-				variables.add(name != null ? name : regular);
-			}
-
-			String query = parameter;
-
-			Pattern p = Pattern.compile(regex);
-			Matcher m = p.matcher(path);
-			if (m.find()) {
-				for (int i = 1; i <= m.groupCount(); i++) {
-					String name = variables.get(i - 1);
-					String value = m.group(i);
-					if (name == null || name.trim().length() == 0) {
-						continue;
-					}
-					name = name.trim();
-					value = value.trim();
-					// 如果是数字的话可能是下标也可能是名称
-					if (name.matches("\\d+")) {
-						// 先寻找一遍有没有这个名称
-						boolean found = false;
-						flag: for (Annotation[] annotations : method.getParameterAnnotations()) {
-							for (Annotation annotation : annotations) {
-								if (annotation instanceof Param && ((Param) annotation).value().trim().equals(name)) {
-									found = true;
-									break flag;
-								}
-							}
-						}
-						// 如果没有找到则看下该下标的参数是否有指定名称
-						if (found == false) {
-							int index = Integer.valueOf(name) - 1;
-							name = "argument" + index;
-							for (Annotation annotation : method.getParameterAnnotations().length > index ? method.getParameterAnnotations()[index] : new Annotation[0]) {
-								// 如果有而且指定名称不是默认值
-								if (annotation instanceof Param && ((Param) annotation).value().trim().length() > 0) {
-									name = ((Param) annotation).value().trim();
-									break;
-								}
-							}
-						}
-					}
-					query = query + (query.trim().length() > 0 ? "&" : "") + name + "=" + value;
-				}
-			}
-
+		// 如果没有body的则要解析路径参数了查询参数
+		if (this.mode.bodied == false) {
+			Map<String, List<String>> arguments = Pigeons.getPathArguments(expression, path, method);
+			String query = Pigeons.getQueryString(arguments);
+			query += parameter != null && parameter.trim().length() > 0 ? "&" + parameter.trim() : "";
 			inputStream = new ByteArrayInputStream(query.getBytes());
 			clientHeader.setContentLength(inputStream.available());
 		}

@@ -33,7 +33,13 @@ public @interface Accept {
 	public String[] media() default {};
 
 	public static enum Mode {
-		GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS, TRACE;
+		GET(false), HEAD(false), POST(true), PUT(true), PATCH(true), DELETE(false), OPTIONS(false), TRACE(false);
+
+		public final boolean bodied;
+
+		private Mode(boolean bodied) {
+			this.bodied = bodied;
+		}
 
 		public static Mode likeOf(String name) {
 			if (name == null) {
