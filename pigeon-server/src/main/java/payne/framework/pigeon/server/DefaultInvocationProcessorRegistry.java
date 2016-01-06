@@ -1,6 +1,5 @@
 package payne.framework.pigeon.server;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,7 +21,6 @@ import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.core.exception.UnmappedPathException;
 import payne.framework.pigeon.core.factory.bean.BeanFactory;
 import payne.framework.pigeon.core.factory.stream.StreamFactory;
-import payne.framework.pigeon.core.toolkit.Collections;
 import payne.framework.pigeon.server.exception.DuplicatePathException;
 import payne.framework.pigeon.server.exception.UnregulatedInterfaceException;
 
