@@ -1,5 +1,26 @@
-废话少说，我们直接开门见山吧。假如你的公司后台采用JAVA作为开发语言，同时又有iOS/Android平台的APP，今天我为大家带来一个非常方便和强大的跨平台RPC框架。
+What's this?
+====
 
+废话少说，我们直接开门见山吧。假如你的公司后台采用JAVA作为开发语言，同时又有iOS/Android平台的APP，<br/>
+今天我为大家带来一个非常方便和强大的跨平台RPC框架。
+
+What are the benefits?
+====
+
+框架提供符合RESTful规范的功能,通过接口的方式开放后台的服务,前端引入后台打包好的接口和传输数据类型(VO类型),<br/>
+大大简化前端的开发难度,前端通过接口来进行远程调用后台的开放服务,直接利用已经打包过来的传输数据类型,<br/>
+减少重复定义传输数据类型的繁琐和无技术含量的工作.使用接口的方式来调用带来的好处是:<br/>
+* 1.不需要考虑参数类型和明确知道返回值类型是否匹配,因为接口声明好了,编译时就能检查是否正确.
+* 2.接口可声明可能抛出的异常,强制客户端需要对可能的异常进行处理.
+* 3.框架屏蔽序列化和反序列化过程,让代码更简洁,书写就像是在调用本地的方法.
+* 4.提供拦截器拓展,可以无限拓展对请求/回应的统一处理,轻松实现自动重新登录,网络不稳定自动重试,权限拦截等等切面功能
+* 5.提供目前网络请求所有数据转换的注解配置,不需要任何代码,轻松享受框架提供的编码/压缩/校验/加密/签名等常用功能
+* 6.提供多种客户端实现:同步/异步/RxJava 满足你日常的需要.
+* 7.纯粹的HTTP规范,与流行的HTTP框架可以无缝对接
+* 8.提供多种项目集成方式:与Spring集成(交给容器管理);与web服务器集成(作为一个Filter);裸开模式...
+
+How to use?
+====
 说了这么多，到底怎么用？
 
 1：明确需求；假如用户下载了我们的APP（以Android为例），这个时候用户需要注册。那么我们的后台需要有一个提供用户注册的方法或者叫API，我就一步到位吧。这个方法就长这样子
@@ -8,46 +29,48 @@
 2：定义接口；为什么要接口？因为我们要让Android/iOS客户端调用的时候代码书写就像在调用本地方法一样啊。例如在Android端使用的话就会变成
 	User user = api.register("叶良辰","我有一百种方法让你在github混不下去"); 很简单有没有？很想EJB、WebService是不是？我会说差不多，但是比它们都更简单更轻量级。
 
-3：完整实现；这里我们注意到有一个User类，也应该有一个API接口同时也应该有一个API实现类。好吧，那我们就创建一个Maven多模块项目将它们一一写出来吧。
-	我们最好把项目分成几个模块，等下我们会知道为什么需要分模块。
+3：完整实现；这里我们注意到有一个User类，也应该有一个API接口同时也应该有一个API实现类。<br/>
+好吧，那我们就创建一个Maven多模块项目将它们一一写出来吧。
+我们最好把项目分成几个模块，等下我们会知道为什么需要分模块。
+
+那就创建一个结构类似下面的Maven项目吧
+/demo-parent
+   |
+   |--/demo-core
+   |
+   |--/demo-web 
+   
+其中我们把 User类 和 API接口 放在 demo-core模块中，让demo-web依赖demo-core模块，
+再把APIImpl这个接口实现类放在demo-web模块中，这三个类的主要代码如下
+
+// 注意让你的参与网络传输的类型实现 Serializable 接口，轻松拥有可序列化功能。
+public class User implements Serializable {
+	private static final long serialVersionUID = 5991214707724188798L;
+
+	private String username;
+	private String password;
 	
-	那就创建一个结构类似下面的Maven项目吧
-	/demo-parent
-	   |
-	   |--/demo-core
-	   |
-	   |--/demo-web 
-	   
-	其中我们把 User类 和 API接口 放在 demo-core模块中，让demo-web依赖demo-core模块，再把APIImpl这个接口实现类放在demo-web模块中，这三个类的主要代码如下
+	// getter setter ...
+}
+
+public interface API {
 	
-	// 注意让你的参与网络传输的类型实现 Serializable 接口，轻松拥有可序列化功能。
-	public class User implements Serializable {
-		private static final long serialVersionUID = 5991214707724188798L;
+	// 注意这里的异常定义，框架明确要求开放方法必须定义IOException异常抛出，其实这大有用处，后面再说。
+	User register(String username, String password) throws IOException;
 	
-		private String username;
-		private String password;
-		
-		// getter setter ...
+}
+
+public class APIImpl implements API {
+	
+	public User register(String username, String password) throws IOException {
+		User user = new User();
+		user.setUsername(username);
+		user.setPassword(password);
+		// 将user保存到数据库...
+		return user;
 	}
 	
-	public interface API {
-		
-		// 注意这里的异常定义，框架明确要求开放方法必须定义IOException异常抛出，其实这大有用处，后面再说。
-		User register(String username, String password) throws IOException;
-		
-	}
-	
-	public class APIImpl implements API {
-		
-		public User register(String username, String password) throws IOException {
-			User user = new User();
-			user.setUsername(username);
-			user.setPassword(password);
-			// 将user保存到数据库...
-			return user;
-		}
-		
-	}
+}
 	
 4：框架上场；怎么地？这样写出来就可以用啦？嗯，差不多了，我们继续看。
 	a.首先将框架从github里导入到你的eclipse中，地址：https://github.com/core-lib/pigeon.git  这是个maven项目，有几个模块，第一次编译比较久因为需要下载一些第三方依赖。。。
