@@ -1,19 +1,28 @@
-package payne.framework.pigeon.server;
+package payne.framework.pigeon.core;
 
+import java.io.Serializable;
 import java.util.regex.Pattern;
 
 import payne.framework.pigeon.core.annotation.Accept.Mode;
 
-public class Path {
+public class Path implements Serializable {
+	private static final long serialVersionUID = 4174725239805062242L;
+
+	private final String definition;
 	private final Mode mode;
 	private final String expression;
 	private final Pattern pattern;
 
-	public Path(Mode mode, Pattern pattern) {
+	public Path(String definition, Mode mode, Pattern pattern) {
 		super();
+		this.definition = definition;
 		this.mode = mode;
 		this.pattern = pattern;
 		this.expression = pattern.pattern();
+	}
+
+	public String getDefinition() {
+		return definition;
 	}
 
 	public Mode getMode() {

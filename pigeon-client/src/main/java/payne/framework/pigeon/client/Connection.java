@@ -96,7 +96,7 @@ public class Connection<T> implements InvocationHandler, Interceptor, Filter<Cha
 		switch (status.getCode()) {
 		case HttpURLConnection.HTTP_OK: {
 			Method method = correspondences.get(request.getMethod());
-			Invocation response = channel.receive(request.getPath(), method, beanFactory, streamFactory, new ArrayList<Step>(steps));
+			Invocation response = channel.receive(null, method, beanFactory, streamFactory, new ArrayList<Step>(steps));
 			request.setServerHeader(response.getServerHeader());
 			request.setResult(response.getResult());
 			break;

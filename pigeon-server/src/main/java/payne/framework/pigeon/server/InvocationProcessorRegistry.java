@@ -3,6 +3,7 @@ package payne.framework.pigeon.server;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import payne.framework.pigeon.core.Path;
 import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.core.exception.UnmappedPathException;
 import payne.framework.pigeon.server.InvocationProcessorRegistry.Registration;

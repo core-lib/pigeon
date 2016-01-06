@@ -9,12 +9,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.regex.Pattern;
 
 import payne.framework.pigeon.core.Constants;
 import payne.framework.pigeon.core.Header;
 import payne.framework.pigeon.core.Interceptor;
 import payne.framework.pigeon.core.Invocation;
+import payne.framework.pigeon.core.Path;
 import payne.framework.pigeon.core.Pigeons;
 import payne.framework.pigeon.core.Version;
 import payne.framework.pigeon.core.annotation.Accept;
@@ -26,8 +26,7 @@ import payne.framework.pigeon.core.protocol.Channel;
 import payne.framework.pigeon.core.toolkit.CaseIgnoredList;
 
 public class InvocationProcessor implements Interceptor, Constants {
-	private final String expression;
-	private final Pattern pattern;
+	private final Path path;
 	private final List<Accept.Mode> modes;
 	private final List<String> media;
 	private final Class<?> interfase;
@@ -38,11 +37,9 @@ public class InvocationProcessor implements Interceptor, Constants {
 	private final BeanFactory beanFactory;
 	private final StreamFactory streamFactory;
 
-	public InvocationProcessor(String expression, Pattern pattern, List<Mode> modes, List<String> media, Class<?> interfase, Method method, Object implementation, Set<Interceptor> interceptors, BeanFactory beanFactory,
-			StreamFactory streamFactory) throws Exception {
+	public InvocationProcessor(Path path, List<Mode> modes, List<String> media, Class<?> interfase, Method method, Object implementation, Set<Interceptor> interceptors, BeanFactory beanFactory, StreamFactory streamFactory) throws Exception {
 		super();
-		this.expression = expression;
-		this.pattern = pattern;
+		this.path = path;
 		this.modes = new ArrayList<Accept.Mode>(modes != null ? modes : new ArrayList<Accept.Mode>());
 		this.media = new CaseIgnoredList(media != null ? media : new ArrayList<String>());
 		this.interfase = interfase;
@@ -56,7 +53,7 @@ public class InvocationProcessor implements Interceptor, Constants {
 	}
 
 	public void process(InvocationContext context, Channel channel) throws Exception {
-		Invocation invocation = channel.read(expression, method, beanFactory, streamFactory, new ArrayList<Step>(processings.values()));
+		Invocation invocation = channel.read(path, method, beanFactory, streamFactory, new ArrayList<Step>(processings.values()));
 		invocation.setInterfase(interfase);
 		invocation.setMethod(method);
 		invocation.setImplementation(implementation);
@@ -88,12 +85,8 @@ public class InvocationProcessor implements Interceptor, Constants {
 		return media.isEmpty() || media.contains(medium);
 	}
 
-	public String getExpression() {
-		return expression;
-	}
-
-	public Pattern getPattern() {
-		return pattern;
+	public Path getPath() {
+		return path;
 	}
 
 	public List<Accept.Mode> getModes() {
