@@ -10,8 +10,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +42,7 @@ public class DefaultInvocationProcessorRegistry implements InvocationProcessorRe
 		Set<Registration> registrations = new HashSet<Registration>();
 		for (Entry<Mode, Map<Path, InvocationProcessor>> entry : map.entrySet()) {
 			for (Entry<Path, InvocationProcessor> e : entry.getValue().entrySet()) {
-				registrations.add(new Registration(entry.getKey(), e.getKey().getPattern(), e.getValue()));
+				registrations.add(new Registration(e.getKey(), e.getValue()));
 			}
 		}
 		return registrations.iterator();
@@ -53,9 +51,7 @@ public class DefaultInvocationProcessorRegistry implements InvocationProcessorRe
 	public Set<Path> paths() {
 		Set<Path> paths = new HashSet<Path>();
 		for (Entry<Mode, Map<Path, InvocationProcessor>> entry : map.entrySet()) {
-			for (Entry<Path, InvocationProcessor> e : entry.getValue().entrySet()) {
-				paths.add(e.getKey());
-			}
+			paths.addAll(entry.getValue().keySet());
 		}
 		return paths;
 	}
@@ -63,9 +59,7 @@ public class DefaultInvocationProcessorRegistry implements InvocationProcessorRe
 	public Set<InvocationProcessor> processors() {
 		Set<InvocationProcessor> processors = new HashSet<InvocationProcessor>();
 		for (Entry<Mode, Map<Path, InvocationProcessor>> entry : map.entrySet()) {
-			for (Entry<Path, InvocationProcessor> e : entry.getValue().entrySet()) {
-				processors.add(e.getValue());
-			}
+			processors.addAll(entry.getValue().values());
 		}
 		return processors;
 	}
@@ -75,7 +69,7 @@ public class DefaultInvocationProcessorRegistry implements InvocationProcessorRe
 		Iterator<Registration> iterator = this.iterator();
 		while (iterator.hasNext()) {
 			Registration pair = iterator.next();
-			if (pair.getPattern().matcher(regex).matches()) {
+			if (pair.getPath().getPattern().matcher(regex).matches()) {
 				pairs.add(pair);
 			}
 		}
@@ -83,6 +77,9 @@ public class DefaultInvocationProcessorRegistry implements InvocationProcessorRe
 	}
 
 	public boolean exists(Mode mode, String path) {
+		if (mode == null || path == null) {
+			return false;
+		}
 		Map<Path, InvocationProcessor> map = this.map.containsKey(mode) ? this.map.get(mode) : new HashMap<Path, InvocationProcessor>();
 		path = path.trim().replaceAll("/+", "/");
 		boolean contained = map.containsKey(path);
@@ -98,7 +95,7 @@ public class DefaultInvocationProcessorRegistry implements InvocationProcessorRe
 	}
 
 	public InvocationProcessor lookup(Mode mode, String path) throws UnmappedPathException {
-		if (path == null) {
+		if (mode == null || path == null) {
 			throw new UnmappedPathException(path);
 		}
 		Map<Path, InvocationProcessor> map = this.map.containsKey(mode) ? this.map.get(mode) : new HashMap<Path, InvocationProcessor>();
@@ -134,28 +131,13 @@ public class DefaultInvocationProcessorRegistry implements InvocationProcessorRe
 			Set<Method> methods = Pigeons.getInterfaceDeclaredOpenableMethods(interfase);
 
 			for (Method method : methods) {
-				// 必须声明有 IOException Exception 或 Throwable
-				if (!Collections.containsAny(Arrays.asList(method.getExceptionTypes()), IOException.class, Exception.class, Throwable.class)) {
-					throw new UnregulatedInterfaceException("open method " + method + " declared in " + interfase + " isn't declared with any of IOException Exception or Throwable", interfase, method);
-				}
-
 				String x = Pigeons.getOpenPath(service);
 				String y = Pigeons.getOpenPath(interfase);
 				String z = Pigeons.getOpenPath(method);
 
-				String path = Pigeons.getOpenPath(x + y + z);
+				String definition = Pigeons.getOpenPath(x + y + z);
 
-				logger.info("opening method [{}] to path [{}]", method, path);
-
-				// 分析路径将自定义的路径表达式转换成真正的正则表达式
-				Pattern pattern = Pattern.compile("\\{(?:(\\w+)\\:)?(.*?)\\}");
-				Matcher matcher = pattern.matcher(path);
-				String regex = path;
-				while (matcher.find()) {
-					String name = matcher.group(1);
-					String regular = matcher.group(2);
-					regex = regex.replace(matcher.group(), name != null ? regular : "[^/]*");
-				}
+				logger.info("opening method [{}] to path [{}]", method, definition);
 
 				Accept accept = method.isAnnotationPresent(Accept.class) ? method.getAnnotation(Accept.class) : interfase.isAnnotationPresent(Accept.class) ? interfase.getAnnotation(Accept.class) : null;
 				// 默认情况下所有的请求方式都是接受的
@@ -163,20 +145,18 @@ public class DefaultInvocationProcessorRegistry implements InvocationProcessorRe
 				String[] media = accept != null ? accept.media() : new String[0];
 
 				try {
-					Pattern p = Pattern.compile(regex);
 					for (Mode mode : modes) {
 						Map<Path, InvocationProcessor> m = map.get(mode);
 						if (m == null) {
 							map.put(mode, m = new HashMap<Path, InvocationProcessor>());
 						}
+						Path path = new Path(definition, mode);
 						// 检查是否重复
-						for (Path key : m.keySet()) {
-							if (key.getPattern().pattern().equals(p.pattern())) {
-								throw new DuplicatePathException(path, interfase, method);
-							}
+						if (m.containsKey(path)) {
+							throw new DuplicatePathException(definition, interfase, method);
 						}
-						InvocationProcessor processor = new InvocationProcessor(new Path(path, mode, p), Arrays.asList(modes), Arrays.asList(media), interfase, method, service, interceptors, beanFactory, streamFactory);
-						m.put(processor.getPath(), processor);
+						InvocationProcessor processor = new InvocationProcessor(path, Arrays.asList(modes), Arrays.asList(media), interfase, method, service, interceptors, beanFactory, streamFactory);
+						m.put(path, processor);
 					}
 				} catch (Exception e) {
 					throw new UnregulatedInterfaceException(e, interfase, method);
@@ -184,11 +164,9 @@ public class DefaultInvocationProcessorRegistry implements InvocationProcessorRe
 			}
 
 			logger.info("open interface [{}] completed", interfase);
-
 		}
 
 		logger.info("open service [{}] completed", service);
-
 	}
 
 	public synchronized void revoke(Object service) throws IllegalArgumentException {

@@ -66,7 +66,7 @@ public class InvocationProcessor implements Interceptor, Constants {
 		Object result = invocation.invoke();
 		invocation.setResult(result);
 		invocation.setArguments(null);
-		channel.write(invocation, beanFactory, streamFactory, new ArrayList<Step>(processings.values()));
+		channel.write(path, invocation, beanFactory, streamFactory, new ArrayList<Step>(processings.values()));
 	}
 
 	public Object intercept(Invocation invocation) throws Exception {

@@ -35,8 +35,6 @@ import payne.framework.pigeon.core.toolkit.Collections;
  * 
  */
 public abstract class Pigeons {
-	public static final Pattern pattern = Pattern.compile("\\{(?:(\\w+)\\:)?(.*?)\\}");
-
 	public static Set<String> getTransientProperties(Class<?> clazz) {
 		Set<String> ignores = new HashSet<String>();
 
@@ -284,23 +282,22 @@ public abstract class Pigeons {
 		return processings;
 	}
 
-	public static Map<String, List<String>> getPathArguments(String expression, String path, Method method) {
-		// 处理路径变量和查询参数问题,将路径变量拿出来作为请求参数的一部分交给解析器解析
-		List<String> variables = new ArrayList<String>();
-		Matcher matcher = pattern.matcher(expression);
-		String regex = expression;
-		while (matcher.find()) {
-			String name = matcher.group(1);
-			String regular = matcher.group(2);
-			// 如果group(1) == null 的话其实整个都是名称 例如 /{page}/{size} 所以应该匹配所有字符
-			regex = regex.replace(matcher.group(), "(" + (name != null ? regular : "[^/]*") + ")");
-			variables.add(name != null ? name : regular);
-		}
-
+	/**
+	 * 处理路径变量和查询参数问题,将路径变量拿出来作为请求参数的一部分交给解析器解析
+	 * 
+	 * @param path
+	 *            方法的路径定义
+	 * @param uri
+	 *            实际请求uri
+	 * @param method
+	 *            对应的服务方法
+	 * @return 从实际请求uri中读取出来的参数
+	 */
+	public static Map<String, List<String>> getPathArguments(Path path, String uri, Method method) {
 		Map<String, List<String>> arguments = new LinkedHashMap<String, List<String>>();
-
-		Pattern p = Pattern.compile(regex);
-		Matcher m = p.matcher(path);
+		List<String> variables = path.getVariables();
+		Pattern p = path.getPattern();
+		Matcher m = p.matcher(uri);
 		if (m.find()) {
 			for (int i = 1; i <= m.groupCount(); i++) {
 				String name = variables.get(i - 1);

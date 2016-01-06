@@ -1,7 +1,6 @@
 package payne.framework.pigeon.server;
 
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import payne.framework.pigeon.core.Path;
 import payne.framework.pigeon.core.annotation.Accept.Mode;
@@ -103,29 +102,19 @@ public interface InvocationProcessorRegistry extends Iterable<Registration> {
 	 * 
 	 */
 	public static class Registration {
-		private final Mode mode;
-		private final Pattern pattern;
+		private final Path path;
 		private final String expression;
 		private final InvocationProcessor processor;
 
-		public Registration(Mode mode, Pattern pattern, InvocationProcessor processor) {
+		public Registration(Path path, InvocationProcessor processor) {
 			super();
-			this.mode = mode;
-			this.pattern = pattern;
-			this.expression = pattern.pattern();
+			this.path = path;
+			this.expression = path.getDefinition();
 			this.processor = processor;
 		}
 
-		public Mode getMode() {
-			return mode;
-		}
-
-		public String getExpression() {
-			return expression;
-		}
-
-		public Pattern getPattern() {
-			return pattern;
+		public Path getPath() {
+			return path;
 		}
 
 		public InvocationProcessor getProcessor() {
@@ -159,7 +148,7 @@ public interface InvocationProcessorRegistry extends Iterable<Registration> {
 
 		@Override
 		public String toString() {
-			return "{" + mode + " " + expression + " : " + processor + "}";
+			return "{" + path.getMode() + " " + expression + " : " + processor + "}";
 		}
 	}
 

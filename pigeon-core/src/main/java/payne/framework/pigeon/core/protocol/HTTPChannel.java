@@ -97,7 +97,7 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 		this.closed = false;
 	}
 
-	public void send(Invocation invocation, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception {
+	public void send(Path path, Invocation invocation, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception {
 		OutputStream wrap = null;
 		try {
 			clientHeader = invocation.getClientHeader();
@@ -174,7 +174,7 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 		}
 	}
 
-	public void write(Invocation invocation, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception {
+	public void write(Path path, Invocation invocation, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception {
 		serverHeader = invocation.getServerHeader();
 		String contentType = invocation.getClientHeader().getContentType();
 		serverHeader.setContentType(contentType != null && contentType.trim().length() > 0 ? contentType : "application/json");
@@ -189,7 +189,7 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 	public Invocation read(Path path, Method method, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception {
 		// 如果没有body的则要解析路径参数了查询参数
 		if (this.mode.bodied == false) {
-			Map<String, List<String>> arguments = Pigeons.getPathArguments(path.getDefinition(), this.path, method);
+			Map<String, List<String>> arguments = Pigeons.getPathArguments(path, this.path, method);
 			String query = Pigeons.getQueryString(arguments);
 			query += parameter != null && parameter.trim().length() > 0 ? "&" + parameter.trim() : "";
 			inputStream = new ByteArrayInputStream(query.getBytes());

@@ -91,7 +91,7 @@ public class Connection<T> implements InvocationHandler, Interceptor, Filter<Cha
 	public void filtrate(Channel channel, FilterChain<Channel> chain) throws Exception {
 		Invocation request = (Invocation) channel.getAttribute(CHANNEL_INVOCATION_ATTRIBUTE_KEY);
 		Collection<Step> steps = processings.get(request.getMethod()).values();
-		channel.send(request, beanFactory, streamFactory, new ArrayList<Step>(steps));
+		channel.send(null, request, beanFactory, streamFactory, new ArrayList<Step>(steps));
 		State status = channel.getStatus();
 		switch (status.getCode()) {
 		case HttpURLConnection.HTTP_OK: {

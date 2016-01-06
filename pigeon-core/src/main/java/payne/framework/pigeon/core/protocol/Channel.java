@@ -34,11 +34,11 @@ public interface Channel extends Attributed, Transcoder, Readable, Writable, Clo
 
 	void initialize(Mode mode, String path, String parameter, String protocol, SocketAddress address, InputStream inputStream, OutputStream outputStream) throws IOException;
 
-	void send(Invocation invocation, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception;
+	void send(Path path, Invocation invocation, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception;
 
 	Invocation receive(Path path, Method method, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception;
 
-	void write(Invocation invocation, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception;
+	void write(Path path, Invocation invocation, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception;
 
 	Invocation read(Path path, Method method, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception;
 
