@@ -1,4 +1,4 @@
-package payne.framework.pigeon.integration.spring;
+package payne.framework.pigeon.integration.web.spring;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

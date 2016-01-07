@@ -1,4 +1,4 @@
-package payne.framework.pigeon.integration.web;
+package payne.framework.pigeon.integration.web.spring;
 
 import java.util.Map;
 
@@ -13,7 +13,7 @@ import payne.framework.pigeon.core.annotation.Open;
 import payne.framework.pigeon.core.detector.ClassFilter;
 import payne.framework.pigeon.core.factory.stream.InternalStreamFactory;
 import payne.framework.pigeon.core.factory.stream.StreamFactory;
-import payne.framework.pigeon.integration.spring.SpringBeanFactory;
+import payne.framework.pigeon.integration.web.WebInvocationContextFilter;
 import payne.framework.pigeon.server.DefaultInvocationProcessorRegistry;
 import payne.framework.pigeon.server.InvocationContext;
 import payne.framework.pigeon.server.InvocationContextAware;

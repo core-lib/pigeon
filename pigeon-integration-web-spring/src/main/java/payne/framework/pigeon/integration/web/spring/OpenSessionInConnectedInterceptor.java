@@ -1,4 +1,4 @@
-package payne.framework.pigeon.integration.spring;
+package payne.framework.pigeon.integration.web.spring;
 
 import org.hibernate.FlushMode;
 import org.hibernate.Session;

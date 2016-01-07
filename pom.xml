@@ -21,6 +21,8 @@
 		<module>pigeon-generation-async</module>
 		<module>pigeon-generation-objc</module>
 		<module>pigeon-integration</module>
+		<module>pigeon-integration-web</module>
+		<module>pigeon-integration-web-spring</module>
 	</modules>
 
 	<distributionManagement>

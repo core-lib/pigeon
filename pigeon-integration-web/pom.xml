@@ -6,8 +6,8 @@
 		<artifactId>pigeon</artifactId>
 		<version>4.1.0-release</version>
 	</parent>
-	<artifactId>pigeon-integration</artifactId>
-	<name>pigeon-integration</name>
+	<artifactId>pigeon-integration-web</artifactId>
+	<name>pigeon-integration-web</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,8 +20,13 @@
 		</dependency>
 		<dependency>
 			<groupId>payne.framework</groupId>
-			<artifactId>pigeon-server</artifactId>
+			<artifactId>pigeon-integration</artifactId>
 			<version>4.1.0-release</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>
