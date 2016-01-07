@@ -24,15 +24,15 @@ How to use?
 说了这么多，到底怎么用？
 
 **1：明确需求**<br/>
-假如用户下载了我们的APP（以Android为例），这个时候用户需要注册。那么我们的后台需要有一个提供用户注册的方法或者叫API，我就一步到位吧。这个方法就长这样子
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;假如用户下载了我们的APP（以Android为例），这个时候用户需要注册。那么我们的后台需要有一个提供用户注册的方法或者叫API，我就一步到位吧。这个方法就长这样子
 	User register(String username, String password) throws IOException; 相信大家一眼就能看出来，这是个接口上的抽象方法，因为它没有方法体也没有修饰符。
 
 **2：定义接口**<br/>
-为什么要接口？因为我们要让Android/iOS客户端调用的时候代码书写就像在调用本地方法一样啊。例如在Android端使用的话就会变成
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;为什么要接口？因为我们要让Android/iOS客户端调用的时候代码书写就像在调用本地方法一样啊。例如在Android端使用的话就会变成
 	User user = api.register("叶良辰","我有一百种方法让你在github混不下去"); 很简单有没有？很想EJB、WebService是不是？我会说差不多，但是比它们都更简单更轻量级。
 
 **3：完整实现**<br/>
-这里我们注意到有一个User类，也应该有一个API接口同时也应该有一个API实现类。<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这里我们注意到有一个User类，也应该有一个API接口同时也应该有一个API实现类。<br/>
 好吧，那我们就创建一个Maven多模块项目将它们一一写出来吧。
 我们最好把项目分成几个模块，等下我们会知道为什么需要分模块。
 那就创建一个结构类似下面的Maven项目吧
@@ -43,7 +43,7 @@ How to use?
    |
    |--/demo-web 
 ```
-其中我们把 User类 和 API接口 放在 demo-core模块中，让demo-web依赖demo-core模块，
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;其中我们把 User类 和 API接口 放在 demo-core模块中，让demo-web依赖demo-core模块，
 再把APIImpl这个接口实现类放在demo-web模块中，这三个类的主要代码如下
 
 // 注意让你的参与网络传输的类型实现 Serializable 接口，轻松拥有可序列化功能。
@@ -77,7 +77,7 @@ public class APIImpl implements API {
 }
 ```	
 **4：框架上场**<br/>
-怎么地？这样写出来就可以用啦？嗯，差不多了，我们继续看。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;怎么地？这样写出来就可以用啦？嗯，差不多了，我们继续看。
 * a.首先将框架从github里导入到你的eclipse中，地址：https://github.com/core-lib/pigeon.git<br/> 这是个maven项目，有几个模块，第一次编译比较久因为需要下载一些第三方依赖。。。
 
 * b.假如你已经编译完成没有任何问题。
@@ -160,7 +160,7 @@ public class APITests {
 运行 testRegister 方法。。。
 		
 **5：客户端使用API**<br/>
-到这里我们就会明白为什么我说项目要分模块。因为我们需要把这个模块打包给Android使用，或者生成对应的模型和接口给iOS使用。所以我们打包的时候不可能把实现类也打包给客户端吧？因为实现类我们放在了demo-web，所以客户端也就只知道接口而且，面向接口编程也是pigeon框架所提倡的。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;到这里我们就会明白为什么我说项目要分模块。因为我们需要把这个模块打包给Android使用，或者生成对应的模型和接口给iOS使用。所以我们打包的时候不可能把实现类也打包给客户端吧？因为实现类我们放在了demo-web，所以客户端也就只知道接口而且，面向接口编程也是pigeon框架所提倡的。
 	
 * a.假设你已经打好包了，把demo-core的jar包放到Android中，并且将我们之前打包好的pigeon-core、pigeon-introspection和pigeon-client三个jar包放入Android项目中。
 	
@@ -179,7 +179,7 @@ System.out.println("返回结果" + user.getUsername() + ":" + user.getPassword(
 * e.当你写完一个AsyncTaks时，你会发现，似乎还是很麻烦的样子。不用担心，框架有更好的方案。让你直接在主线程写代码，框架实现异步调用和回调主线程代码。
 
 **6：更多功能**<br/>
-其实上述只是pigeon框架的冰山一角，框架提供session，序列化，编码，压缩，校验，加密，签名，参数校验。。。每种数据转换都有接口和原生的几个实现，可以直接使用也可以自定义拓展，所有这些数据
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;其实上述只是pigeon框架的冰山一角，框架提供session，序列化，编码，压缩，校验，加密，签名，参数校验。。。每种数据转换都有接口和原生的几个实现，可以直接使用也可以自定义拓展，所有这些数据
 转换功能都是无需编写代码，只需要在开放接口或方法上标注对应注解即可轻松拥有。
 
 **网络协议**
@@ -238,13 +238,13 @@ SHA-256
 ```
 
 **7：框架集成**<br/>
-框架轻松跟市面上流行的技术进行集成，例如Spring，Hibernate，web服务器（tomcat。。。）更好的整合在你已有的项目和拓展你的项目。在保证不修改你现有的开放服务的实现类代码前提下，可以通过抽象出一个接口就能通过pigeon框架的形式去开放远程接口方式的调用。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;框架轻松跟市面上流行的技术进行集成，例如Spring，Hibernate，web服务器（tomcat。。。）更好的整合在你已有的项目和拓展你的项目。在保证不修改你现有的开放服务的实现类代码前提下，可以通过抽象出一个接口就能通过pigeon框架的形式去开放远程接口方式的调用。
 
 **8：更多教程**<br/>
-更详细的使用教程，更强大的功能使用请下载pigeon-sample工程。地址：https://github.com/core-lib/pigeon-sample.git
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;更详细的使用教程，更强大的功能使用请下载pigeon-sample工程。地址：https://github.com/core-lib/pigeon-sample.git
 
 **9：更多功能**<br/>
-如何使用session？如何生成objective-c客户端？如何生成异步API？如何拓展框架？框架的运行原理？请下载pigeon-sample工程。地址：https://github.com/core-lib/pigeon-sample.git
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如何使用session？如何生成objective-c客户端？如何生成异步API？如何拓展框架？框架的运行原理？请下载pigeon-sample工程。地址：https://github.com/core-lib/pigeon-sample.git
 
 **10：有问题?**<br/>
-有任何问题，随时随地可以加我QQ：646742615（我的昵称是Payne）  或发邮件到我QQ邮箱：646742615@qq.com。你也可以微信我：change1921
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;有任何问题，随时随地可以加我QQ：646742615（我的昵称是Payne）  或发邮件到我QQ邮箱：646742615@qq.com。你也可以微信我：change1921
