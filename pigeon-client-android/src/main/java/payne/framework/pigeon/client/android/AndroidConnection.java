@@ -1,9 +1,10 @@
-package payne.framework.pigeon.client;
+package payne.framework.pigeon.client.android;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 
+import payne.framework.pigeon.client.Connection;
 import payne.framework.pigeon.client.exception.NonopenMethodException;
 import payne.framework.pigeon.core.Callback;
 import payne.framework.pigeon.core.Interceptor;

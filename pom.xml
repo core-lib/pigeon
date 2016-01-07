@@ -16,7 +16,9 @@
 		<module>pigeon-generation-async</module>
 		<module>pigeon-generation-objc</module>
 		<module>pigeon-integration</module>
-	</modules>
+    <module>pigeon-client-async</module>
+    <module>pigeon-client-android</module>
+  </modules>
 
 	<distributionManagement>
 		<repository>

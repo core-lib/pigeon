@@ -6,8 +6,8 @@
 		<artifactId>pigeon</artifactId>
 		<version>4.1.0-release</version>
 	</parent>
-	<artifactId>pigeon-client</artifactId>
-	<name>pigeon-client</name>
+	<artifactId>pigeon-client-android</artifactId>
+	<name>pigeon-client-android</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,8 +20,13 @@
 		</dependency>
 		<dependency>
 			<groupId>payne.framework</groupId>
-			<artifactId>pigeon-core</artifactId>
+			<artifactId>pigeon-client</artifactId>
 			<version>4.1.0-release</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.android</groupId>
+			<artifactId>android</artifactId>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>

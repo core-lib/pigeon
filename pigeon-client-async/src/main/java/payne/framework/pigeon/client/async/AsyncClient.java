@@ -1,4 +1,4 @@
-package payne.framework.pigeon.client;
+package payne.framework.pigeon.client.async;
 
 import java.io.IOException;
 import java.util.LinkedHashSet;
@@ -7,6 +7,7 @@ import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import payne.framework.pigeon.client.Client;
 import payne.framework.pigeon.core.Interceptor;
 import payne.framework.pigeon.core.exception.UnsupportedChannelException;
 import payne.framework.pigeon.core.exception.UnsupportedFormatException;
