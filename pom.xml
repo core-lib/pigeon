@@ -6,16 +6,16 @@
 	<version>4.1.0-release</version>
 	<packaging>pom</packaging>
 	<modules>
-		<module>pigeon-client</module>
-		<module>pigeon-core</module>
-		<module>pigeon-generation</module>
-		<module>pigeon-integration</module>
 		<module>pigeon-introspection</module>
-		<module>pigeon-server</module>
-		<module>pigeon-generation-reactive</module>
+		<module>pigeon-core</module>
+		<module>pigeon-client</module>
 		<module>pigeon-client-reactive</module>
+		<module>pigeon-server</module>
+		<module>pigeon-generation</module>
+		<module>pigeon-generation-reactive</module>
 		<module>pigeon-generation-async</module>
 		<module>pigeon-generation-objc</module>
+		<module>pigeon-integration</module>
 	</modules>
 
 	<distributionManagement>
