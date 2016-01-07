@@ -12,8 +12,9 @@
 		<module>pigeon-integration</module>
 		<module>pigeon-introspection</module>
 		<module>pigeon-server</module>
-    <module>pigeon-reactive</module>
-  </modules>
+    	<module>pigeon-generation-reactive</module>
+    	<module>pigeon-client-reactive</module>
+	</modules>
 
 	<distributionManagement>
 		<repository>

@@ -6,8 +6,8 @@
 		<artifactId>pigeon</artifactId>
 		<version>4.1.0-release</version>
 	</parent>
-	<artifactId>pigeon-reactive</artifactId>
-	<name>pigeon-reactive</name>
+	<artifactId>pigeon-client-reactive</artifactId>
+	<name>pigeon-client-reactive</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -19,9 +19,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>io.reactivex</groupId>
-			<artifactId>rxjava</artifactId>
-			<version>1.1.0</version>
+			<groupId>payne.framework</groupId>
+			<artifactId>pigeon-client</artifactId>
+			<version>4.1.0-release</version>
 		</dependency>
 	</dependencies>
 </project>
