@@ -44,6 +44,7 @@ How to use?
 再把APIImpl这个接口实现类放在demo-web模块中，这三个类的主要代码如下
 
 // 注意让你的参与网络传输的类型实现 Serializable 接口，轻松拥有可序列化功能。
+```
 public class User implements Serializable {
 	private static final long serialVersionUID = 5991214707724188798L;
 
@@ -71,86 +72,88 @@ public class APIImpl implements API {
 	}
 	
 }
-	
+```	
 4：框架上场；怎么地？这样写出来就可以用啦？嗯，差不多了，我们继续看。
-	a.首先将框架从github里导入到你的eclipse中，地址：https://github.com/core-lib/pigeon.git  这是个maven项目，有几个模块，第一次编译比较久因为需要下载一些第三方依赖。。。
+* a.首先将框架从github里导入到你的eclipse中，地址：https://github.com/core-lib/pigeon.git<br/> 这是个maven项目，有几个模块，第一次编译比较久因为需要下载一些第三方依赖。。。
+
+* b.假如你已经编译完成没有任何问题。
+
+* c.让demo-core项目依赖你下载的pigeon框架的pigeon-core模块，版本号看你下载的版本为准。
+```
+<dependency>
+	<groupId>payne.framework</groupId>
+	<artifactId>pigeon-core</artifactId>
+	<version>3.6.0-release</version>
+</dependency>
+```
+* d.我们把API接口加上一个框架提供的注解@Open，其他东西不用修改，然后它就变成了
+```
+@Open
+public interface API {
+
+	User register(String username, String password) throws IOException; 
 	
-	b.假如你已经编译完成没有任何问题。
+}
+```
+* e.下面我们写一个单元测试类吧，功能总是需要测试的对吧。给demo-web模块添加pigeon-server和pigeon-client依赖，如果没有junit依赖也补上去。版本号以你下载的为准。。。
+```
+<dependency>
+	<groupId>payne.framework</groupId>
+	<artifactId>pigeon-server</artifactId>
+	<version>3.6.0-release</version>
+</dependency>
+
+<dependency>
+	<groupId>payne.framework</groupId>
+	<artifactId>pigeon-client</artifactId>
+	<version>3.6.0-release</version>
+</dependency>
+
+<dependency>
+	<groupId>junit</groupId>
+	<artifactId>junit</artifactId>
+	<version>4.5</version>
+</dependency>
+```
+```
+public class APITests {
+	private InvocationContext context;
+	private API api;
 	
-	c.让demo-core项目依赖你下载的pigeon框架的pigeon-core模块，版本号看你下载的版本为准。
+	public static void main(String[] args) throws Exception {
+		InvocationContext context = new BlockingInvocationContext();
+		context.bind(10086);
+		context.register(new APIImpl());
+		context.startup();
+	}
+
+	@Before
+	public void setup() throws Exception {
+		// 启动服务端
+		context = new BlockingInvocationContext();
+		context.bind(10086); // 开放端口，根据自己喜好
+		context.register(new APIImpl());
+		context.startup();
+		
+		// 模拟客户端
+		Client client = new Client("localhost", 10086);
+		api = client.create("HTTP", "application/x-java-serialized-object", "/APIImpl", API.class);
+	}
 	
-		<dependency>
-			<groupId>payne.framework</groupId>
-			<artifactId>pigeon-core</artifactId>
-			<version>3.6.0-release</version>
-		</dependency>
-		
-	d.我们把API接口加上一个框架提供的注解@Open，其他东西不用修改，然后它就变成了
-		
-		@Open
-		public interface API {
-		
-			User register(String username, String password) throws IOException; 
-			
-		}
-	
-	e.下面我们写一个单元测试类吧，功能总是需要测试的对吧。给demo-web模块添加pigeon-server和pigeon-client依赖，如果没有junit依赖也补上去。版本号以你下载的为准。。。
-		<dependency>
-			<groupId>payne.framework</groupId>
-			<artifactId>pigeon-server</artifactId>
-			<version>3.6.0-release</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>payne.framework</groupId>
-			<artifactId>pigeon-client</artifactId>
-			<version>3.6.0-release</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.5</version>
-		</dependency>
-	
-		public class APITests {
-			private InvocationContext context;
-			private API api;
-			
-			public static void main(String[] args) throws Exception {
-				InvocationContext context = new BlockingInvocationContext();
-				context.bind(10086);
-				context.register(new APIImpl());
-				context.startup();
-			}
-		
-			@Before
-			public void setup() throws Exception {
-				// 启动服务端
-				context = new BlockingInvocationContext();
-				context.bind(10086); // 开放端口，根据自己喜好
-				context.register(new APIImpl());
-				context.startup();
-				
-				// 模拟客户端
-				Client client = new Client("localhost", 10086);
-				api = client.create("HTTP", "application/x-java-serialized-object", "/APIImpl", API.class);
-			}
-			
-			@Test
-			public void testRegister() throws Exception{
-				User user = api.register("叶良辰","我有一百种方法让你在github混不下去");
-				System.out.println("返回结果" + user.getUsername() + ":" + user.getPassword());
-			}
-		
-			@After
-			public void destroy() throws Exception {
-				context.shutdown();
-			}
-		
-		}
-		
-		运行 testRegister 方法。。。
+	@Test
+	public void testRegister() throws Exception{
+		User user = api.register("叶良辰","我有一百种方法让你在github混不下去");
+		System.out.println("返回结果" + user.getUsername() + ":" + user.getPassword());
+	}
+
+	@After
+	public void destroy() throws Exception {
+		context.shutdown();
+	}
+
+}
+```
+运行 testRegister 方法。。。
 		
 5.客户端使用API；到这里我们就会明白为什么我说项目要分模块。因为我们需要把这个模块打包给Android使用，或者生成对应的模型和接口给iOS使用。所以我们打包的时候不可能把实现类也打包给客户端吧？因为实现类我们放在了demo-web，所以客户端也就只知道接口而且，面向接口编程也是pigeon框架所提倡的。
 	
