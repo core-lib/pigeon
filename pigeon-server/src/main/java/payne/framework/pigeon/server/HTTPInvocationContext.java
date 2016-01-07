@@ -273,7 +273,7 @@ public abstract class HTTPInvocationContext implements InvocationContext, Runnab
 		this.notificationCenter = notificationCenter;
 	}
 
-	protected abstract class HTTPInvocationHandler implements Runnable, Closeable, Constants {
+	public abstract class HTTPInvocationHandler implements Runnable, Closeable, Constants {
 		protected Future<?> future;
 
 		public final synchronized void run() {

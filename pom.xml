@@ -9,16 +9,19 @@
 		<module>pigeon-introspection</module>
 		<module>pigeon-core</module>
 		<module>pigeon-client</module>
+		<module>pigeon-client-async</module>
+		<module>pigeon-client-android</module>
 		<module>pigeon-client-reactive</module>
 		<module>pigeon-server</module>
+		<module>pigeon-server-bio</module>
+		<module>pigeon-server-nio</module>
+		<module>pigeon-server-aio</module>
 		<module>pigeon-generation</module>
 		<module>pigeon-generation-reactive</module>
 		<module>pigeon-generation-async</module>
 		<module>pigeon-generation-objc</module>
 		<module>pigeon-integration</module>
-    <module>pigeon-client-async</module>
-    <module>pigeon-client-android</module>
-  </modules>
+	</modules>
 
 	<distributionManagement>
 		<repository>

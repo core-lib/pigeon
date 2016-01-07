@@ -1,4 +1,4 @@
-package payne.framework.pigeon.server;
+package payne.framework.pigeon.server.nio;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -31,6 +31,10 @@ import payne.framework.pigeon.core.filtration.FixedFilterChain;
 import payne.framework.pigeon.core.observation.Event;
 import payne.framework.pigeon.core.protocol.Channel;
 import payne.framework.pigeon.core.toolkit.IOToolkit;
+import payne.framework.pigeon.server.HTTPInvocationContext;
+import payne.framework.pigeon.server.Head;
+import payne.framework.pigeon.server.InvocationContext;
+import payne.framework.pigeon.server.Status;
 import payne.framework.pigeon.server.exception.ContextRunningException;
 
 public class NonBlockingInvocationContext extends HTTPInvocationContext implements InvocationContext {
