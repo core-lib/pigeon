@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>payne.framework</groupId>
+		<artifactId>pigeon</artifactId>
+		<version>4.1.0-release</version>
+	</parent>
+	<artifactId>pigeon-core-compression</artifactId>
+	<name>pigeon-core-compression</name>
+	<url>http://maven.apache.org</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>payne.framework</groupId>
+			<artifactId>pigeon-core</artifactId>
+			<version>4.1.0-release</version>
+		</dependency>
+		<dependency>
+			<groupId>net.jpountz.lz4</groupId>
+			<artifactId>lz4</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.xerial.snappy</groupId>
+			<artifactId>snappy-java</artifactId>
+		</dependency>
+	</dependencies>
+</project>

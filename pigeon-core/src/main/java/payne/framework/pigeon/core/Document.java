@@ -11,9 +11,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.net.URI;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-
 import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.commons.codec.binary.Base64OutputStream;
 
@@ -23,7 +20,6 @@ import payne.framework.pigeon.core.toolkit.OutputStreamWritable;
 import payne.framework.pigeon.core.toolkit.Readable;
 import payne.framework.pigeon.core.toolkit.Writable;
 
-@XmlRootElement
 public class Document implements FileWrapper, Externalizable {
 	protected transient File file;
 	protected String name;
@@ -91,7 +87,6 @@ public class Document implements FileWrapper, Externalizable {
 		}
 	}
 
-	@XmlTransient
 	public File getFile() {
 		return file;
 	}

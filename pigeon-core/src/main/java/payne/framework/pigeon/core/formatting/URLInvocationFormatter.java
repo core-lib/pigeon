@@ -1,63 +1,27 @@
 package payne.framework.pigeon.core.formatting;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import payne.framework.pigeon.core.FileWrapper;
 import payne.framework.pigeon.core.annotation.Param;
 import payne.framework.pigeon.core.conversion.ConversionProvider;
 import payne.framework.pigeon.core.exception.FormatterException;
 import payne.framework.pigeon.core.toolkit.IOToolkit;
 
-import com.fasterxml.jackson.databind.MappingJsonFactory;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-public class URLInvocationFormatter extends JacksonInvocationFormatter implements InvocationFormatter {
+public class URLInvocationFormatter implements InvocationFormatter {
 	private ConversionProvider provider = new ConversionProvider();
 
-	public URLInvocationFormatter() {
-		super(new MappingJsonFactory(), true);
-	}
-
-	public URLInvocationFormatter(ObjectMapper mapper) {
-		super(mapper, true);
-	}
-
 	public String algorithm() {
-		return "application/json";
+		return null;
 	}
 
-	@Override
 	public void serialize(Object data, Structure structure, OutputStream out, String charset) throws FormatterException {
-		OutputStreamWriter osw = null;
-		FileInputStream fis = null;
-		try {
-			if (data instanceof FileWrapper) {
-				File file = ((FileWrapper) data).getFile();
-				IOToolkit.transmit(fis = new FileInputStream(file), out);
-			} else if (data instanceof File) {
-				File file = (File) data;
-				IOToolkit.transmit(fis = new FileInputStream(file), out);
-			} else if (transcoding) {
-				osw = new OutputStreamWriter(out, charset);
-				this.mapper.writeValue(osw, data);
-			} else {
-				this.mapper.writeValue(out, data);
-			}
-		} catch (Exception e) {
-			throw new FormatterException(e, this, data, null);
-		} finally {
-			IOToolkit.close(osw);
-			IOToolkit.close(fis);
-		}
+		throw new UnsupportedOperationException();
 	}
 
 	public Object deserialize(Structure structure, InputStream in, String charset) throws FormatterException {
