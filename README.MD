@@ -32,14 +32,14 @@ How to use?
 3：完整实现；这里我们注意到有一个User类，也应该有一个API接口同时也应该有一个API实现类。<br/>
 好吧，那我们就创建一个Maven多模块项目将它们一一写出来吧。
 我们最好把项目分成几个模块，等下我们会知道为什么需要分模块。
-
 那就创建一个结构类似下面的Maven项目吧
+```
 /demo-parent
    |
    |--/demo-core
    |
    |--/demo-web 
-   
+```
 其中我们把 User类 和 API接口 放在 demo-core模块中，让demo-web依赖demo-core模块，
 再把APIImpl这个接口实现类放在demo-web模块中，这三个类的主要代码如下
 
