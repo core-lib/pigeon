@@ -157,20 +157,22 @@ public class APITests {
 		
 5.客户端使用API；到这里我们就会明白为什么我说项目要分模块。因为我们需要把这个模块打包给Android使用，或者生成对应的模型和接口给iOS使用。所以我们打包的时候不可能把实现类也打包给客户端吧？因为实现类我们放在了demo-web，所以客户端也就只知道接口而且，面向接口编程也是pigeon框架所提倡的。
 	
-	a.假设你已经打好包了，把demo-core的jar包放到Android中，并且将我们之前打包好的pigeon-core、pigeon-introspection和pigeon-client三个jar包放入Android项目中。
+* a.假设你已经打好包了，把demo-core的jar包放到Android中，并且将我们之前打包好的pigeon-core、pigeon-introspection和pigeon-client三个jar包放入Android项目中。
 	
-	b.构造客户端，记得改IP地址和端口，指向到你后台的IP地址和端口。
-		Client client = new Client("server.ip", 10086);
-		api = client.create("HTTP", "application/x-java-serialized-object", "/APIImpl", API.class);
-		
-	c.通过 APITests 的main方法启动后台，后台一旦启动就会在等待请求的状态
+* b.构造客户端，记得改IP地址和端口，指向到你后台的IP地址和端口。
+```
+Client client = new Client("server.ip", 10086);
+api = client.create("HTTP", "application/x-java-serialized-object", "/APIImpl", API.class);
+```
+* c.通过 APITests 的main方法启动后台，后台一旦启动就会在等待请求的状态
 	
-	d.调用后台，在适当的地方使用代码调用后台服务，例如在用户点了注册的确定按钮。注意！注意！这里虽然看上去是在调用本地代码，但是实际上是网络交互，所以不要放在主线程！！！用AsyncTask吧。
-		User user = api.register("叶良辰","我有一百种方法让你在github混不下去");
-		System.out.println("返回结果" + user.getUsername() + ":" + user.getPassword());
-		
-	e.当你写完一个AsyncTaks时，你会发现，似乎还是很麻烦的样子。不用担心，框架有更好的方案。让你直接在主线程写代码，框架实现异步调用和回调主线程代码。
-	
+* d.调用后台，在适当的地方使用代码调用后台服务，例如在用户点了注册的确定按钮。注意！注意！这里虽然看上去是在调用本地代码，但是实际上是网络交互，所以不要放在主线程！！！用AsyncTask吧。
+```
+User user = api.register("叶良辰","我有一百种方法让你在github混不下去");
+System.out.println("返回结果" + user.getUsername() + ":" + user.getPassword());
+```
+* e.当你写完一个AsyncTaks时，你会发现，似乎还是很麻烦的样子。不用担心，框架有更好的方案。让你直接在主线程写代码，框架实现异步调用和回调主线程代码。
+
 6.其实上述只是pigeon框架的冰山一角，框架提供session，序列化，编码，压缩，校验，加密，签名，参数校验。。。每种数据转换都有接口和原生的几个实现，可以直接使用也可以自定义拓展，所有这些数据
 转换功能都是无需编写代码，只需要在开放接口或方法上标注对应注解即可轻松拥有。
 
