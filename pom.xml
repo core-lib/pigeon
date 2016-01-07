@@ -12,11 +12,11 @@
 		<module>pigeon-integration</module>
 		<module>pigeon-introspection</module>
 		<module>pigeon-server</module>
-    	<module>pigeon-generation-reactive</module>
-    	<module>pigeon-client-reactive</module>
-    <module>pigeon-generation-async</module>
-    <module>pigeon-generation-objc</module>
-  </modules>
+		<module>pigeon-generation-reactive</module>
+		<module>pigeon-client-reactive</module>
+		<module>pigeon-generation-async</module>
+		<module>pigeon-generation-objc</module>
+	</modules>
 
 	<distributionManagement>
 		<repository>
