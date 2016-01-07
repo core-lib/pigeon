@@ -23,7 +23,7 @@ import payne.framework.pigeon.core.factory.stream.StreamFactory;
 import payne.framework.pigeon.core.filtration.Filter;
 import payne.framework.pigeon.core.observation.NotificationCenter;
 import payne.framework.pigeon.core.protocol.Channel;
-import payne.framework.pigeon.server.DelegateInvocationContext;
+import payne.framework.pigeon.integration.DelegateInvocationContext;
 import payne.framework.pigeon.server.Feature;
 import payne.framework.pigeon.server.InvocationContext;
 import payne.framework.pigeon.server.InvocationProcessor;
