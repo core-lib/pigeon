@@ -1,0 +1,38 @@
+#if(!$model.isEnum())
+#import "$properties.getProperty("prefix")$model.name$properties.getProperty("interface-suffix")"
+
+#import "PFPDocument.h"
+#import "MJExtension.h"
+
+#foreach($import in $imports)
+#import "$converter.getName($import)$properties.get("interface-suffix")"
+#end
+
+#set($empty = '')
+
+@implementation $properties.getProperty("prefix")$model.name
+
+#if($arrays.size() > 0)
++ (NSDictionary *)objectClassInArray
+{
+	return @{
+#foreach($entry in $arrays.entrySet())
+		@"$entry.key" : @"$converter.getName($entry.value)"#if($velocityCount < $arrays.size()),#end $empty
+#end
+	};
+}
+#end
+
+#if($model.mapping.size() > 0)
++ (NSDictionary *)replacedKeyFromPropertyName
+{
+	return @{
+#foreach($entry in $model.mapping.entrySet())
+		@"$entry.key" : @"$entry.value"#if($velocityCount < $model.mapping.size()),#end $empty
+#end
+	};
+}
+#end
+
+@end
+#end

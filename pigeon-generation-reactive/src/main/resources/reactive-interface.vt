@@ -1,0 +1,20 @@
+package ${interface.type.package.name};
+
+#foreach($import in $imports)
+import ${import.name};
+#end
+
+@Correspond(${interface.type.simpleName}.class)
+#foreach($annotation in $interface.annotations)
+$converter.toString($annotation)
+#end
+public interface $properties.get("prefix")${interface.type.simpleName}$converter.resolve($interface.type.typeParameters) {
+
+#foreach($function in $functions)
+#foreach($annotation in $function.annotations)
+	$converter.toString($annotation)
+#end
+	$converter.resolve($function.method.typeParameters) Observable<$converter.toString(${function.method.genericReturnType})> ${function.name}(#foreach($parameter in $function.parameters)#if($velocityCount > 1),#end #foreach($annotation in $parameter.annotations)$converter.toString($annotation) #end$converter.toString(${parameter.type}) ${parameter.name}#end);
+	
+#end
+}
