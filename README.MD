@@ -1,8 +1,9 @@
 What's this?
 ====
 
-废话少说，我们直接开门见山吧。假如你的公司后台采用JAVA作为开发语言，同时又有iOS/Android平台的APP，<br/>
-今天我为大家带来一个非常方便和强大的跨平台RPC框架。
+Pigeon是一个纯粹使用HTTP协议封装的一个符合RESTful规范的用于客户端与服务端之间通过接口规范来进行通讯的RPC框架.
+----
+尤其擅长于Android/iOS与JAVA服务端的API调用,致力于解决目前移动端开发的网络通讯各种问题.
 
 What are the benefits?
 ====
