@@ -20,17 +20,17 @@ import java.util.jar.JarFile;
  *
  * @version 1.0.0
  */
-public class JarEntryStreamOpener implements StreamOpener {
+public class JarEntryResource extends Resource {
 	private final JarFile jarFile;
 	private final JarEntry jarEntry;
 
-	public JarEntryStreamOpener(JarFile jarFile, JarEntry jarEntry) {
-		super();
+	public JarEntryResource(JarFile jarFile, JarEntry jarEntry) {
+		super(jarEntry.getName());
 		this.jarFile = jarFile;
 		this.jarEntry = jarEntry;
 	}
 
-	public InputStream open() throws IOException {
+	public InputStream getInputStream() throws IOException {
 		return jarFile.getInputStream(jarEntry);
 	}
 

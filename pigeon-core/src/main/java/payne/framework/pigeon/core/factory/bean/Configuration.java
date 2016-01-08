@@ -33,7 +33,7 @@ public class Configuration implements Serializable {
 		this.properties = new Properties();
 		InputStream inputStream = null;
 		try {
-			this.properties.load(inputStream = resource.openStream());
+			this.properties.load(inputStream = resource.getInputStream());
 		} finally {
 			inputStream.close();
 		}

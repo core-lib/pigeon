@@ -18,14 +18,12 @@ import java.io.InputStream;
  *
  * @version 1.0.0
  */
-public class Resource {
+public abstract class Resource {
 	private String name;
-	private StreamOpener opener;
 
-	public Resource(String name, StreamOpener opener) {
+	public Resource(String name) {
 		super();
 		this.name = name;
-		this.opener = opener;
 	}
 
 	public String getName() {
@@ -36,13 +34,6 @@ public class Resource {
 		this.name = name;
 	}
 
-	public InputStream openStream() throws IOException {
-		return opener.open();
-	}
-
-	@Override
-	public String toString() {
-		return "Resource [name=" + name + "]";
-	}
+	public abstract InputStream getInputStream() throws IOException;
 
 }

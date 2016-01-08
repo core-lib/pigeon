@@ -20,15 +20,15 @@ import java.io.InputStream;
  *
  * @version 1.0.0
  */
-public class FileStreamOpener implements StreamOpener {
+public class DiskFileResource extends Resource {
 	private final File file;
 
-	public FileStreamOpener(File file) {
-		super();
+	public DiskFileResource(File file) {
+		super(file.getName());
 		this.file = file;
 	}
 
-	public InputStream open() throws IOException {
+	public InputStream getInputStream() throws IOException {
 		return new FileInputStream(file);
 	}
 

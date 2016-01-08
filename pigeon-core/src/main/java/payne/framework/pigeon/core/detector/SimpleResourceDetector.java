@@ -92,7 +92,7 @@ public class SimpleResourceDetector implements ResourceDetector {
 		}
 		// 如果是文件
 		else if (file.isFile()) {
-			Resource resource = new Resource(file.getName(), new FileStreamOpener(file));
+			Resource resource = new DiskFileResource(file);
 			for (ResourceFilter filter : filters) {
 				if (filter.accept(resource) == false) {
 					return resources;
@@ -108,8 +108,7 @@ public class SimpleResourceDetector implements ResourceDetector {
 		Enumeration<JarEntry> entries = jar.entries();
 		flag: while (entries != null && entries.hasMoreElements()) {
 			JarEntry entry = entries.nextElement();
-			String name = entry.getName();
-			Resource resource = new Resource(name, new JarEntryStreamOpener(jar, entry));
+			Resource resource = new JarEntryResource(jar, entry);
 			// 过滤,只有通过所有过滤器的筛选才算通过
 			for (ResourceFilter filter : filters) {
 				if (filter.accept(resource) == false) {
