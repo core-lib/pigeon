@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>payne.framework</groupId>
 		<artifactId>pigeon</artifactId>
-		<version>4.1.0-release</version>
+		<version>4.2.0-release</version>
 	</parent>
 	<artifactId>pigeon-client-android</artifactId>
 	<name>pigeon-client-android</name>
@@ -21,12 +21,18 @@
 		<dependency>
 			<groupId>payne.framework</groupId>
 			<artifactId>pigeon-client</artifactId>
-			<version>4.1.0-release</version>
+			<version>4.2.0-release</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.android</groupId>
 			<artifactId>android</artifactId>
-			<scope>provided</scope>
+			<version>4.1.1.4</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.httpcomponents</groupId>
+					<artifactId>httpclient</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 </project>
