@@ -43,6 +43,10 @@ public class AsynchronousNonBlockingInvocationContext extends HTTPInvocationCont
 		this.byteBufferSize = byteBufferSize;
 	}
 
+	public AsynchronousNonBlockingInvocationContext(Object... openables) {
+		super(openables);
+	}
+
 	public void run() {
 		try {
 			asynchronousChannelGroup = AsynchronousChannelGroup.withThreadPool(executor);

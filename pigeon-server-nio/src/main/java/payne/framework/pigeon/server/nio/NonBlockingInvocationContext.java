@@ -51,6 +51,10 @@ public class NonBlockingInvocationContext extends HTTPInvocationContext implemen
 		this.byteBufferSize = byteBufferSize;
 	}
 
+	public NonBlockingInvocationContext(Object... openables) {
+		super(openables);
+	}
+
 	public void run() {
 		try {
 			selector = Selector.open();

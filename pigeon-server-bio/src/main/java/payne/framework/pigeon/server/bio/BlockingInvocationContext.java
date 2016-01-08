@@ -30,6 +30,10 @@ import payne.framework.pigeon.server.exception.ContextRunningException;
 public class BlockingInvocationContext extends HTTPInvocationContext implements InvocationContext {
 	private ServerSocket server = null;
 
+	public BlockingInvocationContext(Object... openables) {
+		super(openables);
+	}
+
 	public void run() {
 		try {
 			server = new ServerSocket();

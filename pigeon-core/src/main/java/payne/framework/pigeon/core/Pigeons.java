@@ -135,7 +135,7 @@ public abstract class Pigeons {
 			return getOpenPath((String) object);
 		}
 		Open open = object.getClass().getAnnotation(Open.class);
-		return open == null || open.value().trim().equals("") ? "/" + object.getClass().getSimpleName() : ("/" + open.value().trim()).replaceAll("/+", "/");
+		return open == null || open.value().trim().equals("") ? "" : ("/" + open.value().trim()).replaceAll("/+", "/");
 	}
 
 	public static String getOpenPath(String string) {

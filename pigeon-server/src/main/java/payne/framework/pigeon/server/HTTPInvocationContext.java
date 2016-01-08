@@ -25,8 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import payne.framework.pigeon.core.Constants;
-import payne.framework.pigeon.core.Header;
 import payne.framework.pigeon.core.Framework;
+import payne.framework.pigeon.core.Header;
 import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.core.exception.CodedException;
 import payne.framework.pigeon.core.exception.UnmappedPathException;
@@ -49,7 +49,7 @@ import payne.framework.pigeon.server.exception.UnregulatedInterfaceException;
 public abstract class HTTPInvocationContext implements InvocationContext, Runnable, Filter<Channel>, Constants {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	protected SocketAddress address = new InetSocketAddress(9090);
+	protected SocketAddress address = new InetSocketAddress(8080);
 	protected int concurrent = 100;
 	protected ExecutorService executor;
 	protected BeanFactory beanFactory;
@@ -64,6 +64,12 @@ public abstract class HTTPInvocationContext implements InvocationContext, Runnab
 	protected Map<String, Object> attributes = new LinkedHashMap<String, Object>();
 	protected Set<Filter<Channel>> filters = new LinkedHashSet<Filter<Channel>>();
 	protected NotificationCenter notificationCenter = SharedNotificationCenter.getInstance();
+
+	public HTTPInvocationContext(Object... openables) {
+		for (Object openable : openables) {
+			this.openables.add(openable);
+		}
+	}
 
 	public void filtrate(Channel channel, FilterChain<Channel> chain) throws Exception {
 		InvocationProcessor processor = lookup(channel.getMode(), channel.getPath());

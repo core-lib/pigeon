@@ -29,8 +29,12 @@ public class Client implements Attributed, Transcoder {
 	protected Map<String, Object> attributes = new LinkedHashMap<String, Object>();
 	protected List<Interceptor> interceptors = new ArrayList<Interceptor>();
 
+	public Client() {
+		this("localhost");
+	}
+
 	public Client(String host) {
-		this(host, 80);
+		this(host, 8080);
 	}
 
 	public Client(String host, int port) {
@@ -43,6 +47,14 @@ public class Client implements Attributed, Transcoder {
 		}
 		this.host = host;
 		this.port = port;
+	}
+
+	public <T> T create(Class<T> interfase) throws Exception {
+		return build(interfase).getProxy();
+	}
+
+	public <T> Connection<T> build(Class<T> interfase) throws Exception {
+		return build("", interfase);
 	}
 
 	public <T> T create(String implementation, Class<T> interfase) throws Exception {
