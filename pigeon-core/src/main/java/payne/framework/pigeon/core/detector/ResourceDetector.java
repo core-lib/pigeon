@@ -13,12 +13,12 @@ import java.util.Set;
  * 
  * @author yangchangpei 646742615@qq.com
  *
- * @date 2016年1月8日 上午11:01:40
+ * @date 2016年1月8日 上午11:16:07
  *
  * @version 1.0.0
  */
-public interface ClassDetector {
+public interface ResourceDetector {
 
-	Set<Class<?>> detect(ClassFilter... filters) throws DetectorException;
+	Set<Resource> detect(ResourceFilter... filters) throws DetectorException;
 
 }

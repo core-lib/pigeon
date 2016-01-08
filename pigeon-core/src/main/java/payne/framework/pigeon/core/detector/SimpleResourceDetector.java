@@ -1,6 +1,7 @@
 package payne.framework.pigeon.core.detector;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
@@ -19,43 +20,43 @@ import java.util.jar.JarFile;
  * 
  * @author yangchangpei 646742615@qq.com
  *
- * @date 2015年11月8日 下午6:21:33
+ * @date 2016年1月8日 上午11:25:53
  *
  * @version 1.0.0
  */
-public class SimpleClassDetector implements ClassDetector {
+public class SimpleResourceDetector implements ResourceDetector {
 	private final String root;
 	private final boolean recursive;
 	private final ClassLoader classLoader;
 
-	public SimpleClassDetector() {
+	public SimpleResourceDetector() {
 		this("/");
 	}
 
-	public SimpleClassDetector(String root) {
+	public SimpleResourceDetector(String root) {
 		this(root, true);
 	}
 
-	public SimpleClassDetector(String root, boolean recursive) {
+	public SimpleResourceDetector(String root, boolean recursive) {
 		this(root, recursive, Thread.currentThread().getContextClassLoader());
 	}
 
-	public SimpleClassDetector(String root, boolean recursive, ClassLoader classLoader) {
+	public SimpleResourceDetector(String root, boolean recursive, ClassLoader classLoader) {
 		super();
 		this.root = root.replaceAll("\\.+", "/");
 		this.recursive = recursive;
 		this.classLoader = classLoader;
 	}
 
-	public Set<Class<?>> detect(ClassFilter... filters) throws DetectorException {
+	public Set<Resource> detect(ResourceFilter... filters) throws DetectorException {
 		try {
-			Set<Class<?>> classes = new LinkedHashSet<Class<?>>();
+			Set<Resource> resources = new LinkedHashSet<Resource>();
 			Enumeration<URL> enumeration = classLoader.getResources(root);
 			while (enumeration != null && enumeration.hasMoreElements()) {
 				URL url = enumeration.nextElement();
 				// 如果是文件
 				if ("file".equals(url.getProtocol())) {
-					classes.addAll(detect(new File(url.getFile()), filters));
+					resources.addAll(detect(new File(url.getFile()), filters));
 				}
 				// 如果是jar包
 				else if ("jar".equals(url.getProtocol())) {
@@ -64,7 +65,7 @@ public class SimpleClassDetector implements ClassDetector {
 					JarFile jar = null;
 					try {
 						jar = new JarFile(path);
-						classes.addAll(detect(jar, filters));
+						resources.addAll(detect(jar, filters));
 					} finally {
 						jar.close();
 					}
@@ -74,58 +75,50 @@ public class SimpleClassDetector implements ClassDetector {
 					continue;
 				}
 			}
-			return classes;
-		} catch (Exception e) {
+			return resources;
+		} catch (IOException e) {
 			throw new DetectorException(e);
 		}
+
 	}
 
-	protected Set<Class<?>> detect(File file, ClassFilter... filters) throws ClassNotFoundException {
-		Set<Class<?>> classes = new LinkedHashSet<Class<?>>();
+	protected Set<? extends Resource> detect(final File file, ResourceFilter... filters) throws IOException {
+		Set<Resource> resources = new LinkedHashSet<Resource>();
 		// 如果是目录而且递归查找
 		if (file.isDirectory() && recursive) {
 			for (File subfile : file.listFiles()) {
-				classes.addAll(detect(subfile, filters));
+				resources.addAll(detect(subfile, filters));
 			}
 		}
-		// 如果是文件而且以.class结尾
-		else if (file.isFile() && file.getName().endsWith(".class")) {
-			String path = file.getPath();
-			// 转换成类名
-			String className = path.substring(path.indexOf(root), path.lastIndexOf(".class")).replaceAll("\\/+", ".");
-			// 加载字节码
-			Class<?> clazz = classLoader.loadClass(className);
-			// 过滤,只有通过所有过滤器的筛选才算通过
-			for (ClassFilter filter : filters) {
-				if (!filter.accept(clazz)) {
-					return classes;
+		// 如果是文件
+		else if (file.isFile()) {
+			Resource resource = new Resource(file.getName(), new FileStreamOpener(file));
+			for (ResourceFilter filter : filters) {
+				if (filter.accept(resource) == false) {
+					return resources;
 				}
 			}
-			classes.add(clazz);
+			resources.add(resource);
 		}
-		return classes;
+		return resources;
 	}
 
-	protected Set<Class<?>> detect(JarFile jar, ClassFilter... filters) throws ClassNotFoundException {
-		Set<Class<?>> classes = new LinkedHashSet<Class<?>>();
+	protected Set<? extends Resource> detect(JarFile jar, ResourceFilter... filters) {
+		Set<Resource> resources = new LinkedHashSet<Resource>();
 		Enumeration<JarEntry> entries = jar.entries();
 		flag: while (entries != null && entries.hasMoreElements()) {
 			JarEntry entry = entries.nextElement();
 			String name = entry.getName();
-			if (!name.endsWith(".class")) {
-				continue;
-			}
-			String className = name.replaceAll("\\/+", ".").substring(0, name.lastIndexOf(".class"));
-			Class<?> clazz = classLoader.loadClass(className);
+			Resource resource = new Resource(name, new JarEntryStreamOpener(jar, entry));
 			// 过滤,只有通过所有过滤器的筛选才算通过
-			for (ClassFilter filter : filters) {
-				if (!filter.accept(clazz)) {
+			for (ResourceFilter filter : filters) {
+				if (filter.accept(resource) == false) {
 					continue flag;
 				}
 			}
-			classes.add(clazz);
+			resources.add(resource);
 		}
-		return classes;
+		return resources;
 	}
 
 	public String getRoot() {

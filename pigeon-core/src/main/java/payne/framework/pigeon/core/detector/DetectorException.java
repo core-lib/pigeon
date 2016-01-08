@@ -1,5 +1,7 @@
 package payne.framework.pigeon.core.detector;
 
+import java.io.IOException;
+
 /**
  * <p>
  * Description:
@@ -15,22 +17,22 @@ package payne.framework.pigeon.core.detector;
  *
  * @version 1.0.0
  */
-public class ClassDetectorException extends Exception {
+public class DetectorException extends IOException {
 	private static final long serialVersionUID = -3085416459682626800L;
 
-	public ClassDetectorException() {
+	public DetectorException() {
 		super();
 	}
 
-	public ClassDetectorException(String message, Throwable cause) {
+	public DetectorException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
-	public ClassDetectorException(String message) {
+	public DetectorException(String message) {
 		super(message);
 	}
 
-	public ClassDetectorException(Throwable cause) {
+	public DetectorException(Throwable cause) {
 		super(cause);
 	}
 

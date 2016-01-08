@@ -3,7 +3,7 @@ package payne.framework.pigeon.core.factory.bean;
 import java.io.IOException;
 import java.util.Properties;
 
-public class PrototypeBeanFactory extends ConfigurationBeanFactory {
+public class PrototypeBeanFactory extends ConfigurableBeanFactory {
 
 	public PrototypeBeanFactory() throws IOException {
 		super();

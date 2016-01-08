@@ -1,6 +1,7 @@
 package payne.framework.pigeon.core.detector;
 
-import java.util.Set;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * <p>
@@ -13,12 +14,12 @@ import java.util.Set;
  * 
  * @author yangchangpei 646742615@qq.com
  *
- * @date 2016年1月8日 上午11:01:40
+ * @date 2016年1月8日 下午3:02:43
  *
  * @version 1.0.0
  */
-public interface ClassDetector {
+public interface StreamOpener {
 
-	Set<Class<?>> detect(ClassFilter... filters) throws DetectorException;
+	InputStream open() throws IOException;
 
 }

@@ -1,6 +1,5 @@
 package payne.framework.pigeon.core.detector;
 
-import java.util.Set;
 
 /**
  * <p>
@@ -13,12 +12,12 @@ import java.util.Set;
  * 
  * @author yangchangpei 646742615@qq.com
  *
- * @date 2016年1月8日 上午11:01:40
+ * @date 2016年1月8日 上午11:16:26
  *
  * @version 1.0.0
  */
-public interface ClassDetector {
+public interface ResourceFilter {
 
-	Set<Class<?>> detect(ClassFilter... filters) throws DetectorException;
+	boolean accept(Resource resource);
 
 }

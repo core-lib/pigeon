@@ -12,54 +12,54 @@ import org.springframework.context.ApplicationContextAware;
 import payne.framework.pigeon.core.exception.BeanInitializeException;
 import payne.framework.pigeon.core.exception.InexistentBeanException;
 import payne.framework.pigeon.core.factory.bean.BeanFactory;
-import payne.framework.pigeon.core.factory.bean.ConfigurationBeanFactory;
+import payne.framework.pigeon.core.factory.bean.ConfigurableBeanFactory;
 import payne.framework.pigeon.core.factory.bean.SingletonBeanFactory;
 
 public class SpringBeanFactory implements BeanFactory, ApplicationContextAware {
 	private ApplicationContext applicationContext;
 
-	private String[] beanConfigurationPaths;
-	private ConfigurationBeanFactory configurationBeanFactory;
+	private String[] configLocations;
+	private ConfigurableBeanFactory configurableBeanFactory;
 
 	public SpringBeanFactory() throws IOException {
 		this("pigeon.properties");
 	}
 
-	public SpringBeanFactory(String... beanConfigurationPaths) {
-		this.beanConfigurationPaths = beanConfigurationPaths;
+	public SpringBeanFactory(String... configLocations) {
+		this.configLocations = configLocations;
 	}
 
 	public SpringBeanFactory(ApplicationContext applicationContext) {
 		this.setApplicationContext(applicationContext);
 	}
 
-	public SpringBeanFactory(ApplicationContext applicationContext, String... beanConfigurationPaths) {
-		this(beanConfigurationPaths);
+	public SpringBeanFactory(ApplicationContext applicationContext, String... configLocations) {
+		this(configLocations);
 		this.setApplicationContext(applicationContext);
 	}
 
 	public boolean contains(String name) {
-		return applicationContext.containsBean(name) || configurationBeanFactory.contains(name);
+		return applicationContext.containsBean(name) || configurableBeanFactory.contains(name);
 	}
 
 	public <T> T get(Class<T> type) throws InexistentBeanException, BeanInitializeException {
 		try {
 			return applicationContext.getBean(type);
 		} catch (BeansException e) {
-			return configurationBeanFactory.get(type);
+			return configurableBeanFactory.get(type);
 		}
 	}
 
 	public <T> T establish(Class<T> type) throws InexistentBeanException, BeanInitializeException {
-		return configurationBeanFactory.establish(type);
+		return configurableBeanFactory.establish(type);
 	}
 
 	public String value(String name) {
-		return configurationBeanFactory.value(name);
+		return configurableBeanFactory.value(name);
 	}
 
-	public String value(String name, String _default) {
-		return configurationBeanFactory.value(name, _default);
+	public String value(String name, String defaultValue) {
+		return configurableBeanFactory.value(name, defaultValue);
 	}
 
 	public <T> T get(String name, Class<T> type) throws InexistentBeanException {
@@ -67,7 +67,7 @@ public class SpringBeanFactory implements BeanFactory, ApplicationContextAware {
 			if (applicationContext.containsBean(name)) {
 				return type.cast(applicationContext.getBean(name));
 			} else {
-				return configurationBeanFactory.get(name, type);
+				return configurableBeanFactory.get(name, type);
 			}
 		} catch (Exception e) {
 			throw new InexistentBeanException(e, type, name);
@@ -75,30 +75,30 @@ public class SpringBeanFactory implements BeanFactory, ApplicationContextAware {
 	}
 
 	public <T> T establish(String name, Class<T> type) throws InexistentBeanException, BeanInitializeException, ClassNotFoundException {
-		return configurationBeanFactory.establish(name, type);
+		return configurableBeanFactory.establish(name, type);
 	}
 
 	public <T> Map<String, T> find(Class<T> type) throws InexistentBeanException, BeanInitializeException {
 		Map<String, T> map = applicationContext.getBeansOfType(type, true, true);
-		Map<String, T> m = configurationBeanFactory.find(type);
+		Map<String, T> m = configurableBeanFactory.find(type);
 		map.putAll(m);
 		return map;
 	}
 
-	public String[] getBeanConfigurationPaths() {
-		return beanConfigurationPaths;
+	public String[] getConfigLocations() {
+		return configLocations;
 	}
 
-	public void setBeanConfigurationPath(String[] beanConfigurationPaths) {
-		this.beanConfigurationPaths = beanConfigurationPaths;
+	public void setConfigLocations(String[] configLocations) {
+		this.configLocations = configLocations;
 	}
 
-	public ConfigurationBeanFactory getConfigurationBeanFactory() {
-		return configurationBeanFactory;
+	public ConfigurableBeanFactory getConfigurableBeanFactory() {
+		return configurableBeanFactory;
 	}
 
-	public void setConfigurationBeanFactory(ConfigurationBeanFactory configurationBeanFactory) {
-		this.configurationBeanFactory = configurationBeanFactory;
+	public void setConfigurableBeanFactory(ConfigurableBeanFactory configurableBeanFactory) {
+		this.configurableBeanFactory = configurableBeanFactory;
 	}
 
 	public ApplicationContext getApplicationContext() {
@@ -108,9 +108,9 @@ public class SpringBeanFactory implements BeanFactory, ApplicationContextAware {
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 		try {
-			configurationBeanFactory = configurationBeanFactory != null ? configurationBeanFactory : new SingletonBeanFactory(applicationContext.getClassLoader(), beanConfigurationPaths);
+			configurableBeanFactory = configurableBeanFactory != null ? configurableBeanFactory : new SingletonBeanFactory(applicationContext.getClassLoader(), configLocations);
 		} catch (IOException e) {
-			throw new BeanCreationException("count not initialize SpringBeanFactory with properties path : " + Arrays.toString(beanConfigurationPaths), e);
+			throw new BeanCreationException("count not initialize SpringBeanFactory with properties path : " + Arrays.toString(configLocations), e);
 		}
 	}
 

@@ -11,7 +11,7 @@ package payne.framework.pigeon.core.detector;
  * 
  * @author yangchangpei 646742615@qq.com
  *
- * @date 2015年11月8日 下午6:18:33
+ * @date 2016年1月8日 上午11:01:55
  *
  * @version 1.0.0
  */

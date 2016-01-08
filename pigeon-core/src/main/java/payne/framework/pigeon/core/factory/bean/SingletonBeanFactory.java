@@ -8,7 +8,7 @@ import java.util.Properties;
 import payne.framework.pigeon.core.exception.BeanInitializeException;
 import payne.framework.pigeon.core.exception.InexistentBeanException;
 
-public class SingletonBeanFactory extends ConfigurationBeanFactory implements BeanFactory {
+public class SingletonBeanFactory extends ConfigurableBeanFactory implements BeanFactory {
 	private Map<Class<?>, Object> cache = new HashMap<Class<?>, Object>();
 
 	public SingletonBeanFactory() throws IOException {
