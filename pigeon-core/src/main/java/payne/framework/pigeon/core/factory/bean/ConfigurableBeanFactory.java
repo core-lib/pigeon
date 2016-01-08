@@ -77,7 +77,7 @@ public abstract class ConfigurableBeanFactory implements BeanFactory, ResourceFi
 
 	public boolean contains(String name) {
 		for (Configuration configuration : configurations) {
-			if (configuration.properties.contains(name)) {
+			if (configuration.properties.containsKey(name)) {
 				return true;
 			}
 		}
@@ -98,7 +98,7 @@ public abstract class ConfigurableBeanFactory implements BeanFactory, ResourceFi
 
 	public String value(String name) {
 		for (Configuration configuration : configurations) {
-			if (configuration.properties.contains(name)) {
+			if (configuration.properties.containsKey(name)) {
 				return configuration.properties.getProperty(name);
 			}
 		}
@@ -107,7 +107,7 @@ public abstract class ConfigurableBeanFactory implements BeanFactory, ResourceFi
 
 	public String value(String name, String defaultValue) {
 		for (Configuration configuration : configurations) {
-			if (configuration.properties.contains(name)) {
+			if (configuration.properties.containsKey(name)) {
 				return configuration.properties.getProperty(name);
 			}
 		}
