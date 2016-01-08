@@ -1,19 +1,18 @@
 package payne.framework.pigeon.core.factory.bean;
 
-import java.io.IOException;
 import java.util.Properties;
 
 public class PrototypeBeanFactory extends ConfigurableBeanFactory {
 
-	public PrototypeBeanFactory() throws IOException {
+	public PrototypeBeanFactory() {
 		super();
 	}
 
-	public PrototypeBeanFactory(ClassLoader classLoader, String... paths) throws IOException {
-		super(classLoader, paths);
+	public PrototypeBeanFactory(ClassLoader classLoader, String... configLocations) {
+		super(classLoader, configLocations);
 	}
 
-	public PrototypeBeanFactory(ClassLoader classLoader) throws IOException {
+	public PrototypeBeanFactory(ClassLoader classLoader) {
 		super(classLoader);
 	}
 
@@ -25,8 +24,8 @@ public class PrototypeBeanFactory extends ConfigurableBeanFactory {
 		super(properties);
 	}
 
-	public PrototypeBeanFactory(String... paths) throws IOException {
-		super(paths);
+	public PrototypeBeanFactory(String... configLocations) {
+		super(configLocations);
 	}
 
 }

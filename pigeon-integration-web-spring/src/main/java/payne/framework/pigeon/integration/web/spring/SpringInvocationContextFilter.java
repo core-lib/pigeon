@@ -35,16 +35,16 @@ import payne.framework.pigeon.server.InvocationProcessorRegistry;
  * @version 1.0.0
  */
 public class SpringInvocationContextFilter extends WebInvocationContextFilter implements InvocationContext, Filter, ClassFilter {
-	public static final String BEAN_CONFIGURATION_PATH = "bean-configuration-path";
+	public static final String CONFIG_LOCATION = "config-location";
 
 	@Override
 	public void init(FilterConfig config) throws ServletException {
 		try {
 			this.charset = config.getInitParameter(CHARSET) == null ? "UTF-8" : config.getInitParameter(CHARSET);
-			String beanConfigurationPath = config.getInitParameter(BEAN_CONFIGURATION_PATH);
-			beanConfigurationPath = beanConfigurationPath == null ? "pigeon.properties" : beanConfigurationPath;
+			String configLocation = config.getInitParameter(CONFIG_LOCATION);
+			configLocation = configLocation == null ? "pigeon" : configLocation;
 			ApplicationContext applicationContext = (ApplicationContext) config.getServletContext().getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
-			beanFactory = new SpringBeanFactory(applicationContext, beanConfigurationPath);
+			beanFactory = new SpringBeanFactory(applicationContext, configLocation);
 			streamFactory = config.getInitParameter(STREAM_FACTORY) == null ? new InternalStreamFactory() : (StreamFactory) Class.forName(config.getInitParameter(STREAM_FACTORY)).newInstance();
 			String registry = config.getInitParameter(REGISTRY);
 			invocationProcessorRegistry = registry == null ? new DefaultInvocationProcessorRegistry(beanFactory, streamFactory) : (InvocationProcessorRegistry) Class.forName(registry).newInstance();

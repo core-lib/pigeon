@@ -1,12 +1,10 @@
 package payne.framework.pigeon.client;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import payne.framework.pigeon.core.Attributed;
 import payne.framework.pigeon.core.Interceptor;
@@ -19,106 +17,41 @@ import payne.framework.pigeon.core.factory.stream.InternalStreamFactory;
 import payne.framework.pigeon.core.factory.stream.StreamFactory;
 
 public class Client implements Attributed, Transcoder {
+	protected String protocol = "HTTP/1.1";
 	protected String host;
-	protected int port;
-	protected int timeout;
-	protected ClassLoader classLoader;
-	protected BeanFactory beanFactory;
-	protected StreamFactory streamFactory;
-
+	protected int port = 80;
+	protected int timeout = 10 * 1000;
+	protected String format = "application/x-java-serialized-object";
+	protected ClassLoader classLoader = Client.class.getClassLoader();
+	protected BeanFactory beanFactory = new SingletonBeanFactory();
+	protected StreamFactory streamFactory = new InternalStreamFactory();
 	protected String charset = Charset.defaultCharset().name();
 	protected Map<String, Object> attributes = new LinkedHashMap<String, Object>();
+	protected List<Interceptor> interceptors = new ArrayList<Interceptor>();
 
-	public Client(String host, int port) throws IOException {
-		this(host, port, "pigeon");
+	public Client(String host) {
+		super();
+		this.host = host;
 	}
 
-	public Client(String host, int port, Properties properties) {
-		this(host, port, new SingletonBeanFactory(properties));
-	}
-
-	public Client(String host, int port, String... beanConfigurationPaths) throws IOException {
-		this(host, port, new SingletonBeanFactory(beanConfigurationPaths));
-	}
-
-	public Client(String host, int port, BeanFactory beanFactory) {
-		this(host, port, beanFactory, new InternalStreamFactory());
-	}
-
-	public Client(String host, int port, StreamFactory streamFactory) throws IOException {
-		this(host, port, Thread.currentThread().getContextClassLoader(), new SingletonBeanFactory(), streamFactory);
-	}
-
-	public Client(String host, int port, BeanFactory beanFactory, StreamFactory streamFactory) {
-		this(host, port, Thread.currentThread().getContextClassLoader(), beanFactory, streamFactory);
-	}
-
-	public Client(String host, int port, ClassLoader classLoader, BeanFactory beanFactory, StreamFactory streamFactory) {
-		this(host, port, 2 * 1000, classLoader, beanFactory, streamFactory);
-	}
-
-	public Client(String host, int port, int timeout) throws IOException {
-		this(host, port, timeout, "pigeon");
-	}
-
-	public Client(String host, int port, int timeout, Properties properties) {
-		this(host, port, timeout, new SingletonBeanFactory(properties));
-	}
-
-	public Client(String host, int port, int timeout, String... beanConfigurationPaths) throws IOException {
-		this(host, port, timeout, new SingletonBeanFactory(beanConfigurationPaths));
-	}
-
-	public Client(String host, int port, int timeout, BeanFactory beanFactory) {
-		this(host, port, timeout, beanFactory, new InternalStreamFactory());
-	}
-
-	public Client(String host, int port, int timeout, StreamFactory streamFactory) throws IOException {
-		this(host, port, timeout, Thread.currentThread().getContextClassLoader(), new SingletonBeanFactory(), streamFactory);
-	}
-
-	public Client(String host, int port, int timeout, BeanFactory beanFactory, StreamFactory streamFactory) {
-		this(host, port, timeout, Thread.currentThread().getContextClassLoader(), beanFactory, streamFactory);
-	}
-
-	public Client(String host, int port, int timeout, ClassLoader classLoader, BeanFactory beanFactory, StreamFactory streamFactory) {
-		if (port < 0 || port > 65535) {
-			throw new IllegalArgumentException("port must between 0 and 65535");
-		}
-		if (timeout <= 0) {
-			throw new IllegalArgumentException("connect timeout must larger than zero");
-		}
+	public Client(String host, int port) {
+		super();
 		this.host = host;
 		this.port = port;
-		this.timeout = timeout;
-		this.classLoader = classLoader;
-		this.beanFactory = beanFactory;
-		this.streamFactory = streamFactory;
 	}
 
-	public <T> T create(String protocol, String format, String implementation, Class<T> interfase, Interceptor... interceptors) throws Exception {
-		return create(protocol, format, implementation, interfase, new LinkedHashSet<Interceptor>(Arrays.asList(interceptors)));
+	public <T> T create(String implementation, Class<T> interfase) throws Exception {
+		return build(implementation, interfase).getProxy();
 	}
 
-	public <T> T create(String protocol, String format, String implementation, Class<T> interfase, LinkedHashSet<Interceptor> interceptors) throws Exception {
-		return build(protocol, format, implementation, interfase, interceptors).getProxy();
-	}
-
-	public <T> Connection<T> build(String protocol, String format, String implementation, Class<T> interfase, Interceptor... interceptors) throws Exception {
-		return build(protocol, format, implementation, interfase, new LinkedHashSet<Interceptor>(Arrays.asList(interceptors)));
-	}
-
-	public <T> Connection<T> build(String protocol, String format, String implementation, Class<T> interfase, LinkedHashSet<Interceptor> interceptors) throws Exception {
+	public <T> Connection<T> build(String implementation, Class<T> interfase) throws Exception {
 		if (!beanFactory.contains(protocol)) {
 			throw new UnsupportedChannelException(protocol);
 		}
-
 		if (!beanFactory.contains(format)) {
 			throw new UnsupportedFormatException(format);
 		}
-
-		Connection<T> connection = new Connection<T>(this, protocol, format, implementation, interfase, new LinkedHashSet<Interceptor>(interceptors), beanFactory, streamFactory);
-
+		Connection<T> connection = new Connection<T>(this, implementation, interfase);
 		return connection;
 	}
 
@@ -136,6 +69,14 @@ public class Client implements Attributed, Transcoder {
 
 	public Map<String, Object> getAttributes() {
 		return attributes;
+	}
+
+	public String getProtocol() {
+		return protocol;
+	}
+
+	public void setProtocol(String protocol) {
+		this.protocol = protocol;
 	}
 
 	public String getHost() {
@@ -160,6 +101,14 @@ public class Client implements Attributed, Transcoder {
 
 	public void setTimeout(int timeout) {
 		this.timeout = timeout;
+	}
+
+	public String getFormat() {
+		return format;
+	}
+
+	public void setFormat(String format) {
+		this.format = format;
 	}
 
 	public ClassLoader getClassLoader() {
@@ -192,6 +141,14 @@ public class Client implements Attributed, Transcoder {
 
 	public void setCharset(String charset) {
 		this.charset = charset;
+	}
+
+	public List<Interceptor> getInterceptors() {
+		return interceptors;
+	}
+
+	public void setInterceptors(List<Interceptor> interceptors) {
+		this.interceptors = interceptors;
 	}
 
 }

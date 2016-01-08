@@ -12,17 +12,18 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
 import payne.framework.pigeon.client.exception.NonopenMethodException;
 import payne.framework.pigeon.core.Constants;
+import payne.framework.pigeon.core.Framework;
 import payne.framework.pigeon.core.Header;
 import payne.framework.pigeon.core.Interceptor;
 import payne.framework.pigeon.core.Invocation;
 import payne.framework.pigeon.core.Pigeons;
-import payne.framework.pigeon.core.Framework;
 import payne.framework.pigeon.core.annotation.Correspond;
 import payne.framework.pigeon.core.annotation.Open;
 import payne.framework.pigeon.core.exception.RemoteMethodException;
@@ -46,31 +47,30 @@ public class Connection<T> implements InvocationHandler, Interceptor, Filter<Cha
 	protected final int port;
 	protected final int timeout;
 	protected final Class<T> interfase;
-	protected final LinkedHashSet<Interceptor> interceptors;
+	protected final List<Interceptor> interceptors;
 	protected final Open open;
 	protected final BeanFactory beanFactory;
 	protected final Map<Method, TreeMap<Class<? extends Annotation>, Step>> processings;
 	protected final Map<Method, Method> correspondences;
 	protected final StreamFactory streamFactory;
-
 	protected final Set<Filter<Channel>> filters = new LinkedHashSet<Filter<Channel>>();
 	protected final T proxy;
 
-	public Connection(Client client, String protocol, String format, String implementation, Class<T> i, LinkedHashSet<Interceptor> is, BeanFactory beanFactory, StreamFactory sf) throws Exception {
+	public Connection(Client client, String implementation, Class<T> interfase) throws Exception {
 		super();
 		this.client = client;
-		this.protocol = protocol;
-		this.format = format;
+		this.protocol = client.protocol;
+		this.host = client.host;
+		this.port = client.port;
+		this.timeout = client.timeout;
+		this.format = client.format;
 		this.implementation = implementation;
-		this.host = client.getHost();
-		this.port = client.getPort();
-		this.timeout = client.getTimeout();
-		this.interfase = i;
-		this.interceptors = new LinkedHashSet<Interceptor>(is);
+		this.interfase = interfase;
+		this.interceptors = new ArrayList<Interceptor>(client.interceptors);
 		this.interceptors.add(this);
-		this.beanFactory = beanFactory;
-		this.streamFactory = sf;
-		this.open = i.getAnnotation(Open.class);
+		this.beanFactory = client.beanFactory;
+		this.streamFactory = client.streamFactory;
+		this.open = interfase.getAnnotation(Open.class);
 		this.processings = new HashMap<Method, TreeMap<Class<? extends Annotation>, Step>>();
 		this.correspondences = new HashMap<Method, Method>();
 		Set<Method> set = interfase.isAnnotationPresent(Correspond.class) ? Pigeons.getInterfaceDeclaredOpenableMethods(interfase.getAnnotation(Correspond.class).value()) : new HashSet<Method>();
@@ -149,7 +149,8 @@ public class Connection<T> implements InvocationHandler, Interceptor, Filter<Cha
 			header.setHost(host + (port == 80 ? "" : ":" + port));
 			header.setPragma("no-cache");
 			header.setCacheControl("no-cache");
-			header.setUserAgent(Framework.getCurrent().getName() + "/" + Framework.getCurrent().getCode() + "[" + System.getProperty("user.language") + "]" + "(" + System.getProperty("os.name") + " " + System.getProperty("os.version") + ")");
+			header.setUserAgent(Framework.getCurrent().getName() + "/" + Framework.getCurrent().getCode() + "[" + System.getProperty("user.language") + "]" + "(" + System.getProperty("os.name") + " " + System.getProperty("os.version")
+					+ ")");
 
 			Invocation invocation = new Invocation();
 			invocation.setClientHeader(header);
@@ -214,7 +215,7 @@ public class Connection<T> implements InvocationHandler, Interceptor, Filter<Cha
 		return interfase;
 	}
 
-	public LinkedHashSet<Interceptor> getInterceptors() {
+	public List<Interceptor> getInterceptors() {
 		return interceptors;
 	}
 

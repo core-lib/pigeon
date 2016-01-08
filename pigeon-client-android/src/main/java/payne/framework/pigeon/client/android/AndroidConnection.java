@@ -2,15 +2,11 @@ package payne.framework.pigeon.client.android;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 
 import payne.framework.pigeon.client.Connection;
 import payne.framework.pigeon.client.exception.NonopenMethodException;
 import payne.framework.pigeon.core.Callback;
-import payne.framework.pigeon.core.Interceptor;
 import payne.framework.pigeon.core.Pigeons;
-import payne.framework.pigeon.core.factory.bean.BeanFactory;
-import payne.framework.pigeon.core.factory.stream.StreamFactory;
 import android.os.AsyncTask;
 
 /**
@@ -30,8 +26,8 @@ import android.os.AsyncTask;
  */
 public class AndroidConnection<T> extends Connection<T> {
 
-	public AndroidConnection(AndroidClient client, String protocol, String format, String implementation, Class<T> i, LinkedHashSet<Interceptor> is, BeanFactory beanFactory, StreamFactory sf) throws Exception {
-		super(client, protocol, format, implementation, i, is, beanFactory, sf);
+	public AndroidConnection(AndroidClient client, String implementation, Class<T> interfase) throws Exception {
+		super(client, implementation, interfase);
 	}
 
 	@Override

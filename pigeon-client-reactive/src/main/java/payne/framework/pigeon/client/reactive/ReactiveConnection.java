@@ -1,12 +1,12 @@
-package payne.framework.pigeon.client.async;
+package payne.framework.pigeon.client.reactive;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 import payne.framework.pigeon.client.Connection;
 import payne.framework.pigeon.client.exception.NonopenMethodException;
-import payne.framework.pigeon.core.Callback;
 import payne.framework.pigeon.core.Pigeons;
+import rx.Observable;
+import rx.Subscriber;
 
 /**
  * <p>
@@ -23,9 +23,9 @@ import payne.framework.pigeon.core.Pigeons;
  *
  * @version 1.0.0
  */
-public class AsyncConnection<T> extends Connection<T> {
+public class ReactiveConnection<T> extends Connection<T> {
 
-	public AsyncConnection(AsyncClient client, String implementation, Class<T> interfase) throws Exception {
+	public ReactiveConnection(ReactiveClient client, String implementation, Class<T> interfase) throws Exception {
 		super(client, implementation, interfase);
 	}
 
@@ -38,33 +38,19 @@ public class AsyncConnection<T> extends Connection<T> {
 			}
 			throw new NonopenMethodException(interfase, method, arguments);
 		}
-		AsyncClient ac = (AsyncClient) client;
-		ac.getExecutor().execute(new Runnable() {
+		return Observable.create(new Observable.OnSubscribe<Object>() {
 
-			public void run() {
-				@SuppressWarnings("unchecked")
-				Callback<Object> callback = (Callback<Object>) arguments[arguments.length - 1];
-				callback = callback == null ? Callback.DEFAULT : callback;
-				Object result = null;
-				Throwable throwable = null;
+			public void call(Subscriber<Object> subscriber) {
 				try {
-					result = AsyncConnection.super.invoke(proxy, method, Arrays.copyOf(arguments, arguments.length - 1));
+					subscriber.onNext(ReactiveConnection.super.invoke(proxy, method, arguments));
 				} catch (Throwable e) {
-					throwable = e;
-				}
-				try {
-					if (throwable == null) {
-						callback.onSuccess(result);
-					} else {
-						callback.onFail(throwable);
-					}
+					subscriber.onError(e);
 				} finally {
-					callback.onCompleted(throwable == null, result, throwable);
+					subscriber.onCompleted();
 				}
 			}
 
 		});
-		return null;
 	}
 
 }

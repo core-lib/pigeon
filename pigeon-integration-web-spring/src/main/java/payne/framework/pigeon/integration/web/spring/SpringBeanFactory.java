@@ -1,11 +1,8 @@
 package payne.framework.pigeon.integration.web.spring;
 
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.Map;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -21,8 +18,8 @@ public class SpringBeanFactory implements BeanFactory, ApplicationContextAware {
 	private String[] configLocations;
 	private ConfigurableBeanFactory configurableBeanFactory;
 
-	public SpringBeanFactory() throws IOException {
-		this("pigeon.properties");
+	public SpringBeanFactory() {
+		this("pigeon");
 	}
 
 	public SpringBeanFactory(String... configLocations) {
@@ -107,11 +104,7 @@ public class SpringBeanFactory implements BeanFactory, ApplicationContextAware {
 
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
-		try {
-			configurableBeanFactory = configurableBeanFactory != null ? configurableBeanFactory : new SingletonBeanFactory(applicationContext.getClassLoader(), configLocations);
-		} catch (IOException e) {
-			throw new BeanCreationException("count not initialize SpringBeanFactory with properties path : " + Arrays.toString(configLocations), e);
-		}
+		this.configurableBeanFactory = configurableBeanFactory != null ? configurableBeanFactory : new SingletonBeanFactory(applicationContext.getClassLoader(), configLocations);
 	}
 
 }

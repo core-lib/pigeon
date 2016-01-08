@@ -1,6 +1,5 @@
 package payne.framework.pigeon.core.factory.bean;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -11,15 +10,15 @@ import payne.framework.pigeon.core.exception.InexistentBeanException;
 public class SingletonBeanFactory extends ConfigurableBeanFactory implements BeanFactory {
 	private Map<Class<?>, Object> cache = new HashMap<Class<?>, Object>();
 
-	public SingletonBeanFactory() throws IOException {
+	public SingletonBeanFactory() {
 		super();
 	}
 
-	public SingletonBeanFactory(ClassLoader classLoader, String... paths) throws IOException {
-		super(classLoader, paths);
+	public SingletonBeanFactory(ClassLoader classLoader, String... configLocations) {
+		super(classLoader, configLocations);
 	}
 
-	public SingletonBeanFactory(ClassLoader classLoader) throws IOException {
+	public SingletonBeanFactory(ClassLoader classLoader) {
 		super(classLoader);
 	}
 
@@ -31,8 +30,8 @@ public class SingletonBeanFactory extends ConfigurableBeanFactory implements Bea
 		super(properties);
 	}
 
-	public SingletonBeanFactory(String... paths) throws IOException {
-		super(paths);
+	public SingletonBeanFactory(String... configLocations) {
+		super(configLocations);
 	}
 
 	@Override
