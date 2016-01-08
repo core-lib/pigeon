@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import payne.framework.pigeon.core.Constants;
 import payne.framework.pigeon.core.Header;
-import payne.framework.pigeon.core.Version;
+import payne.framework.pigeon.core.Framework;
 import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.core.exception.CodedException;
 import payne.framework.pigeon.core.exception.UnmappedPathException;
@@ -295,7 +295,7 @@ public abstract class HTTPInvocationContext implements InvocationContext, Runnab
 				header.setDate(new Date());
 				header.setCharset(Charset.defaultCharset().name());
 				header.setContentType("text/plain");
-				header.setServer(Version.getCurrent().getName() + "/" + Version.getCurrent().getCode() + "(" + System.getProperty("os.name") + " " + System.getProperty("os.version") + ")");
+				header.setServer(Framework.getCurrent().getName() + "/" + Framework.getCurrent().getCode() + "(" + System.getProperty("os.name") + " " + System.getProperty("os.version") + ")");
 				header.setContentLength(_in.available());
 
 				IOToolkit.writeLine(head.getProtocol() + " " + code + (reason != null ? " " + reason : ""), out);

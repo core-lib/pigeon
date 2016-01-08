@@ -22,7 +22,7 @@ import payne.framework.pigeon.core.Header;
 import payne.framework.pigeon.core.Interceptor;
 import payne.framework.pigeon.core.Invocation;
 import payne.framework.pigeon.core.Pigeons;
-import payne.framework.pigeon.core.Version;
+import payne.framework.pigeon.core.Framework;
 import payne.framework.pigeon.core.annotation.Correspond;
 import payne.framework.pigeon.core.annotation.Open;
 import payne.framework.pigeon.core.exception.RemoteMethodException;
@@ -149,7 +149,7 @@ public class Connection<T> implements InvocationHandler, Interceptor, Filter<Cha
 			header.setHost(host + (port == 80 ? "" : ":" + port));
 			header.setPragma("no-cache");
 			header.setCacheControl("no-cache");
-			header.setUserAgent(Version.getCurrent().getName() + "/" + Version.getCurrent().getCode() + "[" + System.getProperty("user.language") + "]" + "(" + System.getProperty("os.name") + " " + System.getProperty("os.version") + ")");
+			header.setUserAgent(Framework.getCurrent().getName() + "/" + Framework.getCurrent().getCode() + "[" + System.getProperty("user.language") + "]" + "(" + System.getProperty("os.name") + " " + System.getProperty("os.version") + ")");
 
 			Invocation invocation = new Invocation();
 			invocation.setClientHeader(header);

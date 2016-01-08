@@ -16,7 +16,7 @@ import payne.framework.pigeon.core.Interceptor;
 import payne.framework.pigeon.core.Invocation;
 import payne.framework.pigeon.core.Path;
 import payne.framework.pigeon.core.Pigeons;
-import payne.framework.pigeon.core.Version;
+import payne.framework.pigeon.core.Framework;
 import payne.framework.pigeon.core.annotation.Accept;
 import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.core.factory.bean.BeanFactory;
@@ -61,7 +61,7 @@ public class InvocationProcessor implements Interceptor, Constants {
 		Header header = new Header();
 		header.setCharset(context.getCharset());
 		header.setDate(new Date());
-		header.setServer(Version.getCurrent().getName() + "/" + Version.getCurrent().getCode() + "(" + System.getProperty("os.name") + " " + System.getProperty("os.version") + ")");
+		header.setServer(Framework.getCurrent().getName() + "/" + Framework.getCurrent().getCode() + "(" + System.getProperty("os.name") + " " + System.getProperty("os.version") + ")");
 		invocation.setServerHeader(header);
 		Object result = invocation.invoke();
 		invocation.setResult(result);

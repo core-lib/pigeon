@@ -22,16 +22,16 @@ import org.slf4j.LoggerFactory;
  *
  * @version 1.0.0
  */
-public class Version {
+public class Framework {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private static Version current;
+	private static Framework current;
 
 	private final String name;
 	private final String code;
 
-	private Version() {
-		URL url = Thread.currentThread().getContextClassLoader().getResource("pigeon-version.properties");
+	private Framework() {
+		URL url = Thread.currentThread().getContextClassLoader().getResource("pigeon-framework.properties");
 		Properties properties = new Properties();
 		try {
 			properties.load(url.openStream());
@@ -42,15 +42,15 @@ public class Version {
 		this.code = properties.getProperty("code", "1.0");
 	}
 
-	public static Version getCurrent() {
+	public static Framework getCurrent() {
 		if (current != null) {
 			return current;
 		}
-		synchronized (Version.class) {
+		synchronized (Framework.class) {
 			if (current != null) {
 				return current;
 			}
-			current = new Version();
+			current = new Framework();
 		}
 		return current;
 	}

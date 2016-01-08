@@ -98,7 +98,6 @@ public class ChunkedInputStream extends InputStream {
 	 * @see HttpMethod#getResponseFooters()
 	 */
 	public int read() throws IOException {
-
 		if (closed) {
 			throw new IOException("Attempted read from closed stream.");
 		}
@@ -130,7 +129,6 @@ public class ChunkedInputStream extends InputStream {
 	 *             if an IO problem occurs.
 	 */
 	public int read(byte[] b, int off, int len) throws IOException {
-
 		if (closed) {
 			throw new IOException("Attempted read from closed stream.");
 		}
@@ -211,7 +209,6 @@ public class ChunkedInputStream extends InputStream {
 	 *             when the chunk size could not be parsed
 	 */
 	private static int getChunkSizeFromInputStream(final InputStream in) throws IOException {
-
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		// States: 0=normal, 1=\r was scanned, 2=inside quoted string, -1=end
 		int state = 0;
