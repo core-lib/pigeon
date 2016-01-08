@@ -30,8 +30,8 @@
 		<module>pigeon-integration</module>
 		<module>pigeon-integration-web</module>
 		<module>pigeon-integration-web-spring</module>
-    <module>pigeon-core-validation</module>
-  </modules>
+		<module>pigeon-core-validation</module>
+	</modules>
 
 	<distributionManagement>
 		<repository>
