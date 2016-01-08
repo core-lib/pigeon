@@ -19,6 +19,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>io.reactivex</groupId>
+			<artifactId>rxjava</artifactId>
+			<version>1.0.16</version>
+		</dependency>
+		<dependency>
 			<groupId>payne.framework</groupId>
 			<artifactId>pigeon-client</artifactId>
 			<version>4.2.0-release</version>
