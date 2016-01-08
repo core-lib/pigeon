@@ -19,6 +19,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15on</artifactId>
+			<version>1.47</version>
+		</dependency>
+		<dependency>
 			<groupId>payne.framework</groupId>
 			<artifactId>pigeon-core</artifactId>
 			<version>4.2.0-release</version>
@@ -27,10 +32,6 @@
 			<groupId>payne.framework</groupId>
 			<artifactId>pigeon-core-encoding</artifactId>
 			<version>4.2.0-release</version>
-		</dependency>
-		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcprov-jdk15on</artifactId>
 		</dependency>
 	</dependencies>
 </project>

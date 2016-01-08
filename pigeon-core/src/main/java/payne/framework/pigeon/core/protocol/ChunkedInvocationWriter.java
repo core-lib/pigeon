@@ -5,8 +5,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.apache.commons.httpclient.ChunkedOutputStream;
-
 import payne.framework.pigeon.core.Header;
 import payne.framework.pigeon.core.Invocation;
 import payne.framework.pigeon.core.factory.bean.BeanFactory;

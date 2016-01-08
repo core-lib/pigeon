@@ -4,8 +4,6 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import org.apache.commons.httpclient.ChunkedInputStream;
-
 import payne.framework.pigeon.core.Header;
 import payne.framework.pigeon.core.Invocation;
 import payne.framework.pigeon.core.factory.bean.BeanFactory;
