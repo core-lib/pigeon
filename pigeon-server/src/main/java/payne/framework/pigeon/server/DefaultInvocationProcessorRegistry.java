@@ -115,8 +115,8 @@ public class DefaultInvocationProcessorRegistry implements InvocationProcessorRe
 
 		Set<Class<?>> interfaces = Pigeons.getOpenableInterfaces(service.getClass());
 
-		LinkedHashSet<Class<? extends Interceptor>> classes = Pigeons.getClassAllInterceptors(service.getClass());
-		LinkedHashSet<Interceptor> interceptors = new LinkedHashSet<Interceptor>();
+		Set<Class<? extends Interceptor>> classes = Pigeons.getClassAllInterceptors(service.getClass());
+		Set<Interceptor> interceptors = new LinkedHashSet<Interceptor>();
 		for (Class<? extends Interceptor> clazz : classes) {
 			Interceptor interceptor = beanFactory.get(clazz);
 			interceptors.add(interceptor);

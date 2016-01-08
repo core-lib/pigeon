@@ -35,6 +35,14 @@ import payne.framework.pigeon.core.toolkit.Collections;
  * 
  */
 public abstract class Pigeons {
+
+	/**
+	 * 获取模型的瞬时字段名称集合
+	 * 
+	 * @param clazz
+	 *            模型类
+	 * @return
+	 */
 	public static Set<String> getTransientProperties(Class<?> clazz) {
 		Set<String> ignores = new HashSet<String>();
 
@@ -64,7 +72,8 @@ public abstract class Pigeons {
 	}
 
 	/**
-	 * 判断类型或接口是可开放的类型,方法将会以递归的方式搜索本类和祖先类的接口和接口继承的接口进行判断,只要有一个接口标注了{@link Open} 那么立即返回true,否则返回false
+	 * 判断类型或接口是可开放的类型,方法将会以递归的方式搜索本类和祖先类的接口和接口继承的接口进行判断,只要有一个接口标注了{@link Open}
+	 * 那么立即返回true,否则返回false
 	 * 
 	 * @param clazz
 	 *            类型或接口
@@ -220,13 +229,14 @@ public abstract class Pigeons {
 	}
 
 	/**
-	 * 获取类型的所有定义拦截器,包括父类的.如果定义了多个将视为一个,而且顺序将从父类再到子类,同一级的拦截器数组顺序将遵从定义的先后, 如果一旦有Intercept注解的inherit属性为false则不再继续继承父类的拦截器
+	 * 获取类型的所有定义拦截器,包括父类的.如果定义了多个将视为一个,而且顺序将从父类再到子类,同一级的拦截器数组顺序将遵从定义的先后,
+	 * 如果一旦有Intercept注解的inherit属性为false则不再继续继承父类的拦截器
 	 * 
 	 * @param clazz
 	 *            开放接口实现类型
 	 * @return 所有定义拦截器
 	 */
-	public static LinkedHashSet<Class<? extends Interceptor>> getClassAllInterceptors(Class<?> clazz) {
+	public static Set<Class<? extends Interceptor>> getClassAllInterceptors(Class<?> clazz) {
 		LinkedList<Class<? extends Interceptor>> classes = new LinkedList<Class<? extends Interceptor>>();
 		while (clazz != Object.class) {
 			if (!clazz.isAnnotationPresent(Intercept.class)) {
