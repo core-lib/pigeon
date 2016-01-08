@@ -16,10 +16,6 @@ public interface ConfigurableInvocationContext {
 
 	void setExecutor(ExecutorService executor);
 
-	String[] getBeanConfigurationPaths();
-
-	void setBeanConfigurationPaths(String[] beanConfigurationPaths);
-
 	BeanFactory getBeanFactory();
 
 	void setBeanFactory(BeanFactory beanFactory);

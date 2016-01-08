@@ -30,7 +30,7 @@ public class Client implements Attributed, Transcoder {
 	protected Map<String, Object> attributes = new LinkedHashMap<String, Object>();
 
 	public Client(String host, int port) throws IOException {
-		this(host, port, "pigeon.properties");
+		this(host, port, "pigeon");
 	}
 
 	public Client(String host, int port, Properties properties) {
@@ -58,7 +58,7 @@ public class Client implements Attributed, Transcoder {
 	}
 
 	public Client(String host, int port, int timeout) throws IOException {
-		this(host, port, timeout, "pigeon.properties");
+		this(host, port, timeout, "pigeon");
 	}
 
 	public Client(String host, int port, int timeout, Properties properties) {

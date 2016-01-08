@@ -135,14 +135,6 @@ public class SpringDelegateInvocationContext implements SpringInvocationContext,
 		delegate.setExecutor(executor);
 	}
 
-	public String[] getBeanConfigurationPaths() {
-		return delegate.getBeanConfigurationPaths();
-	}
-
-	public void setBeanConfigurationPaths(String[] beanConfigurationPaths) {
-		delegate.setBeanConfigurationPaths(beanConfigurationPaths);
-	}
-
 	public BeanFactory getBeanFactory() {
 		return delegate.getBeanFactory();
 	}

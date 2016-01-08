@@ -52,7 +52,6 @@ public abstract class HTTPInvocationContext implements InvocationContext, Runnab
 	protected SocketAddress address = new InetSocketAddress(9090);
 	protected int concurrent = 100;
 	protected ExecutorService executor;
-	protected String[] beanConfigurationPaths = new String[] { "pigeon.properties" };
 	protected BeanFactory beanFactory;
 	protected StreamFactory streamFactory;
 	protected InvocationProcessorRegistry invocationProcessorRegistry;
@@ -106,7 +105,7 @@ public abstract class HTTPInvocationContext implements InvocationContext, Runnab
 			throw new ContextStartupException("context " + this + " had bean shutdown!");
 		}
 		try {
-			beanFactory = beanFactory != null ? beanFactory : new SingletonBeanFactory(beanConfigurationPaths);
+			beanFactory = beanFactory != null ? beanFactory : new SingletonBeanFactory();
 			streamFactory = streamFactory != null ? streamFactory : new InternalStreamFactory();
 			invocationProcessorRegistry = invocationProcessorRegistry != null ? invocationProcessorRegistry : new DefaultInvocationProcessorRegistry(beanFactory, streamFactory);
 			invocationProcessorRegistry.register(this);
@@ -223,14 +222,6 @@ public abstract class HTTPInvocationContext implements InvocationContext, Runnab
 
 	public void setExecutor(ExecutorService executor) {
 		this.executor = executor;
-	}
-
-	public String[] getBeanConfigurationPaths() {
-		return beanConfigurationPaths;
-	}
-
-	public void setBeanConfigurationPaths(String[] beanConfigurationPaths) {
-		this.beanConfigurationPaths = beanConfigurationPaths;
 	}
 
 	public BeanFactory getBeanFactory() {
