@@ -28,7 +28,7 @@ public class Framework {
 	private static Framework current;
 
 	private final String name;
-	private final String code;
+	private final String version;
 
 	private Framework() {
 		URL url = Thread.currentThread().getContextClassLoader().getResource("pigeon-framework.properties");
@@ -39,7 +39,7 @@ public class Framework {
 			logger.warn("read current version properties failed on : " + e.getMessage());
 		}
 		this.name = properties.getProperty("name", "pigeon");
-		this.code = properties.getProperty("code", "1.0");
+		this.version = properties.getProperty("version", "1.0");
 	}
 
 	public static Framework getCurrent() {
@@ -59,8 +59,8 @@ public class Framework {
 		return name;
 	}
 
-	public String getCode() {
-		return code;
+	public String getVersion() {
+		return version;
 	}
 
 }

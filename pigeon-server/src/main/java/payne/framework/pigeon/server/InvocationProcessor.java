@@ -61,7 +61,7 @@ public class InvocationProcessor implements Interceptor, Constants {
 		Header header = new Header();
 		header.setCharset(context.getCharset());
 		header.setDate(new Date());
-		header.setServer(Framework.getCurrent().getName() + "/" + Framework.getCurrent().getCode() + "(" + System.getProperty("os.name") + " " + System.getProperty("os.version") + ")");
+		header.setServer(Framework.getCurrent().getName() + "/" + Framework.getCurrent().getVersion() + "(" + System.getProperty("os.name") + " " + System.getProperty("os.version") + ")");
 		invocation.setServerHeader(header);
 		Object result = invocation.invoke();
 		invocation.setResult(result);

@@ -18,8 +18,8 @@ import payne.framework.pigeon.core.factory.stream.StreamFactory;
 
 public class Client implements Attributed, Transcoder {
 	protected String protocol = "HTTP/1.1";
-	protected String host;
-	protected int port = 80;
+	protected final String host;
+	protected final int port;
 	protected int timeout = 10 * 1000;
 	protected String format = "application/x-java-serialized-object";
 	protected ClassLoader classLoader = Client.class.getClassLoader();
@@ -30,12 +30,17 @@ public class Client implements Attributed, Transcoder {
 	protected List<Interceptor> interceptors = new ArrayList<Interceptor>();
 
 	public Client(String host) {
-		super();
-		this.host = host;
+		this(host, 80);
 	}
 
 	public Client(String host, int port) {
 		super();
+		if (host == null || host.trim().length() == 0) {
+			throw new IllegalStateException("host must not be null or empty string");
+		}
+		if (port < 1 || port > 65535) {
+			throw new IllegalStateException("port must between 1 and 65535");
+		}
 		this.host = host;
 		this.port = port;
 	}
@@ -50,6 +55,15 @@ public class Client implements Attributed, Transcoder {
 		}
 		if (!beanFactory.contains(format)) {
 			throw new UnsupportedFormatException(format);
+		}
+		if (classLoader == null) {
+			throw new IllegalStateException("class loader must not be null");
+		}
+		if (beanFactory == null) {
+			throw new IllegalStateException("bean factory must not be null");
+		}
+		if (streamFactory == null) {
+			throw new IllegalStateException("stream factory must not be null");
 		}
 		Connection<T> connection = new Connection<T>(this, implementation, interfase);
 		return connection;
@@ -83,16 +97,8 @@ public class Client implements Attributed, Transcoder {
 		return host;
 	}
 
-	public void setHost(String host) {
-		this.host = host;
-	}
-
 	public int getPort() {
 		return port;
-	}
-
-	public void setPort(int port) {
-		this.port = port;
 	}
 
 	public int getTimeout() {

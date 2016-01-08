@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.HttpURLConnection;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -42,10 +43,11 @@ public class Connection<T> implements InvocationHandler, Interceptor, Filter<Cha
 	protected final Client client;
 	protected final String protocol;
 	protected final String format;
-	protected final String implementation;
 	protected final String host;
 	protected final int port;
 	protected final int timeout;
+	protected final String charset;
+	protected final String implementation;
 	protected final Class<T> interfase;
 	protected final List<Interceptor> interceptors;
 	protected final Open open;
@@ -60,13 +62,14 @@ public class Connection<T> implements InvocationHandler, Interceptor, Filter<Cha
 		super();
 		this.client = client;
 		this.protocol = client.protocol;
+		this.format = client.format;
 		this.host = client.host;
 		this.port = client.port;
-		this.timeout = client.timeout;
-		this.format = client.format;
-		this.implementation = implementation;
+		this.timeout = client.timeout > 0 ? client.timeout : 0;
+		this.charset = client.charset != null && client.charset.trim().length() > 0 ? client.charset.trim() : Charset.defaultCharset().name();
+		this.implementation = implementation != null ? implementation.trim() : "";
 		this.interfase = interfase;
-		this.interceptors = new ArrayList<Interceptor>(client.interceptors);
+		this.interceptors = client.interceptors != null ? new ArrayList<Interceptor>(client.interceptors) : new ArrayList<Interceptor>();
 		this.interceptors.add(this);
 		this.beanFactory = client.beanFactory;
 		this.streamFactory = client.streamFactory;
@@ -144,13 +147,17 @@ public class Connection<T> implements InvocationHandler, Interceptor, Filter<Cha
 
 			Header header = new Header();
 			header.setContentType(format);
-			header.setCharset(client.getCharset());
+			header.setCharset(charset);
 			header.setConnection("closed");
 			header.setHost(host + (port == 80 ? "" : ":" + port));
 			header.setPragma("no-cache");
 			header.setCacheControl("no-cache");
-			header.setUserAgent(Framework.getCurrent().getName() + "/" + Framework.getCurrent().getCode() + "[" + System.getProperty("user.language") + "]" + "(" + System.getProperty("os.name") + " " + System.getProperty("os.version")
-					+ ")");
+			String fwname = Framework.getCurrent().getName();
+			String fwversion = Framework.getCurrent().getVersion();
+			String language = System.getProperty("user.language");
+			String osname = System.getProperty("os.name");
+			String osversion = System.getProperty("os.version");
+			header.setUserAgent(fwname + "/" + fwversion + "[" + language + "]" + "(" + osname + " " + osversion + ")");
 
 			Invocation invocation = new Invocation();
 			invocation.setClientHeader(header);
@@ -195,10 +202,6 @@ public class Connection<T> implements InvocationHandler, Interceptor, Filter<Cha
 		return format;
 	}
 
-	public String getImplementation() {
-		return implementation;
-	}
-
 	public String getHost() {
 		return host;
 	}
@@ -209,6 +212,14 @@ public class Connection<T> implements InvocationHandler, Interceptor, Filter<Cha
 
 	public int getTimeout() {
 		return timeout;
+	}
+
+	public String getCharset() {
+		return charset;
+	}
+
+	public String getImplementation() {
+		return implementation;
 	}
 
 	public Class<T> getInterfase() {

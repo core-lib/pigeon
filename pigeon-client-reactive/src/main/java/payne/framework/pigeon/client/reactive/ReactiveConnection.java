@@ -42,7 +42,8 @@ public class ReactiveConnection<T> extends Connection<T> {
 
 			public void call(Subscriber<Object> subscriber) {
 				try {
-					subscriber.onNext(ReactiveConnection.super.invoke(proxy, method, arguments));
+					Object result = ReactiveConnection.super.invoke(proxy, method, arguments);
+					subscriber.onNext(result);
 				} catch (Throwable e) {
 					subscriber.onError(e);
 				} finally {

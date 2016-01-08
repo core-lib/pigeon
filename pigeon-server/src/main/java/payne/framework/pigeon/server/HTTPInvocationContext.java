@@ -295,7 +295,7 @@ public abstract class HTTPInvocationContext implements InvocationContext, Runnab
 				header.setDate(new Date());
 				header.setCharset(Charset.defaultCharset().name());
 				header.setContentType("text/plain");
-				header.setServer(Framework.getCurrent().getName() + "/" + Framework.getCurrent().getCode() + "(" + System.getProperty("os.name") + " " + System.getProperty("os.version") + ")");
+				header.setServer(Framework.getCurrent().getName() + "/" + Framework.getCurrent().getVersion() + "(" + System.getProperty("os.name") + " " + System.getProperty("os.version") + ")");
 				header.setContentLength(_in.available());
 
 				IOToolkit.writeLine(head.getProtocol() + " " + code + (reason != null ? " " + reason : ""), out);
