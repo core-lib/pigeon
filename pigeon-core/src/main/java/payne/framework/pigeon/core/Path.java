@@ -18,7 +18,7 @@ public class Path implements Serializable {
 	private final String expression;
 	private final Pattern pattern;
 	private final List<String> variables;
-
+	
 	public Path(String definition, Mode mode) {
 		super();
 		this.definition = definition;
@@ -31,7 +31,7 @@ public class Path implements Serializable {
 			String name = matcher.group(1);
 			String regular = matcher.group(2);
 			// 如果group(1) == null 的话其实整个都是名称 例如 /{page}/{size} 所以应该匹配所有字符
-			regex = regex.replace(matcher.group(), "(" + (name != null ? regular : "[^/]*") + ")");
+			regex = regex.replace(matcher.group(), "(" + (name != null ? regular : "[^/]+") + ")");
 			variables.add(name != null ? name : regular);
 		}
 		this.pattern = Pattern.compile(regex);

@@ -24,6 +24,7 @@ import payne.framework.pigeon.core.Framework;
 import payne.framework.pigeon.core.Header;
 import payne.framework.pigeon.core.Interceptor;
 import payne.framework.pigeon.core.Invocation;
+import payne.framework.pigeon.core.Path;
 import payne.framework.pigeon.core.Pigeons;
 import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.core.annotation.Correspond;
@@ -140,7 +141,6 @@ public class Connection<T> implements InvocationHandler, Interceptor, Filter<Cha
 			throw new NonopenMethodException(interfase, method, arguments);
 		}
 		try {
-
 			String x = Pigeons.getOpenPath(implementation);
 			String y = Pigeons.getOpenPath(interfase);
 			String z = Pigeons.getOpenPath(method);
@@ -167,6 +167,7 @@ public class Connection<T> implements InvocationHandler, Interceptor, Filter<Cha
 			invocation.setPort(port);
 			invocation.setFile(file);
 			invocation.setMode(Mode.POST);
+			invocation.setPath(new Path(file, Mode.POST));
 			invocation.setInterfase(interfase);
 			invocation.setMethod(method);
 			invocation.setImplementation(this);

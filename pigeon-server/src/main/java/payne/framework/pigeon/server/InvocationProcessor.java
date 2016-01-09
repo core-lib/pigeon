@@ -54,6 +54,12 @@ public class InvocationProcessor implements Interceptor, Constants {
 
 	public void process(InvocationContext context, Channel channel) throws Exception {
 		Invocation invocation = channel.read(path, method, beanFactory, streamFactory, new ArrayList<Step>(processings.values()));
+		invocation.setProtocol(channel.getProtocol());
+		invocation.setHost(channel.getHost());
+		invocation.setPort(channel.getPort());
+		invocation.setFile(channel.getFile());
+		invocation.setMode(channel.getMode());
+		invocation.setPath(path);
 		invocation.setInterfase(interfase);
 		invocation.setMethod(method);
 		invocation.setImplementation(implementation);
