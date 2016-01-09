@@ -6,11 +6,6 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.reflect.Method;
-
-import payne.framework.pigeon.core.checking.Checker;
-import payne.framework.pigeon.core.exception.IllegalConfigException;
-import payne.framework.pigeon.core.factory.bean.BeanFactory;
 
 /**
  * <p>
@@ -37,69 +32,8 @@ public @interface Accept {
 
 	public String[] media() default {};
 
-	public static enum Mode implements Checker {
-		GET(false) {
-
-			public boolean check(BeanFactory beanFactory, Object implementation, Class<?> interfase, Method method) throws IllegalConfigException {
-				return true;
-			}
-
-		},
-		HEAD(false) {
-
-			public boolean check(BeanFactory beanFactory, Object implementation, Class<?> interfase, Method method) throws IllegalConfigException {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-		},
-		POST(true) {
-
-			public boolean check(BeanFactory beanFactory, Object implementation, Class<?> interfase, Method method) throws IllegalConfigException {
-				return true;
-			}
-
-		},
-		PUT(true) {
-
-			public boolean check(BeanFactory beanFactory, Object implementation, Class<?> interfase, Method method) throws IllegalConfigException {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-		},
-		PATCH(true) {
-
-			public boolean check(BeanFactory beanFactory, Object implementation, Class<?> interfase, Method method) throws IllegalConfigException {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-		},
-		DELETE(false) {
-
-			public boolean check(BeanFactory beanFactory, Object implementation, Class<?> interfase, Method method) throws IllegalConfigException {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-		},
-		OPTIONS(false) {
-
-			public boolean check(BeanFactory beanFactory, Object implementation, Class<?> interfase, Method method) throws IllegalConfigException {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-		},
-		TRACE(false) {
-
-			public boolean check(BeanFactory beanFactory, Object implementation, Class<?> interfase, Method method) throws IllegalConfigException {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-		};
+	public static enum Mode {
+		GET(false), HEAD(false), POST(true), PUT(true), PATCH(true), DELETE(false), OPTIONS(false), TRACE(false);
 
 		public final boolean bodied;
 
