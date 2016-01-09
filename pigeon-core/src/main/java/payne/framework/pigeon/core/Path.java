@@ -18,7 +18,7 @@ public class Path implements Serializable {
 	private final String expression;
 	private final Pattern pattern;
 	private final List<String> variables;
-	
+
 	public Path(String definition, Mode mode) {
 		super();
 		this.definition = definition;
