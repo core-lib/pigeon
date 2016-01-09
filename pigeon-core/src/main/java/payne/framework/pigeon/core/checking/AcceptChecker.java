@@ -16,12 +16,14 @@ import payne.framework.pigeon.core.factory.bean.BeanFactory;
  * 
  * @author yangchangpei 646742615@qq.com
  *
- * @date 2016年1月9日 下午6:43:22
+ * @date 2016年1月9日 下午7:38:06
  *
  * @version 1.0.0
  */
-public interface Checker {
+public class AcceptChecker implements Checker {
 
-	boolean check(BeanFactory beanFactory, Object implementation, Class<?> interfase, Method method) throws IllegalConfigException;
+	public boolean check(BeanFactory beanFactory, Object implementation, Class<?> interfase, Method method) throws IllegalConfigException {
+		return false;
+	}
 
 }

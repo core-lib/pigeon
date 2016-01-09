@@ -36,6 +36,42 @@ import payne.framework.pigeon.core.toolkit.Collections;
  */
 public abstract class Pigeons {
 
+	public static boolean isPrimitiveType(Class<?> type) {
+		return type.isPrimitive();
+	}
+
+	public static boolean isWrapperType(Class<?> type) {
+		if (type == Boolean.class) {
+			return true;
+		}
+		if (type == Character.class) {
+			return true;
+		}
+		if (type == Byte.class) {
+			return true;
+		}
+		if (type == Short.class) {
+			return true;
+		}
+		if (type == Integer.class) {
+			return true;
+		}
+		if (type == Float.class) {
+			return true;
+		}
+		if (type == Long.class) {
+			return true;
+		}
+		if (type == Double.class) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isSimpleType(Class<?> type) {
+		return isPrimitiveType(type) || isWrapperType(type) || type == String.class || type.isEnum();
+	}
+
 	/**
 	 * 获取模型的瞬时字段名称集合
 	 * 
@@ -72,8 +108,7 @@ public abstract class Pigeons {
 	}
 
 	/**
-	 * 判断类型或接口是可开放的类型,方法将会以递归的方式搜索本类和祖先类的接口和接口继承的接口进行判断,只要有一个接口标注了{@link Open}
-	 * 那么立即返回true,否则返回false
+	 * 判断类型或接口是可开放的类型,方法将会以递归的方式搜索本类和祖先类的接口和接口继承的接口进行判断,只要有一个接口标注了{@link Open} 那么立即返回true,否则返回false
 	 * 
 	 * @param clazz
 	 *            类型或接口
@@ -229,8 +264,7 @@ public abstract class Pigeons {
 	}
 
 	/**
-	 * 获取类型的所有定义拦截器,包括父类的.如果定义了多个将视为一个,而且顺序将从父类再到子类,同一级的拦截器数组顺序将遵从定义的先后,
-	 * 如果一旦有Intercept注解的inherit属性为false则不再继续继承父类的拦截器
+	 * 获取类型的所有定义拦截器,包括父类的.如果定义了多个将视为一个,而且顺序将从父类再到子类,同一级的拦截器数组顺序将遵从定义的先后, 如果一旦有Intercept注解的inherit属性为false则不再继续继承父类的拦截器
 	 * 
 	 * @param clazz
 	 *            开放接口实现类型
