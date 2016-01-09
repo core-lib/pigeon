@@ -27,10 +27,10 @@ import payne.framework.pigeon.server.InvocationContext;
 import payne.framework.pigeon.server.Status;
 import payne.framework.pigeon.server.exception.ContextRunningException;
 
-public class BlockingInvocationContext extends HTTPInvocationContext implements InvocationContext {
+public class BioInvocationContext extends HTTPInvocationContext implements InvocationContext {
 	private ServerSocket server = null;
 
-	public BlockingInvocationContext(Object... openables) {
+	public BioInvocationContext(Object... openables) {
 		super(openables);
 	}
 
@@ -115,7 +115,7 @@ public class BlockingInvocationContext extends HTTPInvocationContext implements 
 				}
 
 				Set<Filter<Channel>> _filters = new LinkedHashSet<Filter<Channel>>(filters);
-				_filters.add(BlockingInvocationContext.this);
+				_filters.add(BioInvocationContext.this);
 				new FixedFilterChain<Channel>(_filters).go(channel);
 			} catch (Throwable e) {
 				logger.error("handling client {} but occur exception", client, e);

@@ -27,7 +27,7 @@ import payne.framework.pigeon.server.Head;
 import payne.framework.pigeon.server.Status;
 import payne.framework.pigeon.server.exception.ContextRunningException;
 
-public class AsynchronousNonBlockingInvocationContext extends HTTPInvocationContext {
+public class AioInvocationContext extends HTTPInvocationContext {
 	private AsynchronousChannelGroup asynchronousChannelGroup;
 	private AsynchronousServerSocketChannel asynchronousServerSocketChannel;
 
@@ -35,15 +35,15 @@ public class AsynchronousNonBlockingInvocationContext extends HTTPInvocationCont
 
 	private int byteBufferSize = 1024;
 
-	public AsynchronousNonBlockingInvocationContext() throws IOException {
+	public AioInvocationContext() throws IOException {
 		this(1024);
 	}
 
-	public AsynchronousNonBlockingInvocationContext(int byteBufferSize) throws IOException {
+	public AioInvocationContext(int byteBufferSize) throws IOException {
 		this.byteBufferSize = byteBufferSize;
 	}
 
-	public AsynchronousNonBlockingInvocationContext(Object... openables) {
+	public AioInvocationContext(Object... openables) {
 		super(openables);
 	}
 
@@ -372,7 +372,7 @@ public class AsynchronousNonBlockingInvocationContext extends HTTPInvocationCont
 				}
 
 				Set<Filter<Channel>> _filters = new LinkedHashSet<Filter<Channel>>(filters);
-				_filters.add(AsynchronousNonBlockingInvocationContext.this);
+				_filters.add(AioInvocationContext.this);
 				new FixedFilterChain<Channel>(_filters).go(channel);
 			} catch (Throwable e) {
 				logger.error("handling client {} but occur exception", asynchronousSocketChannel, e);
