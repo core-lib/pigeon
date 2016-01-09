@@ -31,12 +31,12 @@ import payne.framework.pigeon.core.toolkit.ReadableInputStream;
 import payne.framework.pigeon.core.toolkit.WritableOutputStream;
 
 public class HTTPChannel extends TransferableChannel implements Chunkable {
-	protected Mode mode;
+	protected String protocol;
 	protected String host;
 	protected int port;
-	protected String path;
+	protected Mode mode;
+	protected String file;
 	protected String parameter;
-	protected String protocol;
 	protected SocketAddress address;
 	protected HttpURLConnection connection;
 
@@ -47,29 +47,29 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 	protected boolean closed;
 	protected int chunksize = -1;
 
-	public void initialize(String host, int port, String path, int timeout, String format) throws IOException {
-		this.mode = Mode.POST;
+	public void initialize(String host, int port, Mode mode, String file, int timeout, String format) throws IOException {
+		this.protocol = "HTTP";
 		this.host = host;
 		this.port = port;
-		this.path = path;
+		this.mode = mode;
+		this.file = file;
 		this.parameter = "";
-		this.protocol = "HTTP";
 		this.address = new InetSocketAddress(host, port);
-		this.connection = (HttpURLConnection) new URL("http", host, port, path).openConnection();
+		this.connection = (HttpURLConnection) new URL(protocol, host, port, file).openConnection();
 		this.connection.setDoOutput(true);
 		this.connection.setDoInput(true);
 		this.connection.setUseCaches(false);
-		this.connection.setRequestMethod("POST");
+		this.connection.setRequestMethod(mode.name());
 		this.connection.setConnectTimeout(timeout);
 		this.connected = true;
 		this.closed = false;
 	}
 
-	public void initialize(Mode mode, String path, String parameter, String protocol, SocketAddress address, InputStream inputStream, OutputStream outputStream) throws IOException {
-		this.mode = mode;
-		this.path = path;
-		this.parameter = parameter;
+	public void initialize(String protocol, Mode mode, String file, String parameter, SocketAddress address, InputStream inputStream, OutputStream outputStream) throws IOException {
 		this.protocol = protocol;
+		this.mode = mode;
+		this.file = file;
+		this.parameter = parameter;
 		this.address = address;
 		if (address instanceof InetSocketAddress) {
 			InetSocketAddress isa = (InetSocketAddress) address;
@@ -189,7 +189,7 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 	public Invocation read(Path path, Method method, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception {
 		// 如果没有body的则要解析路径参数了查询参数
 		if (this.mode.bodied == false) {
-			Map<String, List<String>> arguments = Pigeons.getPathArguments(path, this.path, method);
+			Map<String, List<String>> arguments = Pigeons.getPathArguments(path, file, method);
 			String query = Pigeons.getQueryString(arguments);
 			query += parameter != null && parameter.trim().length() > 0 ? "&" + parameter.trim() : "";
 			inputStream = new ByteArrayInputStream(query.getBytes());
@@ -201,7 +201,7 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 		} else {
 			invocation = new FixedLengthInvocationReader(this, clientHeader).read(method, beanFactory, streamFactory, steps);
 		}
-		invocation.setPath(this.path);
+		invocation.setFile(this.file);
 		return invocation;
 	}
 
@@ -219,8 +219,8 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 		this.state = state;
 	}
 
-	public Mode getMode() {
-		return mode;
+	public String getProtocol() {
+		return protocol;
 	}
 
 	public String getHost() {
@@ -231,16 +231,16 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 		return port;
 	}
 
-	public String getPath() {
-		return path;
+	public Mode getMode() {
+		return mode;
+	}
+
+	public String getFile() {
+		return file;
 	}
 
 	public String getParameter() {
 		return parameter;
-	}
-
-	public String getProtocol() {
-		return protocol;
 	}
 
 	public SocketAddress getAddress() {

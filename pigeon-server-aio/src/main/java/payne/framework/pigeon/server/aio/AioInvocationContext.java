@@ -361,14 +361,14 @@ public class AioInvocationContext extends HTTPInvocationContext {
 				}
 
 				channel = beanFactory.establish(head.getProtocol(), Channel.class);
-				channel.initialize(head.getMode(), head.getPath(), head.getParameter(), head.getProtocol(), asynchronousSocketChannel.getRemoteAddress(), in, out);
+				channel.initialize(head.getProtocol(), head.getMode(), head.getFile(), head.getParameter(), asynchronousSocketChannel.getRemoteAddress(), in, out);
 				channel.setCharset(charset);
 				channel.getAttributes().putAll(attributes);
 
 				notificationCenter.notify(new Event(CONNECTION_ACCEPT_EVENT_NAME, channel, null));
 
-				if (!exists(head.getMode(), head.getPath())) {
-					throw new UnmappedPathException(head.getPath());
+				if (!exists(head.getMode(), head.getFile())) {
+					throw new UnmappedPathException(head.getFile());
 				}
 
 				Set<Filter<Channel>> _filters = new LinkedHashSet<Filter<Channel>>(filters);

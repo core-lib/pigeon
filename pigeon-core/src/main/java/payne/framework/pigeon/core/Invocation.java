@@ -1,9 +1,9 @@
 package payne.framework.pigeon.core;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Iterator;
 
+import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.core.exception.IllogicalInvokeException;
 
 /**
@@ -17,9 +17,12 @@ import payne.framework.pigeon.core.exception.IllogicalInvokeException;
 public class Invocation {
 	private Header clientHeader;
 	private Header serverHeader;
+	private String protocol;
 	private String host;
 	private int port;
-	private String path;
+	private String file;
+	private Mode mode;
+	private Path path;
 	private Object[] arguments;
 	private Object result;
 	private Class<?> interfase;
@@ -59,6 +62,14 @@ public class Invocation {
 		this.serverHeader = serverHeader;
 	}
 
+	public String getProtocol() {
+		return protocol;
+	}
+
+	public void setProtocol(String protocol) {
+		this.protocol = protocol;
+	}
+
 	public String getHost() {
 		return host;
 	}
@@ -75,11 +86,27 @@ public class Invocation {
 		this.port = port;
 	}
 
-	public String getPath() {
+	public String getFile() {
+		return file;
+	}
+
+	public void setFile(String file) {
+		this.file = file;
+	}
+
+	public Mode getMode() {
+		return mode;
+	}
+
+	public void setMode(Mode mode) {
+		this.mode = mode;
+	}
+
+	public Path getPath() {
 		return path;
 	}
 
-	public void setPath(String path) {
+	public void setPath(Path path) {
 		this.path = path;
 	}
 
@@ -129,11 +156,6 @@ public class Invocation {
 
 	public void setInterceptors(Iterator<Interceptor> interceptors) {
 		this.interceptors = interceptors;
-	}
-
-	@Override
-	public String toString() {
-		return "Invocation [host=" + host + ", port=" + port + ", path=" + path + ", arguments=" + Arrays.toString(arguments) + ", result=" + result + "]";
 	}
 
 }

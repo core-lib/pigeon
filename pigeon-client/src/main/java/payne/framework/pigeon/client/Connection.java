@@ -25,6 +25,7 @@ import payne.framework.pigeon.core.Header;
 import payne.framework.pigeon.core.Interceptor;
 import payne.framework.pigeon.core.Invocation;
 import payne.framework.pigeon.core.Pigeons;
+import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.core.annotation.Correspond;
 import payne.framework.pigeon.core.annotation.Open;
 import payne.framework.pigeon.core.exception.RemoteMethodException;
@@ -113,7 +114,7 @@ public class Connection<T> implements InvocationHandler, Interceptor, Filter<Cha
 		Channel channel = null;
 		try {
 			channel = beanFactory.establish(protocol, Channel.class);
-			channel.initialize(host, port, invocation.getPath(), timeout, format);
+			channel.initialize(host, port, invocation.getMode(), invocation.getFile(), timeout, format);
 
 			channel.getAttributes().putAll(client.getAttributes());
 			channel.addAttribute(CHANNEL_INVOCATION_ATTRIBUTE_KEY, invocation);
@@ -139,11 +140,11 @@ public class Connection<T> implements InvocationHandler, Interceptor, Filter<Cha
 			throw new NonopenMethodException(interfase, method, arguments);
 		}
 		try {
+
 			String x = Pigeons.getOpenPath(implementation);
 			String y = Pigeons.getOpenPath(interfase);
 			String z = Pigeons.getOpenPath(method);
-
-			String path = Pigeons.getOpenPath(x + y + z);
+			String file = Pigeons.getOpenPath(x + y + z);
 
 			Header header = new Header();
 			header.setContentType(format);
@@ -161,9 +162,11 @@ public class Connection<T> implements InvocationHandler, Interceptor, Filter<Cha
 
 			Invocation invocation = new Invocation();
 			invocation.setClientHeader(header);
+			invocation.setProtocol(protocol);
 			invocation.setHost(host);
 			invocation.setPort(port);
-			invocation.setPath(path);
+			invocation.setFile(file);
+			invocation.setMode(Mode.POST);
 			invocation.setInterfase(interfase);
 			invocation.setMethod(method);
 			invocation.setImplementation(this);

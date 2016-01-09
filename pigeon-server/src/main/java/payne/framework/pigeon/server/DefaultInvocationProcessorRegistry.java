@@ -67,47 +67,48 @@ public class DefaultInvocationProcessorRegistry implements InvocationProcessorRe
 		Iterator<Registration> iterator = this.iterator();
 		while (iterator.hasNext()) {
 			Registration pair = iterator.next();
-			if (pair.getPath().getPattern().matcher(regex).matches()) {
+			if (pair.getPath().getDefinition().matches(regex)) {
 				pairs.add(pair);
 			}
 		}
 		return pairs;
 	}
 
-	public boolean exists(Mode mode, String path) {
-		if (mode == null || path == null) {
+	public boolean exists(Mode mode, String file) {
+		if (mode == null || file == null) {
 			return false;
 		}
 		Map<Path, InvocationProcessor> map = this.map.containsKey(mode) ? this.map.get(mode) : new HashMap<Path, InvocationProcessor>();
-		path = path.trim().replaceAll("/+", "/");
-		boolean contained = map.containsKey(path);
+		file = file.trim().replaceAll("/+", "/");
+		boolean contained = map.containsKey(file);
 		if (contained) {
 			return true;
 		}
-		for (Path p : map.keySet()) {
-			if (p.getDefinition().equals(path) || p.getPattern().matcher(path).matches()) {
+		for (Path path : map.keySet()) {
+			if (path.matches(file)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public InvocationProcessor lookup(Mode mode, String path) throws UnmappedPathException {
-		if (mode == null || path == null) {
-			throw new UnmappedPathException(path);
+	public InvocationProcessor lookup(Mode mode, String file) throws UnmappedPathException {
+		if (mode == null || file == null) {
+			throw new UnmappedPathException(file);
 		}
 		Map<Path, InvocationProcessor> map = this.map.containsKey(mode) ? this.map.get(mode) : new HashMap<Path, InvocationProcessor>();
-		path = path.trim().replaceAll("/+", "/");
-		InvocationProcessor processor = map.get(path);
+		file = file.trim().replaceAll("/+", "/");
+		InvocationProcessor processor = map.get(file);
 		if (processor != null) {
 			return processor;
 		}
 		for (Entry<Path, InvocationProcessor> entry : map.entrySet()) {
-			if (entry.getKey().getDefinition().equals(path) || entry.getKey().getPattern().matcher(path).matches()) {
+			Path path = entry.getKey();
+			if (path.matches(file)) {
 				return entry.getValue();
 			}
 		}
-		throw new UnmappedPathException(path);
+		throw new UnmappedPathException(file);
 	}
 
 	public synchronized void register(Object service) throws UnregulatedInterfaceException {

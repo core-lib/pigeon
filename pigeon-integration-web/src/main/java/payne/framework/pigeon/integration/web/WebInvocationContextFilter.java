@@ -96,8 +96,8 @@ public class WebInvocationContextFilter extends HTTPInvocationContext implements
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 
 		Mode mode = Mode.likeOf(request.getMethod());
-		String path = request.getRequestURI();
-		if (!exists(mode, path)) {
+		String file = request.getRequestURI();
+		if (!exists(mode, file)) {
 			chain.doFilter(request, response);
 			return;
 		}
@@ -112,7 +112,7 @@ public class WebInvocationContextFilter extends HTTPInvocationContext implements
 			}
 
 			channel = beanFactory.establish(protocol, Channel.class);
-			channel.initialize(mode, path, parameter, protocol, address, new HttpServletRequestInputStream(request), new HttpServletResponseOutputStream(response));
+			channel.initialize(protocol, mode, file, parameter, address, new HttpServletRequestInputStream(request), new HttpServletResponseOutputStream(response));
 			channel.setCharset(charset);
 			channel.getAttributes().putAll(attributes);
 

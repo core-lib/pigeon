@@ -72,7 +72,7 @@ public abstract class HTTPInvocationContext implements InvocationContext, Runnab
 	}
 
 	public void filtrate(Channel channel, FilterChain<Channel> chain) throws Exception {
-		InvocationProcessor processor = lookup(channel.getMode(), channel.getPath());
+		InvocationProcessor processor = lookup(channel.getMode(), channel.getFile());
 
 		// 检查请求方法是否被接受
 		if (processor.accept(channel.getMode()) == false) {
@@ -140,12 +140,12 @@ public abstract class HTTPInvocationContext implements InvocationContext, Runnab
 		thread.start();
 	}
 
-	public boolean exists(Mode mode, String path) {
-		return invocationProcessorRegistry.exists(mode, path);
+	public boolean exists(Mode mode, String file) {
+		return invocationProcessorRegistry.exists(mode, file);
 	}
 
-	public InvocationProcessor lookup(Mode mode, String path) throws UnmappedPathException {
-		return invocationProcessorRegistry.lookup(mode, path);
+	public InvocationProcessor lookup(Mode mode, String file) throws UnmappedPathException {
+		return invocationProcessorRegistry.lookup(mode, file);
 	}
 
 	public void register(Object openable) throws UnregulatedInterfaceException {

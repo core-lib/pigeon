@@ -10,7 +10,7 @@ import payne.framework.pigeon.server.exception.UnrecognizedModeException;
 
 public class Head {
 	private final Mode mode;
-	private final String path;
+	private final String file;
 	private final String parameter;
 	private final String protocol;
 
@@ -26,10 +26,10 @@ public class Head {
 
 		int index = segments[1].indexOf('?');
 		if (index == -1) {
-			this.path = segments[1].trim();
+			this.file = segments[1].trim();
 			this.parameter = "";
 		} else {
-			this.path = segments[1].substring(0, index).trim();
+			this.file = segments[1].substring(0, index).trim();
 			String query = segments[1].substring(index + 1).trim();
 			this.parameter = URLDecoder.decode(query, Charset.defaultCharset().name());
 		}
@@ -40,8 +40,8 @@ public class Head {
 		return mode;
 	}
 
-	public String getPath() {
-		return path;
+	public String getFile() {
+		return file;
 	}
 
 	public String getParameter() {
@@ -58,7 +58,7 @@ public class Head {
 		int result = 1;
 		result = prime * result + ((mode == null) ? 0 : mode.hashCode());
 		result = prime * result + ((parameter == null) ? 0 : parameter.hashCode());
-		result = prime * result + ((path == null) ? 0 : path.hashCode());
+		result = prime * result + ((file == null) ? 0 : file.hashCode());
 		result = prime * result + ((protocol == null) ? 0 : protocol.hashCode());
 		return result;
 	}
@@ -79,10 +79,10 @@ public class Head {
 				return false;
 		} else if (!parameter.equals(other.parameter))
 			return false;
-		if (path == null) {
-			if (other.path != null)
+		if (file == null) {
+			if (other.file != null)
 				return false;
-		} else if (!path.equals(other.path))
+		} else if (!file.equals(other.file))
 			return false;
 		if (protocol == null) {
 			if (other.protocol != null)
@@ -94,7 +94,7 @@ public class Head {
 
 	@Override
 	public String toString() {
-		return mode + " " + path + (parameter == null || parameter.trim().equals("") ? "" : "?" + parameter) + " " + protocol;
+		return mode + " " + file + (parameter == null || parameter.trim().equals("") ? "" : "?" + parameter) + " " + protocol;
 	}
 
 }

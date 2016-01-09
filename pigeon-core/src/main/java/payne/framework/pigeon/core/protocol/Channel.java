@@ -30,9 +30,46 @@ import payne.framework.pigeon.core.toolkit.Writable;
  */
 public interface Channel extends Attributed, Transcoder, Readable, Writable, Closeable, Timeoutable, Constants {
 
-	void initialize(String host, int port, String path, int timeout, String format) throws IOException;
+	/**
+	 * 客户端初始化传输通道方法
+	 * 
+	 * @param host
+	 *            主机名
+	 * @param port
+	 *            服务端口
+	 * @param mode
+	 *            请求方法
+	 * @param file
+	 *            文件/方法
+	 * @param timeout
+	 *            连接超时
+	 * @param format
+	 *            数据格式
+	 * @throws IOException
+	 */
+	void initialize(String host, int port, Mode mode, String file, int timeout, String format) throws IOException;
 
-	void initialize(Mode mode, String path, String parameter, String protocol, SocketAddress address, InputStream inputStream, OutputStream outputStream) throws IOException;
+	/**
+	 * 服务端初始化传输通道方法
+	 * 
+	 * @param protocol
+	 *            协议
+	 * 
+	 * @param mode
+	 *            请求方法
+	 * @param file
+	 *            文件/方法
+	 * @param parameter
+	 *            参数
+	 * @param address
+	 *            客户端地址
+	 * @param inputStream
+	 *            输入流
+	 * @param outputStream
+	 *            输出流
+	 * @throws IOException
+	 */
+	void initialize(String protocol, Mode mode, String file, String parameter, SocketAddress address, InputStream inputStream, OutputStream outputStream) throws IOException;
 
 	void send(Path path, Invocation invocation, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception;
 
@@ -58,17 +95,17 @@ public interface Channel extends Attributed, Transcoder, Readable, Writable, Clo
 	 */
 	void setStatus(State status) throws IOException;
 
-	Mode getMode();
+	String getProtocol();
 
 	String getHost();
 
 	int getPort();
 
-	String getPath();
+	Mode getMode();
+
+	String getFile();
 
 	String getParameter();
-
-	String getProtocol();
 
 	SocketAddress getAddress();
 

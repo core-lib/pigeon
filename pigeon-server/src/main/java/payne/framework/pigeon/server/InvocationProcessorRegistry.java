@@ -44,24 +44,24 @@ public interface InvocationProcessorRegistry extends Iterable<Registration> {
 	 * 
 	 * @param mode
 	 *            请求方法
-	 * @param path
-	 *            路径
+	 * @param file
+	 *            文件/方法的路径
 	 * @return 如果存在:true 否则:false
 	 */
-	boolean exists(Mode mode, String path);
+	boolean exists(Mode mode, String file);
 
 	/**
 	 * 通过指定的路径寻找对应的处理器
 	 * 
 	 * @param mode
 	 *            请求方法
-	 * @param path
-	 *            路径
+	 * @param file
+	 *            文件/方法的路径
 	 * @return 对应处理器
 	 * @throws UnmappedPathException
 	 *             路径不存在时抛出的异常
 	 */
-	InvocationProcessor lookup(Mode mode, String path) throws UnmappedPathException;
+	InvocationProcessor lookup(Mode mode, String file) throws UnmappedPathException;
 
 	/**
 	 * 注册开放接口实现类

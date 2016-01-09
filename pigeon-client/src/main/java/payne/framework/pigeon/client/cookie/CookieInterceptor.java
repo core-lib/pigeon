@@ -14,9 +14,9 @@ public class CookieInterceptor implements Interceptor {
 
 	public Object intercept(Invocation invocation) throws Exception {
 		String domain = invocation.getHost();
-		String path = invocation.getPath();
+		String path = invocation.getFile();
 		try {
-			Cookie[] cookies = cookieManager.find(invocation.getHost(), invocation.getPath());
+			Cookie[] cookies = cookieManager.find(domain, path);
 			Cookie.addRequestCookies(invocation.getClientHeader(), cookies != null ? cookies : new Cookie[0]);
 			return invocation.invoke();
 		} finally {

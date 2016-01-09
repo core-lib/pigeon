@@ -75,7 +75,9 @@ public class FixedLengthInvocationWriter implements HTTPInvocationWriter {
 			}
 			IOToolkit.writeLine("", channel);
 
-			IOToolkit.transmit(in, new FixedLengthOutputStream(new WritableOutputStream(channel), in.available()));
+			FixedLengthOutputStream flos = new FixedLengthOutputStream(new WritableOutputStream(channel), in.available());
+			IOToolkit.transmit(in, flos);
+			flos.flush();
 		} finally {
 			IOToolkit.close(in);
 			IOToolkit.close(wrap);

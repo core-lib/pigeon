@@ -39,6 +39,10 @@ public class Path implements Serializable {
 		this.variables = Collections.unmodifiableList(variables);
 	}
 
+	public boolean matches(String file) {
+		return definition.equals(file) || pattern.matcher(file).matches();
+	}
+
 	public String getDefinition() {
 		return definition;
 	}
