@@ -177,9 +177,23 @@ public class DefaultInvocationProcessorRegistry implements InvocationProcessorRe
 				String x = Pigeons.getOpenPath(service);
 				String y = Pigeons.getOpenPath(interfase);
 				String z = Pigeons.getOpenPath(method);
-				String path = Pigeons.getOpenPath(x + y + z);
-				logger.info("revoke open path [{}]", path);
-				map.remove(path);
+				String definition = Pigeons.getOpenPath(x + y + z);
+				logger.info("revoke open path [{}]", definition);
+
+				Accept accept = method.isAnnotationPresent(Accept.class) ? method.getAnnotation(Accept.class) : interfase.isAnnotationPresent(Accept.class) ? interfase.getAnnotation(Accept.class) : null;
+				// 默认情况下所有的请求方式都是接受的
+				Mode[] modes = accept != null && accept.modes().length > 0 ? accept.modes() : Mode.values();
+				for (Mode mode : modes) {
+					Map<Path, InvocationProcessor> m = map.get(mode);
+					if (m == null) {
+						continue;
+					}
+					Path path = new Path(definition, mode);
+					m.remove(path);
+					if (m.isEmpty()) {
+						map.remove(mode);
+					}
+				}
 			}
 		}
 		logger.info("revoke open service [{}] completed", service);
