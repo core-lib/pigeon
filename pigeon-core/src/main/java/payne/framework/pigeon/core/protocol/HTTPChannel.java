@@ -24,6 +24,7 @@ import payne.framework.pigeon.core.formatting.FormatInvocationInputStream;
 import payne.framework.pigeon.core.formatting.FormatInvocationOutputStream;
 import payne.framework.pigeon.core.formatting.InvocationFormatter;
 import payne.framework.pigeon.core.formatting.Structure;
+import payne.framework.pigeon.core.formatting.URLInvocationFormatter;
 import payne.framework.pigeon.core.processing.InvocationFormatProcedure;
 import payne.framework.pigeon.core.processing.Step;
 import payne.framework.pigeon.core.toolkit.IOToolkit;
@@ -187,20 +188,23 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 	}
 
 	public Invocation read(Path path, Method method, BeanFactory beanFactory, StreamFactory streamFactory, List<Step> steps) throws Exception {
+		Invocation invocation = null;
 		// 如果没有body的则要解析路径参数了查询参数
 		if (this.mode.bodied == false) {
 			Map<String, List<String>> arguments = Pigeons.getPathArguments(path, file, method);
 			String query = Pigeons.getQueryString(arguments);
 			query += parameter != null && parameter.trim().length() > 0 ? "&" + parameter.trim() : "";
-			inputStream = new ByteArrayInputStream(query.getBytes());
-			clientHeader.setContentLength(inputStream.available());
-		}
-		Invocation invocation = null;
-		if ("chunked".equalsIgnoreCase(clientHeader.getTransferEncoding())) {
+			InputStream in = new ByteArrayInputStream(query.getBytes());
+			InvocationFormatter formatter = new URLInvocationFormatter();
+			Object data = formatter.deserialize(Structure.forArray(method.getGenericParameterTypes(), method.getParameterAnnotations()), in, charset);
+			invocation = new Invocation();
+			invocation.setArguments(data == null ? new Object[method.getParameterTypes().length] : (Object[]) data);
+		} else if ("chunked".equalsIgnoreCase(clientHeader.getTransferEncoding())) {
 			invocation = new ChunkedInvocationReader(this, clientHeader).read(method, beanFactory, streamFactory, steps);
 		} else {
 			invocation = new FixedLengthInvocationReader(this, clientHeader).read(method, beanFactory, streamFactory, steps);
 		}
+		invocation.setClientHeader(clientHeader);
 		invocation.setFile(this.file);
 		return invocation;
 	}

@@ -11,7 +11,6 @@ import payne.framework.pigeon.core.factory.stream.StreamFactory;
 import payne.framework.pigeon.core.formatting.FormatInvocationInputStream;
 import payne.framework.pigeon.core.formatting.InvocationFormatter;
 import payne.framework.pigeon.core.formatting.Structure;
-import payne.framework.pigeon.core.formatting.URLInvocationFormatter;
 import payne.framework.pigeon.core.processing.InvocationFormatProcedure;
 import payne.framework.pigeon.core.processing.Step;
 import payne.framework.pigeon.core.toolkit.IOToolkit;
@@ -46,8 +45,7 @@ public class ChunkedInvocationReader implements HTTPInvocationReader {
 		InputStream wrap = null;
 		try {
 			wrap = new ChunkedInputStream(new ReadableInputStream(channel));
-			String contentType = clientHeader.getContentType();
-			InvocationFormatter formatter = contentType != null && contentType.trim().length() > 0 ? beanFactory.get(clientHeader.getContentType(), InvocationFormatter.class) : new URLInvocationFormatter();
+			InvocationFormatter formatter = beanFactory.get(clientHeader.getContentType(), InvocationFormatter.class);
 			InvocationFormatProcedure procedure = new InvocationFormatProcedure(formatter, Structure.forArray(method.getGenericParameterTypes(), method.getParameterAnnotations()));
 			Step step = new Step(null, null, procedure);
 			steps.add(0, step);
@@ -66,7 +64,6 @@ public class ChunkedInvocationReader implements HTTPInvocationReader {
 			Invocation invocation = new Invocation();
 			Object data = fiis.deserialize();
 			invocation.setArguments(data == null ? new Object[method.getParameterTypes().length] : (Object[]) data);
-			invocation.setClientHeader(clientHeader);
 			return invocation;
 		} finally {
 			IOToolkit.close(wrap);
