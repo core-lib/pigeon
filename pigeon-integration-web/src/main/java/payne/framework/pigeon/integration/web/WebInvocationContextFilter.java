@@ -149,7 +149,7 @@ public class WebInvocationContextFilter extends HTTPInvocationContext implements
 		Class<?> clazz;
 		try {
 			clazz = resource.toClass();
-		} catch (ClassNotFoundException e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 		return Pigeons.isOpenableClass(clazz) && !clazz.isInterface() && !Modifier.isAbstract(clazz.getModifiers()) ? chain.doNext(resource) : false;
