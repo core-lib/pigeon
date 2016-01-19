@@ -2,17 +2,19 @@ package payne.framework.pigeon.core.factory.bean;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
 
-import payne.framework.pigeon.core.detector.Resource;
-import payne.framework.pigeon.core.detector.ResourceDetector;
-import payne.framework.pigeon.core.detector.ResourceFilter;
-import payne.framework.pigeon.core.detector.SimpleResourceDetector;
+import org.qfox.detector.DefaultResourceDetector;
+import org.qfox.detector.Resource;
+import org.qfox.detector.ResourceDetector;
+import org.qfox.detector.ResourceFilter;
+import org.qfox.detector.ResourceFilterChain;
+
 import payne.framework.pigeon.core.exception.BeanInitializeException;
 import payne.framework.pigeon.core.exception.InexistentBeanException;
 
@@ -36,8 +38,8 @@ public abstract class ConfigurableBeanFactory implements BeanFactory, ResourceFi
 	protected ConfigurableBeanFactory(ClassLoader classLoader) {
 		this.classLoader = classLoader;
 		try {
-			ResourceDetector detector = new SimpleResourceDetector("pigeon");
-			Set<Resource> configs = detector.detect(this);
+			ResourceDetector detector = DefaultResourceDetector.Builder.scan("pigeon").by(classLoader).build();
+			Collection<Resource> configs = detector.detect(this);
 			for (Resource config : configs) {
 				Configuration configuration = new Configuration(config);
 				this.configLocations.add(config.getName());
@@ -52,8 +54,8 @@ public abstract class ConfigurableBeanFactory implements BeanFactory, ResourceFi
 		this.classLoader = classLoader;
 		try {
 			for (String location : configLocations) {
-				ResourceDetector detector = new SimpleResourceDetector(location);
-				Set<Resource> configs = detector.detect(this);
+				ResourceDetector detector = DefaultResourceDetector.Builder.scan(location).by(classLoader).build();
+				Collection<Resource> configs = detector.detect(this);
 				for (Resource config : configs) {
 					Configuration configuration = new Configuration(config);
 					this.configLocations.add(config.getName());
@@ -71,8 +73,8 @@ public abstract class ConfigurableBeanFactory implements BeanFactory, ResourceFi
 		this.configurations.add(configuration);
 	}
 
-	public boolean accept(Resource resource) {
-		return resource.getName().endsWith(".properties");
+	public boolean accept(Resource resource, ResourceFilterChain chain) {
+		return resource.getName().endsWith(".properties") ? chain.doNext(resource) : false;
 	}
 
 	public boolean contains(String name) {

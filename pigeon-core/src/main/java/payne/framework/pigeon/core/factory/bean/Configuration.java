@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Properties;
 
-import payne.framework.pigeon.core.detector.Resource;
+import org.qfox.detector.Resource;
 
 /**
  * <p>

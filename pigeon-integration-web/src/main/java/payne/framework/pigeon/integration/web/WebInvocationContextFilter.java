@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -16,11 +17,15 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.qfox.detector.DefaultResourceDetector;
+import org.qfox.detector.DefaultResourceDetector.Builder;
+import org.qfox.detector.Resource;
+import org.qfox.detector.ResourceDetector;
+import org.qfox.detector.ResourceFilter;
+import org.qfox.detector.ResourceFilterChain;
+
 import payne.framework.pigeon.core.Pigeons;
 import payne.framework.pigeon.core.annotation.Accept.Mode;
-import payne.framework.pigeon.core.detector.ClassDetector;
-import payne.framework.pigeon.core.detector.ClassFilter;
-import payne.framework.pigeon.core.detector.SimpleClassDetector;
 import payne.framework.pigeon.core.exception.UnsupportedChannelException;
 import payne.framework.pigeon.core.factory.bean.BeanFactory;
 import payne.framework.pigeon.core.factory.bean.SingletonBeanFactory;
@@ -51,7 +56,7 @@ import payne.framework.pigeon.server.InvocationProcessorRegistry;
  *
  * @version 1.0.0
  */
-public class WebInvocationContextFilter extends HTTPInvocationContext implements InvocationContext, Filter, ClassFilter {
+public class WebInvocationContextFilter extends HTTPInvocationContext implements InvocationContext, Filter, ResourceFilter {
 	public static final String PACKAGE = "package";
 	public static final String RECURSIVE = "recursive";
 	public static final String BEAN_FACTORY = "bean-factory";
@@ -59,7 +64,7 @@ public class WebInvocationContextFilter extends HTTPInvocationContext implements
 	public static final String REGISTRY = "registry";
 	public static final String CHARSET = "charset";
 
-	protected ClassDetector detector;
+	protected ResourceDetector detector;
 
 	public void init(FilterConfig config) throws ServletException {
 		String root = config.getInitParameter(PACKAGE);
@@ -73,9 +78,12 @@ public class WebInvocationContextFilter extends HTTPInvocationContext implements
 			streamFactory = config.getInitParameter(STREAM_FACTORY) == null ? new InternalStreamFactory() : (StreamFactory) Class.forName(config.getInitParameter(STREAM_FACTORY)).newInstance();
 			String registry = config.getInitParameter(REGISTRY);
 			invocationProcessorRegistry = registry == null ? new DefaultInvocationProcessorRegistry(beanFactory, streamFactory) : (InvocationProcessorRegistry) Class.forName(registry).newInstance();
-			detector = new SimpleClassDetector(root, recursive);
-			Set<Class<?>> classes = detector.detect(this);
-			for (Class<?> clazz : classes) {
+			Builder builder = DefaultResourceDetector.Builder.scan(root);
+			builder = recursive ? builder.recursively() : builder.unrecursive();
+			detector = builder.build();
+			Collection<Resource> resources = detector.detect(this);
+			for (Resource resource : resources) {
+				Class<?> clazz = resource.toClass();
 				Object implementation = beanFactory.get(clazz);
 				invocationProcessorRegistry.register(implementation);
 				if (implementation instanceof InvocationContextAware) {
@@ -134,8 +142,17 @@ public class WebInvocationContextFilter extends HTTPInvocationContext implements
 		return;
 	}
 
-	public boolean accept(Class<?> clazz) {
-		return Pigeons.isOpenableClass(clazz) && !clazz.isInterface() && !Modifier.isAbstract(clazz.getModifiers());
+	public boolean accept(Resource resource, ResourceFilterChain chain) {
+		if (resource.isClass() == false) {
+			return false;
+		}
+		Class<?> clazz;
+		try {
+			clazz = resource.toClass();
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+		return Pigeons.isOpenableClass(clazz) && !clazz.isInterface() && !Modifier.isAbstract(clazz.getModifiers()) ? chain.doNext(resource) : false;
 	}
 
 	public void run() {

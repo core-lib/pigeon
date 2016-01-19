@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>payne.framework</groupId>
 		<artifactId>pigeon</artifactId>
-		<version>4.2.0-release</version>
+		<version>4.2.1-release</version>
 	</parent>
 	<artifactId>pigeon-generation-reactive</artifactId>
 	<name>pigeon-generation-reactive</name>
@@ -21,7 +21,7 @@
 		<dependency>
 			<groupId>payne.framework</groupId>
 			<artifactId>pigeon-generation</artifactId>
-			<version>4.2.0-release</version>
+			<version>4.2.1-release</version>
 		</dependency>
 		<dependency>
 			<groupId>io.reactivex</groupId>

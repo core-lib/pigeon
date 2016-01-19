@@ -6,11 +6,11 @@ import javax.servlet.Filter;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 
+import org.qfox.detector.ResourceFilter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
 
 import payne.framework.pigeon.core.annotation.Open;
-import payne.framework.pigeon.core.detector.ClassFilter;
 import payne.framework.pigeon.core.factory.stream.InternalStreamFactory;
 import payne.framework.pigeon.core.factory.stream.StreamFactory;
 import payne.framework.pigeon.integration.web.WebInvocationContextFilter;
@@ -34,7 +34,7 @@ import payne.framework.pigeon.server.InvocationProcessorRegistry;
  *
  * @version 1.0.0
  */
-public class SpringInvocationContextFilter extends WebInvocationContextFilter implements InvocationContext, Filter, ClassFilter {
+public class SpringInvocationContextFilter extends WebInvocationContextFilter implements InvocationContext, Filter, ResourceFilter {
 	public static final String CONFIG_LOCATION = "config-location";
 
 	@Override
