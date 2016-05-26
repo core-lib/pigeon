@@ -81,6 +81,7 @@ public class ZipToolkit {
 			while ((zipArchiveEntry = zipArchiveInputStream.getNextZipEntry()) != null) {
 				if (zipArchiveEntry.isDirectory()) {
 					new File(target, zipArchiveEntry.getName()).mkdirs();
+					continue;
 				}
 				FileOutputStream fileOutputStream = null;
 				try {
