@@ -76,7 +76,7 @@
 	__result__ = [$converter.getName($function.result.component) objectDictionaryWithKeyValuesDictionary:__result__];
 #end
 #else
-	__result__ = [$converter.getName($function.result.type) objectWithKeyValues:__result__];
+	__result__ = [$converter.getName($function.result.type) mj_objectWithKeyValues:__result__];
 #end
 	return __result__;
 #end
@@ -122,7 +122,7 @@
 	__result__ = [$converter.getName($function.result.component) objectDictionaryWithKeyValuesDictionary:__result__];
 #end
 #else
-		__result__ = [$converter.getName($function.result.type) objectWithKeyValues:__result__];
+		__result__ = [$converter.getName($function.result.type) mj_objectWithKeyValues:__result__];
 #end
 		callback(__success__,__result__,__error__);
 #end
