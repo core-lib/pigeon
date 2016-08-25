@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>payne.framework</groupId>
 		<artifactId>pigeon</artifactId>
-		<version>4.2.4-release</version>
+		<version>4.2.5-release</version>
 	</parent>
 	<artifactId>pigeon-core-encryption</artifactId>
 	<name>pigeon-core-encryption</name>
@@ -26,12 +26,12 @@
 		<dependency>
 			<groupId>payne.framework</groupId>
 			<artifactId>pigeon-core</artifactId>
-			<version>4.2.4-release</version>
+			<version>4.2.5-release</version>
 		</dependency>
 		<dependency>
 			<groupId>payne.framework</groupId>
 			<artifactId>pigeon-core-encoding</artifactId>
-			<version>4.2.4-release</version>
+			<version>4.2.5-release</version>
 		</dependency>
 	</dependencies>
 </project>

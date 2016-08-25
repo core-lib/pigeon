@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>payne.framework</groupId>
 		<artifactId>pigeon</artifactId>
-		<version>4.2.4-release</version>
+		<version>4.2.5-release</version>
 	</parent>
 	<artifactId>pigeon-integration-web</artifactId>
 	<name>pigeon-integration-web</name>
@@ -21,7 +21,7 @@
 		<dependency>
 			<groupId>payne.framework</groupId>
 			<artifactId>pigeon-integration</artifactId>
-			<version>4.2.4-release</version>
+			<version>4.2.5-release</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
