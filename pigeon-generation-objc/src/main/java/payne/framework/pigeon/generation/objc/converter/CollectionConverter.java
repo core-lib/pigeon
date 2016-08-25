@@ -45,7 +45,7 @@ public class CollectionConverter extends ObjectiveCConverter {
 		Type clazz = type.getActualTypeArguments()[0];
 		if (generator.generable(clazz)) {
 			String typeName = generator.getName(clazz);
-			return name + " ? [" + typeName + " keyValuesArrayWithObjectArray:" + name + "] : " + "[NSNull null]";
+			return name + " ? [" + typeName + " mj_keyValuesArrayWithObjectArray:" + name + "] : " + "[NSNull null]";
 		}
 		return name + " ? " + name + " : " + "[NSNull null]";
 	}

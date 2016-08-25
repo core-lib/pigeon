@@ -69,11 +69,11 @@
 	id __result__ = [client call:@"$function.path" arguments:__arguments__ resolvers:__resolvers__];
 #if($function.result.array)
 #if($converter.generable($function.result.component))
-	__result__ = [$converter.getName($function.result.component) objectArrayWithKeyValuesArray:__result__];
+	__result__ = [$converter.getName($function.result.component) mj_objectArrayWithKeyValuesArray:__result__];
 #end
 #elseif($function.result.mapping)
 #if($converter.generable($function.result.component))
-	__result__ = [$converter.getName($function.result.component) objectDictionaryWithKeyValuesDictionary:__result__];
+	__result__ = [$converter.getName($function.result.component) mj_objectDictionaryWithKeyValuesDictionary:__result__];
 #end
 #else
 	__result__ = [$converter.getName($function.result.type) mj_objectWithKeyValues:__result__];
@@ -115,11 +115,11 @@
 #else
 #if($function.result.array)
 #if($converter.generable($function.result.component))
-		__result__ = [$converter.getName($function.result.component) objectArrayWithKeyValuesArray:__result__];
+		__result__ = [$converter.getName($function.result.component) mj_objectArrayWithKeyValuesArray:__result__];
 #end
 #elseif($function.result.mapping)
 #if($converter.generable($function.result.component))
-	__result__ = [$converter.getName($function.result.component) objectDictionaryWithKeyValuesDictionary:__result__];
+	__result__ = [$converter.getName($function.result.component) mj_objectDictionaryWithKeyValuesDictionary:__result__];
 #end
 #else
 		__result__ = [$converter.getName($function.result.type) mj_objectWithKeyValues:__result__];

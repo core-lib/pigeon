@@ -45,7 +45,7 @@ public class MapConverter extends ObjectiveCConverter {
 		Type clazz = type.getActualTypeArguments()[1];
 		if (generator.generable(clazz)) {
 			String typeName = generator.getName(clazz);
-			return name + " ? [" + typeName + " keyValuesDictionaryWithObjectDictionary:" + name + "] : " + "[NSNull null]";
+			return name + " ? [" + typeName + " mj_keyValuesDictionaryWithObjectDictionary:" + name + "] : " + "[NSNull null]";
 		}
 		return name + " ? " + name + " : " + "[NSNull null]";
 	}

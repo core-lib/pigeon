@@ -23,7 +23,7 @@ public class ArrayConverter extends ObjectiveCConverter {
 	protected String convert(Class<?> clazz, String name) {
 		if (generator.generable(clazz)) {
 			String typeName = generator.getName(clazz.getComponentType());
-			return name + " ? [" + typeName + " keyValuesArrayWithObjectArray:" + name + "] : " + "[NSNull null]";
+			return name + " ? [" + typeName + " mj_keyValuesArrayWithObjectArray:" + name + "] : " + "[NSNull null]";
 		}
 		return name + " ? " + name + " : " + "[NSNull null]";
 	}

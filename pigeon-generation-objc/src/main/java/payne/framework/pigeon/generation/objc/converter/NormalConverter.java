@@ -25,7 +25,7 @@ public class NormalConverter extends ObjectiveCConverter {
 
 	@Override
 	protected String convert(Class<?> clazz, String name) {
-		return name + " ? [" + name + " keyValues] : [NSNull null]";
+		return name + " ? [" + name + " mj_keyValues] : [NSNull null]";
 	}
 
 	@Override
