@@ -6,11 +6,13 @@ import javax.net.ssl.*;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URL;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 /**
  * Created by yangchangpei on 16/12/14.
  */
-public class HTTPSChannel extends HTTPChannel implements HostnameVerifier, TrustManager {
+public class HTTPSChannel extends HTTPChannel implements HostnameVerifier, X509TrustManager {
     private HttpsURLConnection httpsURLConnection;
 
     public void initialize(String host, int port, Accept.Mode mode, String file, int timeout, String format) throws IOException {
@@ -44,6 +46,21 @@ public class HTTPSChannel extends HTTPChannel implements HostnameVerifier, Trust
 
     public boolean verify(String s, SSLSession sslSession) {
         return true;
+    }
+
+    @Override
+    public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+
+    }
+
+    @Override
+    public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+
+    }
+
+    @Override
+    public X509Certificate[] getAcceptedIssuers() {
+        return new X509Certificate[0];
     }
 
 }
