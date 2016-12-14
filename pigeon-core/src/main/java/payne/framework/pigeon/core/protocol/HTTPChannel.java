@@ -49,7 +49,7 @@ public class HTTPChannel extends TransferableChannel implements Chunkable {
 	protected int chunksize = -1;
 
 	public void initialize(String host, int port, Mode mode, String file, int timeout, String format) throws IOException {
-		this.protocol = "HTTP";
+		this.protocol = "http";
 		this.host = host;
 		this.port = port;
 		this.mode = mode;

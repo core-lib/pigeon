@@ -13,7 +13,7 @@ import java.net.URL;
 public class HTTPSChannel extends HTTPChannel {
 
     public void initialize(String host, int port, Accept.Mode mode, String file, int timeout, String format) throws IOException {
-        this.protocol = "HTTPS";
+        this.protocol = "https";
         this.host = host;
         this.port = port;
         this.mode = mode;

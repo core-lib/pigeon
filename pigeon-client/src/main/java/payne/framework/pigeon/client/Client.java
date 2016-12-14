@@ -17,7 +17,7 @@ import payne.framework.pigeon.core.factory.stream.InternalStreamFactory;
 import payne.framework.pigeon.core.factory.stream.StreamFactory;
 
 public class Client implements Attributed, Transcoder {
-	protected String protocol = "HTTP/1.1";
+	protected String protocol = "http/1.1";
 	protected final String host;
 	protected final int port;
 	protected int timeout = 10 * 1000;
@@ -34,7 +34,7 @@ public class Client implements Attributed, Transcoder {
 	}
 
 	public Client(String host) {
-		this(host, 8080);
+		this(host, 80);
 	}
 
 	public Client(String host, int port) {
