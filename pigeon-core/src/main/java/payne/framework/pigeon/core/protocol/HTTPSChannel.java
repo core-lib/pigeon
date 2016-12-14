@@ -2,15 +2,16 @@ package payne.framework.pigeon.core.protocol;
 
 import payne.framework.pigeon.core.annotation.Accept;
 
+import javax.net.ssl.*;
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.URL;
 
 /**
  * Created by yangchangpei on 16/12/14.
  */
-public class HTTPSChannel extends HTTPChannel {
+public class HTTPSChannel extends HTTPChannel implements HostnameVerifier, TrustManager {
+    private HttpsURLConnection httpsURLConnection;
 
     public void initialize(String host, int port, Accept.Mode mode, String file, int timeout, String format) throws IOException {
         this.protocol = "https";
@@ -20,7 +21,18 @@ public class HTTPSChannel extends HTTPChannel {
         this.file = file;
         this.parameter = "";
         this.address = new InetSocketAddress(host, port);
-        this.connection = (HttpURLConnection) new URL(protocol, host, port, file).openConnection();
+
+        this.httpsURLConnection = (HttpsURLConnection) new URL(protocol, host, port, file).openConnection();
+        try {
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, new TrustManager[]{this}, null);
+            this.httpsURLConnection.setHostnameVerifier(this);
+            this.httpsURLConnection.setSSLSocketFactory(sslContext.getSocketFactory());
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
+
+        this.connection = this.httpsURLConnection;
         this.connection.setDoOutput(true);
         this.connection.setDoInput(true);
         this.connection.setUseCaches(false);
@@ -28,6 +40,10 @@ public class HTTPSChannel extends HTTPChannel {
         this.connection.setConnectTimeout(timeout);
         this.connected = true;
         this.closed = false;
+    }
+
+    public boolean verify(String s, SSLSession sslSession) {
+        return true;
     }
 
 }
