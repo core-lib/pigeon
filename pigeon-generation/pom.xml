@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>payne.framework</groupId>
 		<artifactId>pigeon</artifactId>
-		<version>4.2.5-release</version>
+		<version>4.3.0-release</version>
 	</parent>
 	<artifactId>pigeon-generation</artifactId>
 	<name>pigeon-generation</name>
@@ -31,7 +31,7 @@
 		<dependency>
 			<groupId>payne.framework</groupId>
 			<artifactId>pigeon-server</artifactId>
-			<version>4.2.5-release</version>
+			<version>4.3.0-release</version>
 		</dependency>
 	</dependencies>
 </project>
