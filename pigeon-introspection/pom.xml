@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>payne.framework</groupId>
 		<artifactId>pigeon</artifactId>
-		<version>4.3.3-release</version>
+		<version>4.3.6-release</version>
 	</parent>
 	<artifactId>pigeon-introspection</artifactId>
 	<name>pigeon-introspection</name>
