@@ -15,8 +15,8 @@ this.${function.name} = function(#foreach($parameter in $function.parameters)${p
         dataType: "json",
         contentType: "application/json",
         data: JSON.stringify([#foreach($parameter in $function.parameters)${parameter.name}#if($velocityCount != $function.parameters.size()),#end #end]),
-        success: function(__result__) {
-            if (typeof callback === 'function') callback(true, __result__, null);
+        success: function(result) {
+            if (typeof callback === 'function') callback(true, result, null);
         },
         error: function(xhr, status, err) {
             if (typeof callback === 'function') callback(false, null, err);
