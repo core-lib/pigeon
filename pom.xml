@@ -31,6 +31,7 @@
 		<module>pigeon-integration</module>
 		<module>pigeon-integration-web</module>
 		<module>pigeon-integration-web-spring</module>
+		<module>pigeon-generation-js</module>
 	</modules>
 	
 	<repositories>

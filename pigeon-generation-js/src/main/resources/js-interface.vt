@@ -1,0 +1,28 @@
+function $properties.get("prefix")${interface.type.simpleName}() {
+
+#foreach($function in $functions)
+#if($function.notes && $function.notes.size() > 0)
+/**
+#foreach($note in $function.notes)
+ * $note
+#end
+ */
+#end
+this.${function.name} = function(#foreach($parameter in $function.parameters)${parameter.name}, #end callback) {
+    $.ajax({
+        url: "$function.path",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json",
+        data: JSON.stringify([#foreach($parameter in $function.parameters)${parameter.name}#if($velocityCount != $function.parameters.size()),#end #end]),
+        success: function(__result__) {
+            if (typeof callback === 'function') callback(true, __result__, null);
+        },
+        error: function(xhr, status, err) {
+            if (typeof callback === 'function') callback(false, null, err);
+        }
+    });
+}
+
+#end
+}

@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>pigeon</artifactId>
+        <groupId>payne.framework</groupId>
+        <version>4.3.6-release</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>pigeon-generation-js</artifactId>
+    <packaging>jar</packaging>
+
+    <name>pigeon-generation-js</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>payne.framework</groupId>
+            <artifactId>pigeon-generation</artifactId>
+            <version>4.3.6-release</version>
+        </dependency>
+    </dependencies>
+</project>
