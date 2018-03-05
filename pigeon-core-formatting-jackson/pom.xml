@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>payne.framework</groupId>
 		<artifactId>pigeon</artifactId>
-		<version>v4.3.8</version>
+		<version>v4.3.9</version>
 	</parent>
 	<artifactId>pigeon-core-formatting-jackson</artifactId>
 	<name>pigeon-core-formatting-jackson</name>
@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>payne.framework</groupId>
 			<artifactId>pigeon-core</artifactId>
-			<version>v4.3.8</version>
+			<version>v4.3.9</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>

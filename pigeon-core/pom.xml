@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>payne.framework</groupId>
 		<artifactId>pigeon</artifactId>
-		<version>v4.3.8</version>
+		<version>v4.3.9</version>
 	</parent>
 	<artifactId>pigeon-core</artifactId>
 	<name>pigeon-core</name>
@@ -31,12 +31,12 @@
 		<dependency>
 			<groupId>payne.framework</groupId>
 			<artifactId>pigeon-introspection</artifactId>
-			<version>v4.3.8</version>
+			<version>v4.3.9</version>
 		</dependency>
 		<dependency>
 			<groupId>payne.framework</groupId>
 			<artifactId>pigeon-detector</artifactId>
-			<version>v4.3.8</version>
+			<version>v4.3.9</version>
 		</dependency>
 	</dependencies>
 
