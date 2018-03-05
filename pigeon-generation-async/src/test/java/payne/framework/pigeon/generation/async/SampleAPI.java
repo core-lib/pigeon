@@ -1,6 +1,7 @@
 package payne.framework.pigeon.generation.async;
 
 import payne.framework.pigeon.core.annotation.Open;
+import payne.framework.pigeon.generation.annotation.Name;
 
 /**
  * <p>
@@ -17,9 +18,10 @@ import payne.framework.pigeon.core.annotation.Open;
  *
  * @version 1.0.0
  */
-@Open
+@Open("/sample")
 public interface SampleAPI {
 
-	User login(String username, String password) throws Exception;
+	@Open("/login")
+	User login(@Name("username") String username, @Name("password") String password) throws Exception;
 
 }

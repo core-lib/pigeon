@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>payne.framework</groupId>
 		<artifactId>pigeon</artifactId>
-		<version>v4.4.0</version>
+		<version>v4.4.1</version>
 	</parent>
 	<artifactId>pigeon-core-validation</artifactId>
 	<name>pigeon-core-validation</name>
@@ -26,7 +26,7 @@
 		<dependency>
 			<groupId>payne.framework</groupId>
 			<artifactId>pigeon-core</artifactId>
-			<version>v4.4.0</version>
+			<version>v4.4.1</version>
 		</dependency>
 	</dependencies>
 </project>

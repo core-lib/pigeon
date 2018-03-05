@@ -22,8 +22,7 @@ import java.util.TreeSet;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 
-import payne.framework.pigeon.core.Callback;
-import payne.framework.pigeon.core.Pigeons;
+import payne.framework.pigeon.core.*;
 import payne.framework.pigeon.core.annotation.Correspond;
 import payne.framework.pigeon.generation.Function;
 import payne.framework.pigeon.generation.Generation;
@@ -102,6 +101,9 @@ public class AsynchronousGenerator extends Generator {
 		imports.add(Correspond.class);
 		imports.add(interfase.getType());
 		imports.add(Callback.class);
+		imports.add(OnCompleted.class);
+		imports.add(OnFail.class);
+		imports.add(OnSuccess.class);
 		// 导入注解的依赖
 		for (Annotation annotation : interfase.getAnnotations()) {
 			imports.addAll(imports(annotation));
