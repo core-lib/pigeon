@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>payne.framework</groupId>
 		<artifactId>pigeon</artifactId>
-		<version>4.3.7-release</version>
+		<version>v4.3.8</version>
 	</parent>
 	<artifactId>pigeon-core-digestion</artifactId>
 	<name>pigeon-core-digestion</name>
@@ -21,12 +21,12 @@
 		<dependency>
 			<groupId>payne.framework</groupId>
 			<artifactId>pigeon-core</artifactId>
-			<version>4.3.7-release</version>
+			<version>v4.3.8</version>
 		</dependency>
 		<dependency>
 			<groupId>payne.framework</groupId>
 			<artifactId>pigeon-core-encoding</artifactId>
-			<version>4.3.7-release</version>
+			<version>v4.3.8</version>
 		</dependency>
 	</dependencies>
 </project>

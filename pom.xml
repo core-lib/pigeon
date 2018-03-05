@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>payne.framework</groupId>
 	<artifactId>pigeon</artifactId>
-	<version>4.3.7-release</version>
+	<version>v4.3.8</version>
 	<packaging>pom</packaging>
 	<modules>
 		<module>pigeon-introspection</module>
@@ -65,12 +65,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>2.1</version>
 				<configuration>
