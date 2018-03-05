@@ -6,6 +6,7 @@
 	<version>v4.3.8</version>
 	<packaging>pom</packaging>
 	<modules>
+		<module>pigeon-detector</module>
 		<module>pigeon-introspection</module>
 		<module>pigeon-core</module>
 		<module>pigeon-core-formatting-jaxb</module>
@@ -34,21 +35,6 @@
 		<module>pigeon-generation-js</module>
 	</modules>
 	
-	<repositories>
-		<repository>
-			<id>jitpack.io</id>
-			<url>https://www.jitpack.io</url>
-		</repository>
-	</repositories>
-
-	<distributionManagement>
-		<repository>
-			<id>releases</id>
-			<name>Nexus Release Repository</name>
-			<url>http://120.24.232.96:8081/nexus/content/repositories/releases/</url>
-		</repository>
-	</distributionManagement>
-
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

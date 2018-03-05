@@ -34,9 +34,9 @@
 			<version>v4.3.8</version>
 		</dependency>
 		<dependency>
-			<groupId>com.github.core-lib</groupId>
-			<artifactId>detector</artifactId>
-			<version>v1.0.5</version>
+			<groupId>payne.framework</groupId>
+			<artifactId>pigeon-detector</artifactId>
+			<version>v4.3.8</version>
 		</dependency>
 	</dependencies>
 
