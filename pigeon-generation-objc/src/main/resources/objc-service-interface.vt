@@ -12,13 +12,7 @@
 #end
 #end
 
-#if($interface.notes && $interface.notes.size() > 0)
-/**
-#foreach($note in $interface.notes)
- * $note
-#end
- */
-#end
+$interface.comment
 @interface $properties.get("prefix")$interface.name : NSObject
 
 @property (nonatomic,readonly) PFPClient * client;
@@ -32,13 +26,7 @@
 @interface $properties.get("prefix")$interface.name (Synchronous)
 
 #foreach($function in $functions)
-#if($function.notes && $function.notes.size() > 0)
-/**
-#foreach($note in $function.notes)
- * $note
-#end
- */
-#end
+$function.comment
 #if($function.parameters.empty)
 -($converter.convert($function.method.genericReturnType)) ${function.name};
 #else
@@ -51,13 +39,7 @@
 @interface $properties.get("prefix")$interface.name (Asynchronous)
 
 #foreach($function in $functions)
-#if($function.notes && $function.notes.size() > 0)
-/**
-#foreach($note in $function.notes)
- * $note
-#end
- */
-#end
+$function.comment
 #set($return = $converter.convert($function.method.genericReturnType))
 #if($function.parameters.empty)
 -(void) ${function.name}_callback:(void(^)(BOOL success,#if(!$return.equals("void")) $return result,#end NSError * error))callback;

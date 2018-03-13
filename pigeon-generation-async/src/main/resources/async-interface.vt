@@ -4,6 +4,7 @@ package ${interface.type.package.name};
 import ${import.name};
 #end
 
+$interface.comment
 @Correspond(${interface.type.simpleName}.class)
 #foreach($annotation in $interface.annotations)
 $converter.toString($annotation)
@@ -12,26 +13,31 @@ public interface $properties.get("prefix")${interface.type.simpleName}$converter
 
 #foreach($function in $functions)
     //------------------------------- ${function.name} Start -----------------------------//
+$function.comment
 #foreach($annotation in $function.annotations)
 	$converter.toString($annotation)
 #end
 	$converter.resolve($function.method.typeParameters) void ${function.name}(#foreach($parameter in $function.parameters)#foreach($annotation in $parameter.annotations)$converter.toString($annotation) #end$converter.toString(${parameter.type}) ${parameter.name}, #end Callback<$converter.toString(${function.method.genericReturnType})> callback);
 
+$function.comment
 #foreach($annotation in $function.annotations)
 	$converter.toString($annotation)
 #end
 	$converter.resolve($function.method.typeParameters) void ${function.name}(#foreach($parameter in $function.parameters)#foreach($annotation in $parameter.annotations)$converter.toString($annotation) #end$converter.toString(${parameter.type}) ${parameter.name}, #end OnCompleted<$converter.toString(${function.method.genericReturnType})> onCompleted);
 
+$function.comment
 #foreach($annotation in $function.annotations)
 	$converter.toString($annotation)
 #end
 	$converter.resolve($function.method.typeParameters) void ${function.name}(#foreach($parameter in $function.parameters)#foreach($annotation in $parameter.annotations)$converter.toString($annotation) #end$converter.toString(${parameter.type}) ${parameter.name}, #end OnSuccess<$converter.toString(${function.method.genericReturnType})> onSuccess);
 
+$function.comment
 #foreach($annotation in $function.annotations)
 	$converter.toString($annotation)
 #end
 	$converter.resolve($function.method.typeParameters) void ${function.name}(#foreach($parameter in $function.parameters)#foreach($annotation in $parameter.annotations)$converter.toString($annotation) #end$converter.toString(${parameter.type}) ${parameter.name}, #end OnSuccess<$converter.toString(${function.method.genericReturnType})> onSuccess, OnFail onFail);
 
+$function.comment
 #foreach($annotation in $function.annotations)
 	$converter.toString($annotation)
 #end

@@ -1,11 +1,11 @@
 package payne.framework.pigeon.generation.async;
 
-import java.io.File;
-
 import org.junit.Test;
-
+import payne.framework.pigeon.generation.Documentations;
 import payne.framework.pigeon.generation.Generator;
 import payne.framework.pigeon.generation.Interface;
+
+import java.io.File;
 
 /**
  * <p>
@@ -30,6 +30,7 @@ public class Tests {
 		if (directory.exists() == false) {
 			directory.mkdirs();
 		}
+		Documentations.setSource("src/test/java");
 		Generator generator = new AsynchronousGenerator(directory);
 		generator.generate(new Interface("/", SampleAPI.class));
 		System.out.println(directory);

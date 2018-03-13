@@ -23,12 +23,6 @@ public abstract class Documentations {
         return true;
     }
 
-    public synchronized static void main(String... args) {
-        Documentations.setModule("pigeon-generation");
-        String documentation = Documentations.forClass(Documentations.class);
-        System.out.println(documentation);
-    }
-
     private synchronized static ClassDoc getClassDoc(Class<?> clazz) {
         String classpath = System.getProperty("java.class.path");
         String sourcedir = System.getProperty("user.dir") + "/" + module + "/" + source;
@@ -41,7 +35,13 @@ public abstract class Documentations {
                 classpath,
                 sourcedir + "/" + clazz.getName().replace('.', '/') + ".java"
         });
-        return root.classNamed(clazz.getName());
+        return root == null ? null : root.classNamed(clazz.getName());
+    }
+
+    public static void main(String... args) {
+        Documentations.setModule("pigeon-generation");
+        String s = Documentations.forClass(Documentations.class);
+        System.out.println(s);
     }
 
     /**
@@ -51,17 +51,59 @@ public abstract class Documentations {
      * @return 注释内容
      */
     public synchronized static String forClass(Class<?> clazz) {
-        return getClassDoc(clazz).getRawCommentText();
+        ClassDoc doc = getClassDoc(clazz);
+        String comment = doc != null ? doc.getRawCommentText() : null;
+        return comment != null ? format(comment) : null;
     }
 
     public static String forMethod(Method method) {
         Class<?> clazz = method.getDeclaringClass();
         ClassDoc doc = getClassDoc(clazz);
-
+        if (doc == null) return null;
+        StringBuilder builder = new StringBuilder();
+        builder.append(method.getDeclaringClass().getName())
+                .append(".")
+                .append(method.getName())
+                .append("(");
+        for (int i = 0; i < method.getParameterTypes().length; i++) {
+            if (i > 0) builder.append(", ");
+            Class<?> cl = method.getParameterTypes()[i];
+            if (cl.isArray()) {
+                int dimensions = 0;
+                while (cl.isArray()) {
+                    dimensions++;
+                    cl = cl.getComponentType();
+                }
+                StringBuilder sb = new StringBuilder();
+                sb.append(cl.getName());
+                for (int d = 0; d < dimensions; d++) {
+                    sb.append("[]");
+                }
+                builder.append(sb);
+            } else {
+                builder.append(cl.getName());
+            }
+        }
+        builder.append(")");
+        String signature = builder.toString();
         for (MethodDoc md : doc.methods()) {
-            System.out.println(md.signature());
+            if (signature.equals(md.toString())) {
+                String comment = md.getRawCommentText();
+                return comment != null ? format(comment) : null;
+            }
         }
         return null;
+    }
+
+    private static String format(String comment) {
+        String[] comments = comment.split("[\r\n]");
+        StringBuilder sb = new StringBuilder();
+        sb.append("/**");
+        for (String line : comments) {
+            sb.append("\r\n").append(" *").append(line);
+        }
+        sb.append("\r\n").append(" */");
+        return sb.toString();
     }
 
     public static String getModule() {
@@ -78,10 +120,5 @@ public abstract class Documentations {
 
     public static void setSource(String source) {
         Documentations.source = source;
-    }
-
-    public void test(String str,
-            int i) throws Exception {
-
     }
 }
