@@ -15,4 +15,8 @@ public class Parameter extends Annotated {
 		return type;
 	}
 
+    @Override
+    public String getComment() {
+        return null;
+    }
 }

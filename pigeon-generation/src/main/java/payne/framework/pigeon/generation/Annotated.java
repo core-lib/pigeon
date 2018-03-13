@@ -1,16 +1,16 @@
 package payne.framework.pigeon.generation;
 
+import payne.framework.pigeon.generation.annotation.Note;
+
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import payne.framework.pigeon.generation.annotation.Note;
-
-public abstract class Annotated implements Named, Noted {
-	protected final String name;
-	protected final String[] notes;
-	protected final Set<Annotation> annotations;
+public abstract class Annotated implements Named, Noted, Commented {
+    protected final String name;
+    protected final String[] notes;
+    protected final Set<Annotation> annotations;
 
 	protected Annotated(String name, Annotation[] annotations) {
 		this.name = name;

@@ -15,4 +15,8 @@ public class Property extends Annotated {
 		return type;
 	}
 
+    @Override
+    public String getComment() {
+        return null;
+    }
 }
