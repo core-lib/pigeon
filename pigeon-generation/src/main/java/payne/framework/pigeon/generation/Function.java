@@ -28,7 +28,7 @@ public class Function extends Annotated {
         this.result = method.getReturnType() == Void.TYPE ? null : new Result(method.getGenericReturnType());
         this.implementation = implementation;
         this.interfase = interfase;
-        this.comment = Documentations.forMethod(method);
+        this.comment = DocKit.forMethod(method);
         this.method = method;
         {
             String x = Pigeons.getOpenPath(implementation);

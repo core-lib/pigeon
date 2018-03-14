@@ -21,7 +21,7 @@ public class Interface extends Annotated implements Generable {
         }
         this.implementation = implementation;
         this.type = interfase;
-        this.comment = Documentations.forClass(interfase);
+        this.comment = DocKit.forClass(interfase);
         Set<Method> methods = Pigeons.getInterfaceDeclaredOpenableMethods(interfase);
         this.functions = new LinkedHashSet<Function>();
         assert methods != null;

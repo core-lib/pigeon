@@ -22,7 +22,7 @@ public class Model extends Annotated implements Generable {
     public Model(Class<?> type) throws IntrospectionException {
         super(type.isAnnotationPresent(Name.class) ? type.getAnnotation(Name.class).value() : type.getSimpleName(), type.getAnnotations());
         this.type = type;
-        this.comment = Documentations.forClass(type);
+        this.comment = DocKit.forClass(type);
         this.properties = new LinkedHashSet<Property>();
         this.mapping = new HashMap<String, String>();
 
@@ -31,7 +31,7 @@ public class Model extends Annotated implements Generable {
             this.isEnum = true;
             for (Object constant : type.getEnumConstants()) {
                 Enum<?> _enum = (Enum<?>) constant;
-                properties.add(new Property(type, _enum.name(), null));
+                properties.add(new Property(type, DocKit.forProperty(type, _enum.name()), _enum.name(), null));
             }
             return;
         } else {
@@ -69,7 +69,7 @@ public class Model extends Annotated implements Generable {
             Method getter = descriptor.getReadMethod();
             Type _type = getter.getGenericReturnType();
             String _name = getter.isAnnotationPresent(Name.class) ? getter.getAnnotation(Name.class).value() : descriptor.getName();
-            Property property = new Property(_type, _name, descriptor.getReadMethod().getAnnotations());
+            Property property = new Property(_type, DocKit.forProperty(type, descriptor.getName()), _name, descriptor.getReadMethod().getAnnotations());
             properties.add(property);
             if (!_name.equals(descriptor.getName())) {
                 mapping.put(_name, descriptor.getName());

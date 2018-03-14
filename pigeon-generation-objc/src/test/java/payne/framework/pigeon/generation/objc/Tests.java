@@ -1,7 +1,6 @@
 package payne.framework.pigeon.generation.objc;
 
 import org.junit.Test;
-import payne.framework.pigeon.generation.Documentations;
 import payne.framework.pigeon.generation.Generator;
 import payne.framework.pigeon.generation.Interface;
 
@@ -30,7 +29,6 @@ public class Tests {
 		if (directory.exists() == false) {
 			directory.mkdirs();
 		}
-		Documentations.setSource("src/test/java");
 		Generator generator = new ObjectiveCGenerator(directory);
 		generator.generate(new Interface("/", SampleAPI.class));
 		System.out.println(directory);

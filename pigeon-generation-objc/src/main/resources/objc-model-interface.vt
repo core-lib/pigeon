@@ -1,12 +1,6 @@
 #set($empty = '')
 #if($model.isEnum())
-#if($model.notes && $model.notes.size() > 0)
-/**
-#foreach($note in $model.notes)
- * $note
-#end
- */
-#end
+$model.comment
 typedef enum {
 #foreach($property in $model.properties)
 	$properties.getProperty("prefix")$model.name$property.name#if($velocityCount < $model.properties.size()),#end $empty
@@ -26,23 +20,11 @@ typedef enum {
 #end
 #end
 
-#if($model.notes && $model.notes.size() > 0)
-/**
-#foreach($note in $model.notes)
- * $note
-#end
- */
-#end
+$model.comment
 @interface $properties.getProperty("prefix")$model.name : NSObject
 
 #foreach($property in $model.properties)
-#if($property.notes && $property.notes.size() > 0)
-/**
-#foreach($note in $property.notes)
- * $note
-#end
- */
-#end
+$property.comment
 #set($attributes = $converter.getAttributes($property.type))
 #if($attributes.empty)
 @property $converter.convert($property.type) $property.name;
