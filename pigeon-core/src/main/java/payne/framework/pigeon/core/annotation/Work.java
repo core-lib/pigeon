@@ -1,13 +1,8 @@
 package payne.framework.pigeon.core.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 import payne.framework.pigeon.core.processing.InvocationWorkProcedure;
+
+import java.lang.annotation.*;
 
 /**
  * work线程的配置,用于配置服务的超时时长和运行线程优先级.
@@ -32,10 +27,10 @@ public @interface Work {
 	int priority() default Thread.NORM_PRIORITY;
 
 	/**
-	 * 超时时长,单位:毫秒 默认值:10 * 1000
-	 * 
+     * 超时时长,单位:毫秒 默认值:60 * 1000
+     *
 	 * @return
 	 */
-	int timeout() default 10 * 1000;
+    int timeout() default 60 * 1000;
 
 }

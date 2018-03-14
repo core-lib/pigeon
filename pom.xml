@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>payne.framework</groupId>
 	<artifactId>pigeon</artifactId>
-	<version>v4.4.3</version>
+	<version>v4.4.4</version>
 	<packaging>pom</packaging>
 	<modules>
 		<module>pigeon-detector</module>

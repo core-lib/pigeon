@@ -1,29 +1,7 @@
 package payne.framework.pigeon.integration.web;
 
-import java.io.IOException;
-import java.lang.reflect.Modifier;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.qfox.detector.DefaultResourceDetector;
+import org.qfox.detector.*;
 import org.qfox.detector.DefaultResourceDetector.Builder;
-import org.qfox.detector.Resource;
-import org.qfox.detector.ResourceDetector;
-import org.qfox.detector.ResourceFilter;
-import org.qfox.detector.ResourceFilterChain;
-
 import payne.framework.pigeon.core.Pigeons;
 import payne.framework.pigeon.core.annotation.Accept.Mode;
 import payne.framework.pigeon.core.exception.UnsupportedChannelException;
@@ -35,11 +13,18 @@ import payne.framework.pigeon.core.filtration.FixedFilterChain;
 import payne.framework.pigeon.core.observation.Event;
 import payne.framework.pigeon.core.protocol.Channel;
 import payne.framework.pigeon.core.toolkit.IOToolkit;
-import payne.framework.pigeon.server.DefaultInvocationProcessorRegistry;
-import payne.framework.pigeon.server.HTTPInvocationContext;
-import payne.framework.pigeon.server.InvocationContext;
-import payne.framework.pigeon.server.InvocationContextAware;
-import payne.framework.pigeon.server.InvocationProcessorRegistry;
+import payne.framework.pigeon.server.*;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.Modifier;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * <p>
@@ -104,7 +89,7 @@ public class WebInvocationContextFilter extends HTTPInvocationContext implements
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 
 		Mode mode = Mode.likeOf(request.getMethod());
-		String file = request.getRequestURI();
+		String file = request.getServletPath();
 		if (!exists(mode, file)) {
 			chain.doFilter(request, response);
 			return;
@@ -152,7 +137,7 @@ public class WebInvocationContextFilter extends HTTPInvocationContext implements
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		return Pigeons.isOpenableClass(clazz) && !clazz.isInterface() && !Modifier.isAbstract(clazz.getModifiers()) ? chain.doNext(resource) : false;
+		return (Pigeons.isOpenableClass(clazz) && !clazz.isInterface() && !Modifier.isAbstract(clazz.getModifiers())) && chain.doNext(resource);
 	}
 
 	public void run() {
