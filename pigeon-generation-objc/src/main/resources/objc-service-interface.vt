@@ -12,7 +12,7 @@
 #end
 #end
 
-$interface.comment
+$!interface.comment
 @interface $properties.get("prefix")$interface.name : NSObject
 
 @property (nonatomic,readonly) PFPClient * client;
@@ -26,7 +26,7 @@ $interface.comment
 @interface $properties.get("prefix")$interface.name (Synchronous)
 
 #foreach($function in $functions)
-$function.comment
+$!function.comment
 #if($function.parameters.empty)
 -($converter.convert($function.method.genericReturnType)) ${function.name};
 #else
@@ -39,7 +39,7 @@ $function.comment
 @interface $properties.get("prefix")$interface.name (Asynchronous)
 
 #foreach($function in $functions)
-$function.comment
+$!function.comment
 #set($return = $converter.convert($function.method.genericReturnType))
 #if($function.parameters.empty)
 -(void) ${function.name}_callback:(void(^)(BOOL success,#if(!$return.equals("void")) $return result,#end NSError * error))callback;
