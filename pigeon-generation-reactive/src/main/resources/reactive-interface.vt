@@ -4,6 +4,7 @@ package ${interface.type.package.name};
 import ${import.name};
 #end
 
+$!interface.comment
 @Correspond(${interface.type.simpleName}.class)
 #foreach($annotation in $interface.annotations)
 $converter.toString($annotation)
@@ -11,6 +12,7 @@ $converter.toString($annotation)
 public interface $properties.get("prefix")${interface.type.simpleName}$converter.resolve($interface.type.typeParameters) {
 
 #foreach($function in $functions)
+$!function.comment
 #foreach($annotation in $function.annotations)
 	$converter.toString($annotation)
 #end
