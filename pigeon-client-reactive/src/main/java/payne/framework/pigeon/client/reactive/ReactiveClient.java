@@ -54,8 +54,7 @@ public class ReactiveClient extends Client {
         if (!beanFactory.contains(format)) {
             throw new UnsupportedFormatException(format);
         }
-        ReactiveConnection<T> connection = new ReactiveConnection<T>(this, implementation, interfase);
-        return connection;
+        return new ReactiveConnection<T>(this, implementation, interfase);
     }
 
 }

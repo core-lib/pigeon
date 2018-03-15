@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>payne.framework</groupId>
 	<artifactId>pigeon</artifactId>
-	<version>v4.5.0</version>
+	<version>v4.5.1</version>
 	<packaging>pom</packaging>
 	<modules>
 		<module>pigeon-detector</module>
@@ -34,6 +34,13 @@
 		<module>pigeon-integration-web-spring</module>
 		<module>pigeon-generation-js</module>
 	</modules>
+
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
 	
 	<dependencyManagement>
 		<dependencies>

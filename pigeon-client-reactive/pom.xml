@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>payne.framework</groupId>
 		<artifactId>pigeon</artifactId>
-        <version>v4.5.0</version>
+        <version>v4.5.1</version>
 	</parent>
 	<artifactId>pigeon-client-reactive</artifactId>
 	<name>pigeon-client-reactive</name>
@@ -18,15 +18,26 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>io.reactivex</groupId>
-			<artifactId>rxjava</artifactId>
-			<version>1.0.16</version>
-		</dependency>
-		<dependency>
+        <dependency>
+            <groupId>io.reactivex</groupId>
+            <artifactId>rxjava</artifactId>
+            <version>1.1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>io.reactivex</groupId>
+            <artifactId>rxandroid</artifactId>
+            <version>0.25.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.reactivex</groupId>
+                    <artifactId>rxjava</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
 			<groupId>payne.framework</groupId>
 			<artifactId>pigeon-client</artifactId>
-            <version>v4.5.0</version>
+            <version>v4.5.1</version>
 		</dependency>
 	</dependencies>
 
