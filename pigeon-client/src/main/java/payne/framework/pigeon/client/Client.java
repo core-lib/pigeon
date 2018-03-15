@@ -1,11 +1,5 @@
 package payne.framework.pigeon.client;
 
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import payne.framework.pigeon.core.Attributed;
 import payne.framework.pigeon.core.Interceptor;
 import payne.framework.pigeon.core.Transcoder;
@@ -16,12 +10,18 @@ import payne.framework.pigeon.core.factory.bean.SingletonBeanFactory;
 import payne.framework.pigeon.core.factory.stream.InternalStreamFactory;
 import payne.framework.pigeon.core.factory.stream.StreamFactory;
 
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 public class Client implements Attributed, Transcoder {
 	protected String protocol = "http/1.1";
 	protected final String host;
 	protected final int port;
-	protected int timeout = 10 * 1000;
-	protected String format = "application/x-java-serialized-object";
+	protected int timeout = 60 * 1000;
+	protected String format = "application/json";
 	protected ClassLoader classLoader = Client.class.getClassLoader();
 	protected BeanFactory beanFactory = new SingletonBeanFactory();
 	protected StreamFactory streamFactory = new InternalStreamFactory();

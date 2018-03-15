@@ -3,42 +3,60 @@ package payne.framework.pigeon.client.android;
 import payne.framework.pigeon.client.Client;
 import payne.framework.pigeon.core.exception.UnsupportedChannelException;
 import payne.framework.pigeon.core.exception.UnsupportedFormatException;
+import payne.framework.pigeon.core.factory.bean.SingletonBeanFactory;
+
+import java.util.Properties;
 
 /**
  * <p>
  * Description:
  * </p>
- * 
+ * <p>
  * <p>
  * Company: 广州市俏狐信息科技有限公司
  * </p>
- * 
+ *
  * @author yangchangpei 646742615@qq.com
- *
- * @date 2015年8月4日 上午10:15:09
- *
  * @version 1.0.0
+ * @date 2015年8月4日 上午10:15:09
  */
 public class AndroidClient extends Client {
 
-	public AndroidClient(String host) {
-		super(host);
-	}
+    public AndroidClient(String host) {
+        this(host, 80);
+    }
 
-	public AndroidClient(String host, int port) {
-		super(host, port);
-	}
+    public AndroidClient(String host, int port) {
+        super(host, port);
 
-	@Override
-	public <T> AndroidConnection<T> build(String implementation, Class<T> interfase) throws Exception {
-		if (!beanFactory.contains(protocol)) {
-			throw new UnsupportedChannelException(protocol);
-		}
-		if (!beanFactory.contains(format)) {
-			throw new UnsupportedFormatException(format);
-		}
-		AndroidConnection<T> connection = new AndroidConnection<T>(this, implementation, interfase);
-		return connection;
-	}
+        Properties properties = new Properties();
+        properties.put("http", "payne.framework.pigeon.core.protocol.HTTPChannel");
+        properties.put("http/1.0", "payne.framework.pigeon.core.protocol.HTTPChannel");
+        properties.put("http/1.1", "payne.framework.pigeon.core.protocol.HTTPChannel");
+        properties.put("https", "payne.framework.pigeon.core.protocol.HTTPSChannel");
+        properties.put("HTTP", "payne.framework.pigeon.core.protocol.HTTPChannel");
+        properties.put("HTTP/1.0", "payne.framework.pigeon.core.protocol.HTTPChannel");
+        properties.put("HTTP/1.1", "payne.framework.pigeon.core.protocol.HTTPChannel");
+        properties.put("HTTPS", "payne.framework.pigeon.core.protocol.HTTPSChannel");
+        properties.put("application/x-www-form-urlencoded", "payne.framework.pigeon.core.formatting.FormInvocationFormatter");
+        properties.put("application/x-java-serialized-object", "payne.framework.pigeon.core.formatting.ObjectInvocationFormatter");
+        properties.put("application/json", "payne.framework.pigeon.core.formatting.jackson.JSONInvocationFormatter");
+        properties.put("application/yaml", "payne.framework.pigeon.core.formatting.jackson.YAMLInvocationFormatter");
+        properties.put("application/smile", "payne.framework.pigeon.core.formatting.jackson.SmileInvocationFormatter");
+        properties.put("application/cbor", "payne.framework.pigeon.core.formatting.jackson.CBORInvocationFormatter");
+        beanFactory = new SingletonBeanFactory(properties);
+    }
+
+    @Override
+    public <T> AndroidConnection<T> build(String implementation, Class<T> interfase) throws Exception {
+        if (!beanFactory.contains(protocol)) {
+            throw new UnsupportedChannelException(protocol);
+        }
+        if (!beanFactory.contains(format)) {
+            throw new UnsupportedFormatException(format);
+        }
+        AndroidConnection<T> connection = new AndroidConnection<T>(this, implementation, interfase);
+        return connection;
+    }
 
 }

@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>payne.framework</groupId>
 		<artifactId>pigeon</artifactId>
-        <version>v4.4.9</version>
+        <version>v4.5.0</version>
 	</parent>
 	<artifactId>pigeon-core-encoding</artifactId>
 	<name>pigeon-core-encoding</name>
@@ -21,7 +21,7 @@
 		<dependency>
 			<groupId>payne.framework</groupId>
 			<artifactId>pigeon-core</artifactId>
-            <version>v4.4.9</version>
+            <version>v4.5.0</version>
 		</dependency>
 	</dependencies>
 
