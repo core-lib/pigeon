@@ -7,7 +7,6 @@ import payne.framework.pigeon.core.*;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -59,7 +58,7 @@ public class AndroidConnection<T> extends Connection<T> {
                     return AndroidConnection.super.invoke(proxy, method, parameters);
                 }
 
-            }).execute(Arrays.copyOf(arguments, arguments.length - 1));
+            }).execute(args.toArray());
         } catch (Throwable throwable) {
             callback.onCompleted(false, null, throwable);
             onFail.onFail(throwable);

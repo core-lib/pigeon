@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>payne.framework</groupId>
 		<artifactId>pigeon</artifactId>
-        <version>v4.4.8</version>
+        <version>v4.4.9</version>
 	</parent>
 	<artifactId>pigeon-generation-async</artifactId>
 	<name>pigeon-generation-async</name>
@@ -21,7 +21,7 @@
 		<dependency>
 			<groupId>payne.framework</groupId>
 			<artifactId>pigeon-generation</artifactId>
-            <version>v4.4.8</version>
+            <version>v4.4.9</version>
 		</dependency>
 	</dependencies>
 
