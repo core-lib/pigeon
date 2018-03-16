@@ -43,7 +43,7 @@ public class CaseIgnoredMap<V> extends LinkedHashMap<String, V> {
 
 	@Override
 	public boolean containsKey(Object key) {
-		if (key == null || key instanceof String == false) {
+		if (key == null || !(key instanceof String)) {
 			return super.containsKey(key);
 		}
 		for (java.util.Map.Entry<String, V> entry : this.entrySet()) {
@@ -52,11 +52,11 @@ public class CaseIgnoredMap<V> extends LinkedHashMap<String, V> {
 			}
 		}
 		return false;
-	};
+	}
 
 	@Override
 	public V get(Object key) {
-		if (key == null || key instanceof String == false) {
+		if (key == null || !(key instanceof String)) {
 			return super.get(key);
 		}
 		for (java.util.Map.Entry<String, V> entry : this.entrySet()) {
@@ -69,7 +69,7 @@ public class CaseIgnoredMap<V> extends LinkedHashMap<String, V> {
 
 	@Override
 	public V remove(Object key) {
-		if (key == null || key instanceof String == false) {
+		if (key == null || !(key instanceof String)) {
 			return super.remove(key);
 		}
 		for (java.util.Map.Entry<String, V> entry : this.entrySet()) {
